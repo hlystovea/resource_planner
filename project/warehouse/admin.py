@@ -5,7 +5,7 @@ from django.forms import Textarea, TextInput
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from .models import Materials, Instrument
+from .models import Material, Instrument
 
 User = get_user_model()
 
@@ -30,9 +30,10 @@ class MixinAdmin(admin.ModelAdmin):
     }
 
 
-@admin.register(Materials)
-class MaterialsAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'name', 'measurement_unit', 'article_number', 'turnover')
+@admin.register(Material)
+class MaterialAdmin(ImageTagField, MixinAdmin):
+    list_display = ('id', 'name', 'measurement_unit',
+                    'article_number', 'turnover')
     search_fields = ('name', 'article_number')
     list_filter = ('measurement_unit', )
 

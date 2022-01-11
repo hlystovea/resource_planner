@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
 
-class Materials(models.Model):
+class Material(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
@@ -11,6 +11,12 @@ class Materials(models.Model):
     measurement_unit = models.CharField(
         verbose_name=_('Единица измерения'),
         max_length=20,
+    )
+    inventory_number = models.CharField(
+        verbose_name=_('Инв. номер'),
+        max_length=50,
+        blank=True,
+        null=True,
     )
     article_number = models.CharField(
         verbose_name=_('Артикул'),
@@ -24,7 +30,7 @@ class Materials(models.Model):
     )
     image = ResizedImageField(
         verbose_name=_('Изображение'),
-        upload_to='materials/',
+        upload_to='material/',
         blank=True,
         null=True,
         size=[1280, 720],
@@ -35,6 +41,9 @@ class Materials(models.Model):
         ordering = ('name', )
         verbose_name = _('Материал')
         verbose_name_plural = _('Материалы')
+
+    def __str__(self):
+        return f'{self.name} ({self.measurement_unit})'
 
 
 class Instrument(models.Model):
@@ -56,7 +65,7 @@ class Instrument(models.Model):
     )
     image = ResizedImageField(
         verbose_name=_('Изображение'),
-        upload_to='materials/',
+        upload_to='instrument/',
         blank=True,
         null=True,
         size=[1280, 720],
@@ -67,3 +76,6 @@ class Instrument(models.Model):
         ordering = ('name', )
         verbose_name = _('Инструмент')
         verbose_name_plural = _('Инструменты')
+
+    def __str__(self):
+        return f'{self.name} ({self.inventory_number})'

@@ -21,6 +21,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'warehouse.apps.WarehouseConfig',
+    'repairs.apps.RepairsConfig',
+    'resources.apps.ResourcesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
