@@ -3,6 +3,29 @@ from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
 
+class Storage(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+    )
+    parent_storage = models.ForeignKey(
+        to='warehouse.Storage',
+        verbose_name=_('Расположение'),
+        on_delete=models.PROTECT,
+        related_name='storage',
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Место хранения')
+        verbose_name_plural = _('Места хранения')
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Material(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
@@ -28,6 +51,14 @@ class Material(models.Model):
         verbose_name=_('Кол-во применений'),
         default=1,
     )
+    storage = models.ForeignKey(
+        to=Storage,
+        verbose_name=_('Место хранения'),
+        on_delete=models.PROTECT,
+        related_name='materials',
+        blank=True,
+        null=True,
+    )
     image = ResizedImageField(
         verbose_name=_('Изображение'),
         upload_to='material/',
@@ -43,7 +74,7 @@ class Material(models.Model):
         verbose_name_plural = _('Материалы')
 
     def __str__(self):
-        return f'{self.name} ({self.measurement_unit})'
+        return f'{self.name} ({self.inventory_number})'
 
 
 class Instrument(models.Model):
@@ -63,6 +94,14 @@ class Instrument(models.Model):
         blank=True,
         null=True,
     )
+    storage = models.ForeignKey(
+        to=Storage,
+        verbose_name=_('Место хранения'),
+        on_delete=models.PROTECT,
+        related_name='instruments',
+        blank=True,
+        null=True,
+    )
     image = ResizedImageField(
         verbose_name=_('Изображение'),
         upload_to='instrument/',
@@ -74,8 +113,8 @@ class Instrument(models.Model):
 
     class Meta:
         ordering = ('name', )
-        verbose_name = _('Инструмент')
-        verbose_name_plural = _('Инструменты')
+        verbose_name = _('Инструмент/Прибор')
+        verbose_name_plural = _('Инструменты/Приборы')
 
     def __str__(self):
         return f'{self.name} ({self.inventory_number})'
