@@ -87,14 +87,12 @@ class OperationSheetInline(admin.TabularInline):
 class InstrumentSheetInline(admin.TabularInline):
     model = InstrumentSheet
     autocomplete_fields = ('instrument', )
-    min_num = 1
     extra = 0
 
 
 class MaterialSheetInline(admin.TabularInline):
     model = MaterialSheet
     autocomplete_fields = ('material', )
-    min_num = 1
     extra = 0
 
 

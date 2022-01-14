@@ -28,7 +28,7 @@ class Dept(models.Model):
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
-        max_length=10,
+        max_length=30,
     )
     service = models.ForeignKey(
         to=Service,

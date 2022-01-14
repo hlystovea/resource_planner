@@ -7,7 +7,7 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import Instrument, Material, Storage
+from .models import Instrument, Material, MaterialStorage, Storage
 
 User = get_user_model()
 
@@ -34,21 +34,28 @@ class MixinAdmin(admin.ModelAdmin):
 
 @admin.register(Material)
 class MaterialAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'name', 'measurement_unit',
-                    'article_number', 'turnover')
+    list_display = ('id', 'name', 'measurement_unit', 'article_number')
     search_fields = ('name', 'article_number')
 
 
+@admin.register(MaterialStorage)
+class MaterialStorageAdmin(MixinAdmin):
+    list_display = ('id', 'material', 'inventory_number', 'amount', 'owner')
+    search_fields = ('material', 'inventory_number')
+    list_filter = ('owner', )
+    autocomplete_fields = ('material', )
+
+
 @admin.register(Instrument)
-class InstrumentAdmin(ImageTagField, MixinAdmin):
+class InstrumentAdmin(MixinAdmin):
     list_display = ('id', 'name', 'inventory_number', 'serial_number')
     search_fields = ('name', 'inventory_number', 'serial_number')
 
 
 @admin.register(Storage)
 class StorageAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'parent_storage', 'storage_count',
-                    'materials_count', 'instrument_count')
+    list_display = ('id', 'name', 'parent_storage',
+                    'storage_count', 'materials_count')
     search_fields = ('name', )
 
     @admin.display(description=_('Места хранения'))
@@ -67,22 +74,10 @@ class StorageAdmin(MixinAdmin):
     def materials_count(self, obj):
         materials_count = obj.materials.count()
         url = (
-            reverse('admin:warehouse_material_changelist')
+            reverse('admin:warehouse_materialstorage_changelist')
             + '?'
             + urlencode({'storage__id': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{} поз.</a>', url, materials_count
-        )
-
-    @admin.display(description=_('Инструмент/приборы'))
-    def instrument_count(self, obj):
-        instrument_count = obj.instruments.count()
-        url = (
-            reverse('admin:warehouse_instrument_changelist')
-            + '?'
-            + urlencode({'storage__id': f'{obj.id}'})
-        )
-        return format_html(
-            '<a href="{}">{} поз.</a>', url, instrument_count
         )

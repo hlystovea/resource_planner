@@ -52,7 +52,8 @@ class ServiceAdmin(MixinAdmin):
 
 @admin.register(Dept)
 class DeptAdmin(MixinAdmin):
-    list_display = ('id', 'abbreviation', 'name', 'headcount')
+    list_display = ('id', 'abbreviation', 'name', 'headcount',
+                    'materials_count', 'instrument_count')
     search_fields = ('name', 'abbreviation')
     list_filter = ('service', )
 
@@ -66,6 +67,30 @@ class DeptAdmin(MixinAdmin):
         )
         return format_html(
             '<a href="{}">{} чел.</a>', url, headcount or 0
+        )
+
+    @admin.display(description=_('Материалы'))
+    def materials_count(self, obj):
+        materials_count = obj.materials.count()
+        url = (
+            reverse('admin:warehouse_materialstorage_changelist')
+            + '?'
+            + urlencode({'owner__id': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{} поз.</a>', url, materials_count
+        )
+
+    @admin.display(description=_('Инструмент/приборы'))
+    def instrument_count(self, obj):
+        instrument_count = obj.instruments.count()
+        url = (
+            reverse('admin:warehouse_instrument_changelist')
+            + '?'
+            + urlencode({'owner__id': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{} поз.</a>', url, instrument_count
         )
 
 

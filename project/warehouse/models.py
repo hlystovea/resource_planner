@@ -35,27 +35,9 @@ class Material(models.Model):
         verbose_name=_('Единица измерения'),
         max_length=20,
     )
-    inventory_number = models.CharField(
-        verbose_name=_('Инв. номер'),
-        max_length=50,
-        blank=True,
-        null=True,
-    )
     article_number = models.CharField(
         verbose_name=_('Артикул'),
         max_length=30,
-        blank=True,
-        null=True,
-    )
-    turnover = models.PositiveSmallIntegerField(
-        verbose_name=_('Кол-во применений'),
-        default=1,
-    )
-    storage = models.ForeignKey(
-        to=Storage,
-        verbose_name=_('Место хранения'),
-        on_delete=models.PROTECT,
-        related_name='materials',
         blank=True,
         null=True,
     )
@@ -65,16 +47,57 @@ class Material(models.Model):
         blank=True,
         null=True,
         size=[1280, 720],
-        crop=['middle', 'center'],
     )
 
     class Meta:
         ordering = ('name', )
-        verbose_name = _('Материал')
-        verbose_name_plural = _('Материалы')
+        verbose_name = _('Список материалов')
+        verbose_name_plural = _('Список материалов')
 
     def __str__(self):
-        return f'{self.name} ({self.inventory_number})'
+        return f'{self.name}, {self.measurement_unit}'
+
+
+class MaterialStorage(models.Model):
+    material = models.ForeignKey(
+        to=Material,
+        verbose_name=_('Материал'),
+        on_delete=models.PROTECT,
+        related_name='amount',
+    )
+    inventory_number = models.CharField(
+        verbose_name=_('Инв. номер'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name=_('Количество'),
+    )
+    owner = models.ForeignKey(
+        to='staff.Dept',
+        verbose_name=_('Подразделение'),
+        on_delete=models.SET_NULL,
+        related_name='materials',
+        blank=True,
+        null=True,
+    )
+    storage = models.ForeignKey(
+        to=Storage,
+        verbose_name=_('Место хранения'),
+        on_delete=models.SET_NULL,
+        related_name='materials',
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        ordering = ('material', )
+        verbose_name = _('Материал на хранении')
+        verbose_name_plural = _('Материалы на хранении')
+
+    def __str__(self):
+        return f'{self.material.name}, {self.material.measurement_unit}'
 
 
 class Instrument(models.Model):
@@ -94,12 +117,11 @@ class Instrument(models.Model):
         blank=True,
         null=True,
     )
-    storage = models.ForeignKey(
-        to=Storage,
-        verbose_name=_('Место хранения'),
+    owner = models.ForeignKey(
+        to='staff.Dept',
+        verbose_name=_('Подразделение'),
         on_delete=models.PROTECT,
         related_name='instruments',
-        blank=True,
         null=True,
     )
     image = ResizedImageField(
@@ -113,8 +135,8 @@ class Instrument(models.Model):
 
     class Meta:
         ordering = ('name', )
-        verbose_name = _('Инструмент/Прибор')
-        verbose_name_plural = _('Инструменты/Приборы')
+        verbose_name = _('Инструмент/прибор')
+        verbose_name_plural = _('Инструмент/приборы')
 
     def __str__(self):
         return f'{self.name} ({self.inventory_number})'
