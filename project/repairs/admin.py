@@ -62,7 +62,8 @@ class OperationAdmin(MixinAdmin):
 
 @admin.register(Repair)
 class RepairAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'object', 'loc_start_at', 'loc_end_at')
+    list_display = ('id', 'name', 'object',
+                    'loc_start_at', 'loc_end_at', 'pdf_sheet')
     search_fields = ('name', )
     list_filter = ('object__connection', 'start_at',
                    RepairYearFilter, RepairMonthFilter)
@@ -75,6 +76,17 @@ class RepairAdmin(MixinAdmin):
     @admin.display(description=_('Время окончания'))
     def loc_end_at(self, obj):
         return obj.end_at.strftime('%d.%m.%Y %H:%M')
+
+    @admin.display(description=_('Ресурсная ведомость'))
+    def pdf_sheet(self, obj):
+        if obj.sheet is None:
+            return None
+        url = (
+            reverse('repairs:repair-pdf', kwargs={'repair_id': obj.id})
+        )
+        return format_html(
+            '<a href="{}">скачать</a>', url
+        )
 
 
 class OperationSheetInline(admin.TabularInline):
