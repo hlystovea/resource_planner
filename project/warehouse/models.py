@@ -120,7 +120,7 @@ class Instrument(models.Model):
     owner = models.ForeignKey(
         to='staff.Dept',
         verbose_name=_('Подразделение'),
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         related_name='instruments',
         null=True,
     )
@@ -130,7 +130,6 @@ class Instrument(models.Model):
         blank=True,
         null=True,
         size=[1280, 720],
-        crop=['middle', 'center'],
     )
 
     class Meta:
