@@ -54,8 +54,8 @@ jobs:
     needs: deploy
     steps:
     - name: send telegram message
-      uses: appleboy/drone-telegram
-      settings:
+      uses: appleboy/telegram-action@master
+      with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: ${{ github.workflow }} completed successfully!
