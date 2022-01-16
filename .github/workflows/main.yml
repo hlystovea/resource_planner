@@ -54,7 +54,7 @@ jobs:
     needs: deploy
     steps:
     - name: send telegram message
-      image: appleboy/drone-telegram
+      uses: appleboy/drone-telegram
       settings:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
