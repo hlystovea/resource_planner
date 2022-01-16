@@ -7,7 +7,7 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import Instrument, Material, Storage
+from warehouse.models import Instrument, Material, MaterialStorage, Storage
 
 User = get_user_model()
 
@@ -15,6 +15,7 @@ User = get_user_model()
 class ImageTagField(admin.ModelAdmin):
     readonly_fields = ('image_tag',)
 
+    @admin.display(description=_('Фотография'))
     def image_tag(self, instance):
         if instance.image:
             return format_html(
@@ -34,21 +35,30 @@ class MixinAdmin(admin.ModelAdmin):
 
 @admin.register(Material)
 class MaterialAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'name', 'measurement_unit',
-                    'article_number', 'turnover')
+    list_display = ('id', 'name', 'measurement_unit', 'article_number')
     search_fields = ('name', 'article_number')
+
+
+@admin.register(MaterialStorage)
+class MaterialStorageAdmin(MixinAdmin):
+    list_display = ('id', 'material', 'inventory_number',
+                    'amount', 'owner', 'storage')
+    search_fields = ('material', 'inventory_number')
+    list_filter = ('owner', )
+    autocomplete_fields = ('material', )
 
 
 @admin.register(Instrument)
 class InstrumentAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'name', 'inventory_number', 'serial_number')
+    list_display = ('id', 'name', 'inventory_number',
+                    'serial_number', 'image_tag')
     search_fields = ('name', 'inventory_number', 'serial_number')
 
 
 @admin.register(Storage)
 class StorageAdmin(MixinAdmin):
     list_display = ('id', 'name', 'parent_storage', 'storage_count',
-                    'materials_count', 'instrument_count')
+                    'materials_count', 'qr_code_link')
     search_fields = ('name', )
 
     @admin.display(description=_('Места хранения'))
@@ -57,7 +67,7 @@ class StorageAdmin(MixinAdmin):
         url = (
             reverse('admin:warehouse_storage_changelist')
             + '?'
-            + urlencode({'storage__id': f'{obj.id}'})
+            + urlencode({'parent_storage__id': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{} поз.</a>', url, storage_count
@@ -67,7 +77,7 @@ class StorageAdmin(MixinAdmin):
     def materials_count(self, obj):
         materials_count = obj.materials.count()
         url = (
-            reverse('admin:warehouse_material_changelist')
+            reverse('admin:warehouse_materialstorage_changelist')
             + '?'
             + urlencode({'storage__id': f'{obj.id}'})
         )
@@ -75,14 +85,9 @@ class StorageAdmin(MixinAdmin):
             '<a href="{}">{} поз.</a>', url, materials_count
         )
 
-    @admin.display(description=_('Инструмент/приборы'))
-    def instrument_count(self, obj):
-        instrument_count = obj.instruments.count()
+    @admin.display(description=_('QR-код'))
+    def qr_code_link(self, obj):
         url = (
-            reverse('admin:warehouse_instrument_changelist')
-            + '?'
-            + urlencode({'storage__id': f'{obj.id}'})
+            reverse('warehouse:storage-qr', kwargs={'storage_id': obj.id})
         )
-        return format_html(
-            '<a href="{}">{} поз.</a>', url, instrument_count
-        )
+        return format_html('<a href={}>открыть</a>', url)

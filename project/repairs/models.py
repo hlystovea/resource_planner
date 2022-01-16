@@ -66,6 +66,9 @@ class Sheet(models.Model):
         verbose_name = _('Ресурсная ведомость')
         verbose_name_plural = _('Ресурсные ведомости')
 
+    def __str__(self):
+        return self.name
+
 
 class OperationSheet(models.Model):
     sheet = models.ForeignKey(

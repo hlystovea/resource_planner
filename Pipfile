@@ -10,6 +10,9 @@ pillow = "*"
 django-environ = "*"
 psycopg2 = "*"
 gunicorn = "*"
+qrcode = "*"
+django-qr-code = "*"
+xhtml2pdf = "*"
 
 [dev-packages]
 flake8 = "*"
