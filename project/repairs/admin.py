@@ -6,8 +6,21 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import (InstrumentSheet, MaterialSheet, Object, Operation,
+from .models import (Defect, InstrumentSheet, MaterialSheet, Object, Operation,
                      OperationSheet, Repair, Sheet)
+
+
+class ImageTagField(admin.ModelAdmin):
+    readonly_fields = ('image_tag',)
+
+    @admin.display(description=_('Фотография'))
+    def image_tag(self, instance):
+        if instance.image:
+            return format_html(
+                '<img src="{0}" style="max-height: 50px"/>',
+                instance.image.url
+            )
+        return None
 
 
 class RepairYearFilter(admin.SimpleListFilter):
@@ -38,6 +51,20 @@ class RepairMonthFilter(admin.SimpleListFilter):
         return queryset
 
 
+class DefectYearFilter(admin.SimpleListFilter):
+    title = _('год')
+    parameter_name = 'year'
+
+    def lookups(self, request, model_admin):
+        dates = Defect.objects.dates('date', 'year')
+        return [(d.year, d.year) for d in dates]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(date__year=self.value())
+        return queryset
+
+
 class MixinAdmin(admin.ModelAdmin):
     empty_value_display = _('-пусто-')
     formfield_overrides = {
@@ -48,10 +75,23 @@ class MixinAdmin(admin.ModelAdmin):
 
 @admin.register(Object)
 class ObjectAdmin(MixinAdmin):
-    list_display = ('id', 'connection', 'name', 'inventory_number')
+    list_display = ('id', 'connection', 'name',
+                    'inventory_number', 'count_defects')
     search_fields = ('name', 'inventory_number')
     list_filter = ('connection', )
     fields = ('name', 'connection', 'inventory_number')
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def count_defects(self, obj):
+        count = obj.defects.count()
+        url = (
+            reverse('admin:repairs_defect_changelist')
+            + '?'
+            + urlencode({'object__id': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{}</a>', url, count
+        )
 
 
 @admin.register(Operation)
@@ -130,3 +170,40 @@ class SheetAdmin(MixinAdmin):
         return format_html(
             '<a href="{}">{} чел./ч</a>', url, man_hours['total']
         )
+
+
+@admin.register(Defect)
+class DefectAdmin(ImageTagField, MixinAdmin):
+    list_display = ('id', 'connection', 'object', 'cut_description',
+                    'cut_repair', 'loc_date', 'loc_repair_date', 'image_tag')
+    search_fields = ('description', 'repair')
+    list_filter = ('object__connection', 'date', DefectYearFilter)
+    autocomplete_fields = ('object', )
+
+    @admin.display(description=_('Присоединение'))
+    def connection(self, obj):
+        return obj.object.connection
+
+    @admin.display(description=_('Описание'))
+    def cut_description(self, obj):
+        if obj.description:
+            return obj.description[:50]
+        return None
+
+    @admin.display(description=_('Мероприятия'))
+    def cut_repair(self, obj):
+        if obj.repair:
+            return obj.repair[:50]
+        return None
+
+    @admin.display(description=_('Дата обнаружения'))
+    def loc_date(self, obj):
+        if obj.date:
+            return obj.date.strftime('%d.%m.%Y')
+        return None
+
+    @admin.display(description=_('Дата устранения'))
+    def loc_repair_date(self, obj):
+        if obj.repair_date:
+            return obj.repair_date.strftime('%d.%m.%Y')
+        return None

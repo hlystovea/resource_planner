@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_resized import ResizedImageField
 
 
 class Object(models.Model):
@@ -170,3 +171,42 @@ class Repair(models.Model):
         ordering = ('start_at', )
         verbose_name = _('Плановая работа')
         verbose_name_plural = _('Плановые работы')
+
+
+class Defect(models.Model):
+    date = models.DateField(
+        verbose_name=_('Дата обнаружения'),
+    )
+    object = models.ForeignKey(
+        to=Object,
+        verbose_name=_('Оборудование'),
+        on_delete=models.CASCADE,
+        related_name='defects',
+    )
+    description = models.TextField(
+        verbose_name=_('Описание дефекта'),
+        max_length=1500,
+    )
+    image = ResizedImageField(
+        verbose_name=_('Фото'),
+        upload_to='defect/',
+        blank=True,
+        null=True,
+        size=[1280, 720],
+    )
+    repair = models.CharField(
+        verbose_name=_('Выполненые мероприятия'),
+        max_length=500,
+        blank=True,
+        null=True,
+    )
+    repair_date = models.DateField(
+        verbose_name=_('Дата устранения'),
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        ordering = ('date', )
+        verbose_name = _('Дефект')
+        verbose_name_plural = _('Дефекты')
