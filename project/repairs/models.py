@@ -183,6 +183,10 @@ class Defect(models.Model):
         on_delete=models.CASCADE,
         related_name='defects',
     )
+    element = models.CharField(
+        verbose_name=_('Элемент вышедший из строя'),
+        max_length=100,
+    )
     description = models.TextField(
         verbose_name=_('Описание дефекта'),
         max_length=1500,
@@ -194,7 +198,7 @@ class Defect(models.Model):
         null=True,
         size=[1280, 720],
     )
-    repair = models.CharField(
+    repair = models.TextField(
         verbose_name=_('Выполненые мероприятия'),
         max_length=500,
         blank=True,
