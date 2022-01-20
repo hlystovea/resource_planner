@@ -3,7 +3,64 @@ from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
 
-class Object(models.Model):
+class TypeRepair(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+    )
+    abbreviation = models.CharField(
+        verbose_name=_('Аббревиатура'),
+        max_length=10,
+    )
+
+    class Meta:
+        ordering = ('abbreviation', )
+        verbose_name = _('Вид ТО')
+        verbose_name_plural = _('Виды ТО')
+
+    def __str__(self):
+        return self.abbreviation
+
+
+class Connection(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+    )
+    abbreviation = models.CharField(
+        verbose_name=_('Аббревиатура'),
+        max_length=30,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Присоединение')
+        verbose_name_plural = _('Присоединения')
+
+    def __str__(self):
+        return self.abbreviation
+
+
+class Facility(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+    )
+    abbreviation = models.CharField(
+        verbose_name=_('Аббревиатура'),
+        max_length=30,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Объект диспетчеризации')
+        verbose_name_plural = _('Объекты диспетчеризации')
+
+    def __str__(self):
+        return self.abbreviation
+
+
+class Hardware(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
@@ -14,9 +71,19 @@ class Object(models.Model):
         blank=True,
         null=True,
     )
-    connection = models.CharField(
+    facility = models.ForeignKey(
+        to=Facility,
+        verbose_name=_('Объект диспетчеризации'),
+        on_delete=models.SET_NULL,
+        related_name='hardwares',
+        blank=True,
+        null=True,
+    )
+    connection = models.ForeignKey(
+        to=Connection,
         verbose_name=_('Присоединение'),
-        max_length=50,
+        on_delete=models.SET_NULL,
+        related_name='hardwares',
         blank=True,
         null=True,
     )
@@ -139,23 +206,30 @@ class Repair(models.Model):
         verbose_name=_('Наименование'),
         max_length=200,
     )
-    object = models.ForeignKey(
-        to=Object,
+    hardware = models.ForeignKey(
+        to=Hardware,
         verbose_name=_('Оборудование'),
         on_delete=models.CASCADE,
         related_name='repairs',
     )
+    type_repair = models.ForeignKey(
+        to=TypeRepair,
+        verbose_name=_('Вид ТО'),
+        on_delete=models.SET_NULL,
+        related_name='repairs',
+        null=True,
+    )
     department = models.ForeignKey(
         to='staff.Dept',
         verbose_name=_('Подразделение'),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='repairs',
         null=True,
     )
     sheet = models.ForeignKey(
         to=Sheet,
         verbose_name=_('Ресурсная ведомость'),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='repairs',
         blank=True,
         null=True,
@@ -169,16 +243,16 @@ class Repair(models.Model):
 
     class Meta:
         ordering = ('start_at', )
-        verbose_name = _('Плановая работа')
-        verbose_name_plural = _('Плановые работы')
+        verbose_name = _('Ремонт')
+        verbose_name_plural = _('Ремонты')
 
 
 class Defect(models.Model):
     date = models.DateField(
         verbose_name=_('Дата обнаружения'),
     )
-    object = models.ForeignKey(
-        to=Object,
+    hardware = models.ForeignKey(
+        to=Hardware,
         verbose_name=_('Оборудование'),
         on_delete=models.CASCADE,
         related_name='defects',

@@ -16,15 +16,16 @@ def get_url(request, storage: Storage) -> str:
 
 def qrcode_view(request, storage_id):
     storage = get_object_or_404(Storage, id=storage_id)
+    materials_url = None
     if storage.materials.count():
         materials_url = get_url(request, storage)
     internal_storage_urls = [
-        [s.name, get_url(request, s)] for s in storage.storage.all() if s.materials.count()
+        [s.name, get_url(request, s)] for s in storage.storage.all() if s.materials.count()  # noqa (E501)
     ]
     qr_options = QRCodeOptions(size='t', border=6, error_correction='L')
     context = {
         'storage': storage,
-        'materials_url': materials_url or None,
+        'materials_url': materials_url,
         'internal_storage_urls': internal_storage_urls,
         'qr_options': qr_options,
     }

@@ -14,10 +14,10 @@
                 <td>{% qr_from_text materials_url options=qr_options %}</td>
             </tr>
         </table>
+    <br>
     {% endif %}
-    <br>
-    <br>
     {% if internal_storage_urls %}
+    <br>
         <h3>Содержимое вложенных мест хранения</h3>
         <table border="1">
             <tr>
@@ -33,9 +33,12 @@
             </tr>
             {% endfor %}
         </table>
+    <br>
     {% endif %}
-    <br>
-    <a class ="print-doc" href="javascript:(print());">Распечатать</a>
-    <br>
+    {% if materials_url or internal_storage_urls %}
+        <a class ="print-doc" href="javascript:(print());">Распечатать</a>
+    {% else %}
+        {{ storage.name }} не содержит материалов
+    {% endif %}
 </body>
 {% endblock %}
