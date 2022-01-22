@@ -9,6 +9,14 @@ services:
       - planner_db:/var/lib/postgresql/data/
     env_file:
       - ./.env
+  adminer:
+    image: adminer
+    container_name: planner_adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
   backend:
     build: .
     container_name: planner_backend
@@ -27,12 +35,23 @@ services:
     restart: always
     ports:
       - '80:80'
+      - '443:443'
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
       - backend
+  certbot:
+    image: certbot/certbot
+    container_name: planner_certbot
+    restart: always
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   planner_db:

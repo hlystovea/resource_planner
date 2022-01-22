@@ -6,8 +6,18 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import (Defect, InstrumentSheet, MaterialSheet, Object, Operation,
-                     OperationSheet, Repair, Sheet)
+from .models import (Connection, Defect, Facility, Hardware, InstrumentSheet,
+                     MaterialSheet, Operation, OperationSheet, Repair, Sheet,
+                     TypeRepair)
+
+
+class MixinAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'abbreviation')
+    empty_value_display = _('-пусто-')
+    formfield_overrides = {
+        CharField: {'widget': TextInput(attrs={'size': 80})},
+        TextField: {'widget': Textarea(attrs={'rows': 8, 'cols': 80})},
+    }
 
 
 class ImageTagField(admin.ModelAdmin):
@@ -65,21 +75,12 @@ class DefectYearFilter(admin.SimpleListFilter):
         return queryset
 
 
-class MixinAdmin(admin.ModelAdmin):
-    empty_value_display = _('-пусто-')
-    formfield_overrides = {
-        CharField: {'widget': TextInput(attrs={'size': 80})},
-        TextField: {'widget': Textarea(attrs={'rows': 8, 'cols': 80})},
-    }
-
-
-@admin.register(Object)
-class ObjectAdmin(MixinAdmin):
-    list_display = ('id', 'connection', 'name',
+@admin.register(Hardware)
+class HardwareAdmin(MixinAdmin):
+    list_display = ('id', 'facility', 'connection', 'name',
                     'inventory_number', 'count_defects')
     search_fields = ('name', 'inventory_number')
-    list_filter = ('connection', )
-    fields = ('name', 'connection', 'inventory_number')
+    list_filter = ('facility', 'connection', )
 
     @admin.display(description=_('Кол-во дефектов'))
     def count_defects(self, obj):
@@ -87,7 +88,7 @@ class ObjectAdmin(MixinAdmin):
         url = (
             reverse('admin:repairs_defect_changelist')
             + '?'
-            + urlencode({'object__id': f'{obj.id}'})
+            + urlencode({'hardware__id': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{}</a>', url, count
@@ -100,21 +101,44 @@ class OperationAdmin(MixinAdmin):
     search_fields = ('name', )
 
 
+@admin.register(TypeRepair)
+class TypeRepairAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(Connection)
+class ConnectionAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(Facility)
+class FacilityAdmin(MixinAdmin):
+    pass
+
+
 @admin.register(Repair)
 class RepairAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'object',
-                    'loc_start_at', 'loc_end_at', 'pdf_sheet')
+    list_display = ('id', 'name', 'hardware_connection', 'hardware_name',
+                    'format_start_at', 'format_end_at', 'pdf_sheet')
     search_fields = ('name', )
-    list_filter = ('object__connection', 'start_at',
+    list_filter = ('hardware__facility', 'hardware__connection', 'start_at',
                    RepairYearFilter, RepairMonthFilter)
-    autocomplete_fields = ('object', )
+    autocomplete_fields = ('hardware', )
+
+    @admin.display(description=_('Присоединение'))
+    def hardware_connection(self, obj):
+        return obj.hardware.connection
+
+    @admin.display(description=_('Оборудование'))
+    def hardware_name(self, obj):
+        return obj.hardware.name[:80]
 
     @admin.display(description=_('Время начала'))
-    def loc_start_at(self, obj):
+    def format_start_at(self, obj):
         return obj.start_at.strftime('%d.%m.%Y %H:%M')
 
     @admin.display(description=_('Время окончания'))
-    def loc_end_at(self, obj):
+    def format_end_at(self, obj):
         return obj.end_at.strftime('%d.%m.%Y %H:%M')
 
     @admin.display(description=_('Ресурсная ведомость'))
@@ -174,36 +198,42 @@ class SheetAdmin(MixinAdmin):
 
 @admin.register(Defect)
 class DefectAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'connection', 'object', 'cut_description',
-                    'cut_repair', 'loc_date', 'loc_repair_date', 'image_tag')
+    list_display = ('id', 'hardware_connection', 'hardware_name',
+                    'defect_description', 'defect_repair', 'format_date',
+                    'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('object__connection', 'date', DefectYearFilter)
-    autocomplete_fields = ('object', )
+    list_filter = ('hardware__facility', 'hardware__connection',
+                   'date', DefectYearFilter)
+    autocomplete_fields = ('hardware', )
 
     @admin.display(description=_('Присоединение'))
-    def connection(self, obj):
-        return obj.object.connection
+    def hardware_connection(self, obj):
+        return obj.hardware.connection
+
+    @admin.display(description=_('Оборудование'))
+    def hardware_name(self, obj):
+        return obj.hardware.name[:80]
 
     @admin.display(description=_('Описание'))
-    def cut_description(self, obj):
+    def defect_description(self, obj):
         if obj.description:
             return obj.description[:50]
         return None
 
     @admin.display(description=_('Мероприятия'))
-    def cut_repair(self, obj):
+    def defect_repair(self, obj):
         if obj.repair:
             return obj.repair[:50]
         return None
 
     @admin.display(description=_('Дата обнаружения'))
-    def loc_date(self, obj):
+    def format_date(self, obj):
         if obj.date:
             return obj.date.strftime('%d.%m.%Y')
         return None
 
     @admin.display(description=_('Дата устранения'))
-    def loc_repair_date(self, obj):
+    def format_repair_date(self, obj):
         if obj.repair_date:
             return obj.repair_date.strftime('%d.%m.%Y')
         return None

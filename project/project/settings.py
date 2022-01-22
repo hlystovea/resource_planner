@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'staff.apps.StaffConfig',
     'warehouse.apps.WarehouseConfig',
     'repairs.apps.RepairsConfig',
+    'shortener.apps.ShortenerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
