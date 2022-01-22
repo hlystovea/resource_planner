@@ -134,3 +134,5 @@ dmypy.json
 .idea
 *.DS_Store
 .gitignore
+
+/data/certbot/
