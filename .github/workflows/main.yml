@@ -1,4 +1,4 @@
-name: Deploy bbbs_backend
+name: Deploy resource_planner
 
 on:
   push:
