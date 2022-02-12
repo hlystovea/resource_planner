@@ -13,6 +13,7 @@ gunicorn = "*"
 qrcode = "*"
 django-qr-code = "*"
 xhtml2pdf = "*"
+pytest-django = "*"
 
 [dev-packages]
 flake8 = "*"
