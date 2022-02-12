@@ -11,7 +11,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['hlystovea.ru', 'www.hlystovea.ru']
+ALLOWED_HOSTS = ['nginx', 'hlystovea.ru', 'www.hlystovea.ru']
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
