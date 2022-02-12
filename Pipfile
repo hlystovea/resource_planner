@@ -14,6 +14,8 @@ qrcode = "*"
 django-qr-code = "*"
 xhtml2pdf = "*"
 pytest-django = "*"
+django-extensions = "*"
+werkzeug = "*"
 
 [dev-packages]
 flake8 = "*"
