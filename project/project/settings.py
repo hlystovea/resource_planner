@@ -11,7 +11,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'web:8000']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'hlystovea.ru']
 
 
 # Application definition
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'qr_code',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
