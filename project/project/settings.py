@@ -11,7 +11,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'hlystovea.ru']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'backend']
 
 
 # Application definition
