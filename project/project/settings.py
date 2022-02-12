@@ -16,8 +16,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'hlystovea.ru', 'www.hlystovea.ru']
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 # SECURE_SSL_REDIRECT = True
-CSRF_COOKIE_DOMAIN = ['https://hlystovea.ru', 'https://www.hlystovea.ru']
-CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
