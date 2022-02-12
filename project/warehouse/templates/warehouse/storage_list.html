@@ -1,0 +1,17 @@
+{% block content %}
+<body>
+    <br>
+        <h3>Список мест хранения</h3>
+        <table border="1">
+            <tr>
+                <th width=400>Наименование</th>
+            </tr>
+            {% for s in storage_list %}
+            <tr>
+                <td>{{ s.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    <br>
+</body>
+{% endblock %}

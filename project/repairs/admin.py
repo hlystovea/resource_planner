@@ -6,9 +6,8 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import (Connection, Defect, Facility, Hardware, InstrumentSheet,
-                     MaterialSheet, Operation, OperationSheet, Repair, Sheet,
-                     TypeRepair)
+from .models import (Defect, InstrumentSheet, MaterialSheet, Operation,
+                     OperationSheet, Repair, Sheet, TypeRepair)
 
 
 class MixinAdmin(admin.ModelAdmin):
@@ -75,26 +74,6 @@ class DefectYearFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Hardware)
-class HardwareAdmin(MixinAdmin):
-    list_display = ('id', 'facility', 'connection', 'name',
-                    'inventory_number', 'count_defects')
-    search_fields = ('name', 'inventory_number')
-    list_filter = ('facility', 'connection', )
-
-    @admin.display(description=_('Кол-во дефектов'))
-    def count_defects(self, obj):
-        count = obj.defects.count()
-        url = (
-            reverse('admin:repairs_defect_changelist')
-            + '?'
-            + urlencode({'hardware__id': f'{obj.id}'})
-        )
-        return format_html(
-            '<a href="{}">{}</a>', url, count
-        )
-
-
 @admin.register(Operation)
 class OperationAdmin(MixinAdmin):
     list_display = ('id', 'name', 'man_hours')
@@ -103,16 +82,6 @@ class OperationAdmin(MixinAdmin):
 
 @admin.register(TypeRepair)
 class TypeRepairAdmin(MixinAdmin):
-    pass
-
-
-@admin.register(Connection)
-class ConnectionAdmin(MixinAdmin):
-    pass
-
-
-@admin.register(Facility)
-class FacilityAdmin(MixinAdmin):
     pass
 
 

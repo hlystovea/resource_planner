@@ -13,10 +13,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1', 'hlystovea.ru', 'www.hlystovea.ru']
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-# SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -24,6 +20,7 @@ INSTALLED_APPS = [
     'staff.apps.StaffConfig',
     'warehouse.apps.WarehouseConfig',
     'repairs.apps.RepairsConfig',
+    'hardware.apps.HardwareConfig',
     'shortener.apps.ShortenerConfig',
     'django.contrib.admin',
     'django.contrib.auth',

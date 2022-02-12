@@ -88,6 +88,6 @@ class StorageAdmin(MixinAdmin):
     @admin.display(description=_('QR-код'))
     def qr_code_link(self, obj):
         url = (
-            reverse('warehouse:storage-qr', kwargs={'storage_id': obj.id})
+            reverse('warehouse:storage-qrcode', kwargs={'pk': obj.id})
         )
         return format_html('<a href={}>открыть</a>', url)
