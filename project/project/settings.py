@@ -11,7 +11,11 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'backend']
+ALLOWED_HOSTS = ['hlystovea.ru', 'www.hlystovea.ru']
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
 
 # Application definition
