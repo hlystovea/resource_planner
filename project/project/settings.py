@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'repairs.apps.RepairsConfig',
     'hardware.apps.HardwareConfig',
     'shortener.apps.ShortenerConfig',
+    'send_email.apps.SendEmailConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
