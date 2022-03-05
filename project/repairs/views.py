@@ -4,10 +4,12 @@ from django.template.loader import get_template
 from django.views.generic import View
 
 from repairs.models import Repair
-from utils.html_to_pdf import render_to_pdf
+# from utils.html_to_pdf import render_to_pdf
 
 
 class GeneratePdf(View):
+    pass
+    '''
     def get(self, request, repair_id):
         repair = get_object_or_404(Repair, id=repair_id)
         context = {
@@ -17,3 +19,4 @@ class GeneratePdf(View):
         html = template.render(context)
         pdf = render_to_pdf(html)
         return HttpResponse(pdf.getvalue(), content_type='application/pdf')
+    '''

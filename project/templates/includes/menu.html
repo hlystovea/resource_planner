@@ -1,0 +1,11 @@
+{% if user.is_authenticated %} 
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link {% if not follow %}active{% endif %}" href="{% url 'warehouse:storage-list' %}">
+                Склад
+            </a>
+        </li>
+    </ul>
+</div>
+{% endif %}

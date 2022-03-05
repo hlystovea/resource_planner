@@ -19,18 +19,20 @@ CSRF_TRUSTED_ORIGINS = ['https://hlystovea.ru', 'https://www.hlystovea.ru']
 # Application definition
 
 INSTALLED_APPS = [
-    'staff.apps.StaffConfig',
-    'warehouse.apps.WarehouseConfig',
-    'repairs.apps.RepairsConfig',
-    'hardware.apps.HardwareConfig',
-    'shortener.apps.ShortenerConfig',
-    'send_email.apps.SendEmailConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'sorl.thumbnail',
+    'staff.apps.StaffConfig',
+    'warehouse.apps.WarehouseConfig',
+    'repairs.apps.RepairsConfig',
+    'hardware.apps.HardwareConfig',
+    'shortener.apps.ShortenerConfig',
+    'send_email.apps.SendEmailConfig',
     'qr_code',
 ]
 
@@ -53,7 +55,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,7 +112,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

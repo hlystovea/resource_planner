@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'warehouse:material-list' %}">Материалы</a></li>
+      <li class="breadcrumb-item" aria-current="page">{{ material.name }}</a></li>
+    </ol>
+  </nav>
+  <div class="card mb-3 mt-1 shadow-sm">
+    <div class="row">
+      <div class="col-2">
+        <!-- Отображение картинки -->
+        {% load thumbnail %}
+        {% thumbnail material.image "200x200" crop="center" upscale=True as im %}
+        <img class="img-fluid" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ material.name }}"/>
+        {% endthumbnail %}
+      </div>
+      <div class="col">
+        <!-- Отображение текста -->
+        <div class="card-body">
+          <p class="card-text">
+            Наименование: {{ material.name }}<br>
+            Артикул: {% if material.article_number %}{{ material.article_number }}{% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if storage_list %}
+    <h4>Места хранения</h4>
+    <table class="table table-hover">
+      <thead class="table">
+        <tr>
+          <th scope="col">Расположение</th>
+          <th scope="col">Количество</th>
+          <th scope="col">Подразделение</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in storage_list %}
+          <tr>
+            <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.storage.name }}</a></td>
+            <td>{{ s.amount }} {{ s.material.measurement_unit }}</td>
+            <td>{{ s.owner }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br>
+    <br>
+  {% endif %}
+  {% include "includes/back.html" %}
+{% endblock %}
