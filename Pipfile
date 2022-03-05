@@ -16,6 +16,8 @@ xhtml2pdf = "*"
 pytest-django = "*"
 django-extensions = "*"
 werkzeug = "*"
+django-filter = "*"
+sorl-thumbnail = "*"
 
 [dev-packages]
 flake8 = "*"

@@ -4,28 +4,26 @@
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Места хранения</li>
+      <li class="breadcrumb-item">Материалы</li>
     </ol>
   </nav>
   <figure class="text-center">
-    <h3>Места хранения</h3>
+    <h3>Материалы</h3>
   </figure>
   <table class="table table-hover">
     <thead class="table">
       <tr>
         <th scope="col">Наименование</th>
         <th scope="col">Расположение</th>
-        <th scope="col">Материалы</th>
-        <th scope="col">QR-code</th>
+        <th scope="col">Количество</th>
       </tr>
     </thead>
     <tbody>
-      {% for s in storage_list %}
+      {% for m in materialstorage_list %}
         <tr>
-          <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
-          <td>{% if s.parent_storage %}<a href="{% url 'warehouse:storage-detail' s.parent_storage.id %}">{{ s.parent_storage }}</a>{% else %}-{% endif %}</td>
-          <td><a href="{% url 'warehouse:material-list' %}?storage={{ s.id }}">{{ s.materials_count }} поз.</a></td>
-          <td><a href="{% url 'warehouse:storage-qrcode' s.id %}">открыть</a></td>
+          <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
+          <td>{% if m.storage %}<a href={% url 'warehouse:storage-detail' m.storage.id %}>{{ m.storage }}</a>{% else %}-{% endif %}</td>
+          <td>{{ m.amount }} {{ m.material.measurement_unit}}</td>
         </tr>
       {% endfor %}
     </tbody>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item">Инструменты</li>
+    </ol>
+  </nav>
+  <figure class="text-center">
+      <h3>Инструменты/Приборы</h3>
+  </figure>
+  <table class="table table-hover">
+    <thead class="table">
+      <tr>
+        <th scope="col">Наименование</th>
+        <th scope="col">Инв. номер</th>
+        <th scope="col">Зав. номер</th>
+        <th scope="col">Подразделение</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in instrument_list %}
+        <tr>
+          <td><a href={% url 'warehouse:instrument-detail' i.id %}>{{ i.name }}</a></td>
+          <td>{% if i.inventory_number %}{{ i.inventory_number }}{% else %}-{% endif %}</td>
+          <td>{% if i.serial_number %}{{ i.serial_number }}{% else %}-{% endif %}</td>
+          <td>{% if i.owner %}{{ i.owner }}{% else %}-{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}
+    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
+  {% endif %}
+{% endblock %}

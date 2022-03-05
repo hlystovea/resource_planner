@@ -1,17 +1,18 @@
-from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.models import Storage
+from warehouse.models import Instrument, Material, MaterialStorage, Storage
 
 
 def get_url(request, storage: Storage) -> str:
     return request.build_absolute_uri(
-            reverse('admin:warehouse_materialstorage_changelist')
+            reverse('warehouse:material-list')
             + '?'
-            + urlencode({'storage__id': f'{storage.id}'})
+            + urlencode({'storage': f'{storage.id}'})
         )
 
 
@@ -21,7 +22,9 @@ def qrcode_view(request, pk):
     if storage.materials.count():
         materials_url = get_url(request, storage)
     internal_storage_urls = [
-        [s.name, get_url(request, s)] for s in storage.storage.all() if s.materials.count()  # noqa (E501)
+        [s.name, get_url(request, s)]
+        for s in storage.storage.all()
+        if s.materials.count()
     ]
     qr_options = QRCodeOptions(size='t', border=6, error_correction='L')
     context = {
@@ -33,27 +36,66 @@ def qrcode_view(request, pk):
     return render(request, 'warehouse/storage-qrcode.html', context)
 
 
-def storage_view_list(request):
-    storages = get_list_or_404(
-        Storage.objects.all()
-    )
-    context = {
-        'storages': storages,
-    }
-    return render(request, 'warehouse/storage_list.html', context)
-
-
-def storage_view_detail(request, storage_id):
-    storage = get_object_or_404(Storage, id=storage_id)
-    context = {
-        'storage': storage,
-    }
-    return render(request, 'warehouse/storage_list.html', context)
-
-
-class StorageDetailView(DetailView):
+class StorageDetail(DetailView):
     model = Storage
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['storage_list'] = self.get_object().storage.annotate(
+            materials_count=Count('materials')).all()
+        context['material_list'] = self.get_object().materials.all()
+        return context
 
-class StorageListView(ListView):
+
+class StorageList(ListView):
+    paginate_by = 20
     model = Storage
+
+    def get_queryset(self):
+        queryset = Storage.objects.annotate(
+            materials_count=Count('materials')
+        ).order_by(
+            'name'
+        )
+        parent_storage = self.request.GET.get('parent_storage')
+        if parent_storage and parent_storage.isdigit():
+            queryset = queryset.filter(parent_storage=parent_storage)
+        return queryset
+
+
+class MaterialList(ListView):
+    paginate_by = 20
+    model = MaterialStorage
+    template_name = 'warehouse/material_list.html'
+
+    def get_queryset(self):
+        queryset = MaterialStorage.objects.all()
+        storage = self.request.GET.get('storage')
+        if storage and storage.isdigit():
+            queryset = queryset.filter(storage=storage)
+        return queryset
+
+
+class MaterialDetail(DetailView):
+    model = Material
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['storage_list'] = self.get_object().amount.all()
+        return context
+
+
+class InstrumentList(ListView):
+    paginate_by = 20
+    model = Instrument
+
+    def get_queryset(self):
+        queryset = Instrument.objects.all()
+        owner = self.request.GET.get('owner')
+        if owner and owner.isdigit():
+            queryset = queryset.filter(owner=owner)
+        return queryset
+
+
+class InstrumentDetail(DetailView):
+    model = Instrument

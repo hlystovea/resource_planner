@@ -1,15 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
 {% block content %}
-<body>
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
+      <li class="breadcrumb-item" aria-current="page">{{ storage.name }}</a></li>
+    </ol>
+  </nav>
+  <figure class="text-center">
+    <h3>{{ storage.name }}</h3>
+  </figure>
+  {% if storage_list %}
+    <h4>Места хранения</h4>
+    <table class="table table-hover">
+      <thead class="table">
+        <tr>
+          <th scope="col">Наименование</th>
+          <th scope="col">Материалы</th>
+          <th scope="col">QR-code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in storage_list %}
+          <tr>
+            <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
+            <td><a href="{% url 'warehouse:material-list' %}?storage={{ s.id }}">{{ s.materials_count }} поз.</a></td>
+            <td><a href="{% url 'warehouse:storage-qrcode' s.id %}">открыть</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
     <br>
-        <h3>Место хранения</h3>
-        <table border="1">
-            <tr>
-                <th width=400>Наименование</th>
-            </tr>
-            <tr>
-                <td>{{ storage.name }}</td>
-            </tr>
-        </table>
     <br>
-</body>
+  {% endif %}
+  {% if material_list %}
+    <h4>Материалы</h4>
+    <table class="table table-hover">
+      <thead class="table">
+        <tr>
+          <th scope="col">Наименование</th>
+          <th scope="col">Инв. номер</th>
+          <th scope="col">Количество</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in material_list %}
+          <tr>
+            <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
+            <td>{% if m.invetory_number %}{{ m.invetory_number }}</a>{% else %}-{% endif %}</td>
+            <td>{{ m.amount }} {{ m.material.measurement_unit}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}   
+  {% include "includes/back.html" %}
 {% endblock %}
