@@ -5,31 +5,20 @@
       <span class="navbar-toggler-icon"></span>
     </button>
       <div class="collapse navbar-collapse" id='navbarCollapse'>
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle
-            {% if 'warehouse' in request.resolver_match.view_name %}
-            active
-            {% endif %}"
-            href="{% url 'warehouse:storage-list' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Склад
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
-            <li><a class="dropdown-item" href="{% url 'warehouse:material-list' %}">Материалы</a></li>
-            <li><a class="dropdown-item" href="{% url 'warehouse:instrument-list' %}">Инструменты</a></li>
-          </ul>
-        </li>
-      </ul> 
-      <ul class="navbar-nav">
-        {% if user.is_authenticated %}
-        <span class="navbar-text">Пользователь: <span style="color:#eee;">{{ user.username }}</span></span>
-        <li class="nav-item"><a class="nav-link" href="{% url 'password_change' %}"> Изменить пароль</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> Выйти</a></li>
-        {% else %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"> Войти</a></li>
-        {% endif %}
-      </ul>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link {% if storage_list %}active{% endif %}" href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
+          <li class="nav-item"><a class="nav-link {% if material_list %}active{% endif %}" href="{% url 'warehouse:material-list' %}">Материалы</a></li>
+          <li class="nav-item"><a class="nav-link {% if instrument_list %}active{% endif %}" href="{% url 'warehouse:instrument-list' %}">Инструменты</a></li>
+        </ul> 
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+            <span class="navbar-text">Пользователь: <span style="color:#eee;">{{ user.username }}</span></span>
+            <li class="nav-item"><a class="nav-link" href="{% url 'password_change' %}"> Изменить пароль</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> Выйти</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"> Войти</a></li>
+          {% endif %}
+        </ul>
       </div>
   </div>
   </nav>
