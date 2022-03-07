@@ -13,7 +13,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://hlystovea.ru', 'https://www.hlystovea.ru']
+CSRF_TRUSTED_ORIGINS = ['https://planner.hlystovea.ru']
 
 
 # Application definition
