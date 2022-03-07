@@ -14,17 +14,23 @@
         <!-- Отображение картинки -->
         {% load thumbnail %}
         {% thumbnail instrument.image "200x200" crop="center" upscale=True as im %}
-        <img class="img-fluid" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ material.name }}"/>
+          <img class="img-fluid m-1" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ material.name }}"/>
         {% endthumbnail %}
       </div>
       <div class="col">
         <!-- Отображение текста -->
         <div class="card-body">
-          <p class="card-text">
-            Наименование: {{ instrument.name }}<br>
-            Инв. номер: {{ instrument.inventory_number }}<br>
-            Зав. номер: {{ instrument.serial_number }}<br>
-            Подразделение: {{ instrument.owner }}
+          <p class="h5 mb-3">{{ instrument.name }}</p>
+          <p class="h6">
+            <p class="mb-1">
+              <span class="text-muted">Инв. номер:</span> {% if instrument.inventory_number %}{{ instrument.inventory_number }}{% endif %}
+            </p>
+            <p class="mb-1">
+              <span class="text-muted">Зав. номер:</span> {% if instrument.serial_number %}{{ instrument.serial_number }}{% endif %}
+            </p>
+            <p class="mb-1">
+              <span class="text-muted">Подразделение:</span> {% if instrument.owner %}{{ instrument.owner }}{% endif %}
+            </p>
           </p>
         </div>
       </div>
