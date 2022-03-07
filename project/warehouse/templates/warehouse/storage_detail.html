@@ -19,10 +19,10 @@
               <span class="text-muted">Расположение:</span> {% if storage.parent_storage %}{{ storage.parent_storage }}{% endif %}
             </p>
             <p class="mb-1">
-              <span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage_count }}
+              <span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage.count }}
             </p>
             <p class="mb-1">
-              <span class="text-muted">Кол-во материалов:</span> {{ storage.materials_count }}
+              <span class="text-muted">Кол-во материалов:</span> {{ storage.materials.count }}
             </p>
             <p class="mb-1">
               <span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}">открыть</a>

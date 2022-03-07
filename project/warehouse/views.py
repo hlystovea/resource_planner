@@ -50,9 +50,6 @@ class StorageDetail(DetailView):
         ).prefetch_related(
             Prefetch('storage', queryset=storage),
             Prefetch('materials', queryset=materials),
-        ).annotate(
-            materials_count=Count('materials'),
-            storage_count=Count('storage'),
         )
 
 
