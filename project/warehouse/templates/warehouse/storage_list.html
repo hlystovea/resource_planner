@@ -24,7 +24,7 @@
         <tr>
           <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
           <td>{% if s.parent_storage %}<a href="{% url 'warehouse:storage-detail' s.parent_storage.id %}">{{ s.parent_storage }}</a>{% else %}-{% endif %}</td>
-          <td><a href="{% url 'warehouse:material-list' %}?storage={{ s.id }}">{{ s.materials_count }} поз.</a></td>
+          <td>{{ s.materials_count }} поз.</td>
           <td><a href="{% url 'warehouse:storage-qrcode' s.id %}">открыть</a></td>
         </tr>
       {% endfor %}

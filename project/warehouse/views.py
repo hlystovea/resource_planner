@@ -1,11 +1,11 @@
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Prefetch
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.models import Instrument, Material, Storage
+from warehouse.models import Instrument, Material, MaterialStorage, Storage
 
 
 def get_url(request, storage: Storage) -> str:
@@ -39,12 +39,21 @@ def qrcode_view(request, pk):
 class StorageDetail(DetailView):
     model = Storage
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['storage_list'] = self.get_object().storage.annotate(
-            materials_count=Count('materials')).all()
-        context['material_list'] = self.get_object().materials.all()
-        return context
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        materials = MaterialStorage.objects.select_related('material')
+        storage = Storage.objects.annotate(
+            materials_count=Count('materials')
+        ).all()
+        return queryset.select_related(
+            'parent_storage'
+        ).prefetch_related(
+            Prefetch('storage', queryset=storage),
+            Prefetch('materials', queryset=materials),
+        ).annotate(
+            materials_count=Count('materials'),
+            storage_count=Count('storage'),
+        )
 
 
 class StorageList(ListView):
@@ -52,15 +61,12 @@ class StorageList(ListView):
     model = Storage
 
     def get_queryset(self):
-        queryset = Storage.objects.annotate(
+        queryset = super().get_queryset()
+        return queryset.select_related(
+            'parent_storage'
+        ).annotate(
             materials_count=Count('materials')
-        ).order_by(
-            'name'
-        )
-        parent_storage = self.request.GET.get('parent_storage')
-        if parent_storage and parent_storage.isdigit():
-            queryset = queryset.filter(parent_storage=parent_storage)
-        return queryset
+        ).order_by('name')
 
 
 class MaterialList(ListView):
@@ -69,21 +75,21 @@ class MaterialList(ListView):
     template_name = 'warehouse/material_list.html'
 
     def get_queryset(self):
-        queryset = Material.objects.annotate(
-            total=Sum('amount__amount')).all()
-        storage = self.request.GET.get('storage')
-        if storage and storage.isdigit():
-            queryset = queryset.filter(amount__storage=storage)
-        return queryset
+        return Material.objects.annotate(
+            total=Sum('amount__amount')
+        ).order_by('name')
 
 
 class MaterialDetail(DetailView):
     model = Material
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['storage_list'] = self.get_object().amount.all()
-        return context
+    def get_queryset(self):
+        amount = MaterialStorage.objects.select_related('storage', 'owner')
+        return Material.objects.annotate(
+            total=Sum('amount__amount')
+        ).prefetch_related(
+            Prefetch('amount', queryset=amount)
+        )
 
 
 class InstrumentList(ListView):
@@ -91,7 +97,9 @@ class InstrumentList(ListView):
     model = Instrument
 
     def get_queryset(self):
-        queryset = Instrument.objects.all()
+        queryset = super().get_queryset().select_related(
+            'owner'
+        ).order_by('name')
         owner = self.request.GET.get('owner')
         if owner and owner.isdigit():
             queryset = queryset.filter(owner=owner)
@@ -100,3 +108,6 @@ class InstrumentList(ListView):
 
 class InstrumentDetail(DetailView):
     model = Instrument
+
+    def get_queryset(self):
+        return super().get_queryset().select_related('owner')

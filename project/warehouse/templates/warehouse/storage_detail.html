@@ -8,10 +8,31 @@
       <li class="breadcrumb-item" aria-current="page">{{ storage.name }}</a></li>
     </ol>
   </nav>
-  <figure class="text-center">
-    <h3>{{ storage.name }}</h3>
-  </figure>
-  {% if storage_list %}
+  <div class="card mb-3 mt-1 shadow-sm">
+    <div class="row">
+      <div class="col">
+        <!-- Отображение текста -->
+        <div class="card-body">
+          <p class="h5 mb-3">{{ storage.name }}</p>
+          <p class="h6">
+            <p class="mb-1">
+              <span class="text-muted">Расположение:</span> {% if storage.parent_storage %}{{ storage.parent_storage }}{% endif %}
+            </p>
+            <p class="mb-1">
+              <span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage_count }}
+            </p>
+            <p class="mb-1">
+              <span class="text-muted">Кол-во материалов:</span> {{ storage.materials_count }}
+            </p>
+            <p class="mb-1">
+              <span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}">открыть</a>
+            </p>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if storage.storage %}
     <h4>Места хранения</h4>
     <table class="table table-hover">
       <thead class="table">
@@ -22,10 +43,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for s in storage_list %}
+        {% for s in storage.storage.all %}
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
-            <td><a href="{% url 'warehouse:material-list' %}?storage={{ s.id }}">{{ s.materials_count }} поз.</a></td>
+            <td>{{ s.materials_count }} поз.</td>
             <td><a href="{% url 'warehouse:storage-qrcode' s.id %}">открыть</a></td>
           </tr>
         {% endfor %}
@@ -34,7 +55,7 @@
     <br>
     <br>
   {% endif %}
-  {% if material_list %}
+  {% if storage.materials.all %}
     <h4>Материалы</h4>
     <table class="table table-hover">
       <thead class="table">
@@ -46,7 +67,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for m in material_list %}
+        {% for m in storage.materials.all %}
           <tr>
             <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
             <td>{% if m.material.article_number %}{{ m.material.article_number }}{% else %}-{% endif %}</td>

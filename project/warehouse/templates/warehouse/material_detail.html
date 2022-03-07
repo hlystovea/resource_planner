@@ -30,7 +30,7 @@
       </div>
     </div>
   </div>
-  {% if storage_list %}
+  {% if material.amount.all %}
     <h4>Места хранения</h4>
     <table class="table table-hover">
       <thead class="table">
@@ -41,7 +41,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for s in storage_list %}
+        {% for s in material.amount.all %}
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' s.storage.id %}">{{ s.storage.name }}</a></td>
             <td>{{ s.amount }} {{ s.material.measurement_unit }}</td>
