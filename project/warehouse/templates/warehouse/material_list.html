@@ -14,16 +14,16 @@
     <thead class="table">
       <tr>
         <th scope="col">Наименование</th>
-        <th scope="col">Расположение</th>
+        <th scope="col">Артикул</th>
         <th scope="col">Количество</th>
       </tr>
     </thead>
     <tbody>
-      {% for m in materialstorage_list %}
+      {% for m in material_list %}
         <tr>
-          <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
-          <td>{% if m.storage %}<a href={% url 'warehouse:storage-detail' m.storage.id %}>{{ m.storage }}</a>{% else %}-{% endif %}</td>
-          <td>{{ m.amount }} {{ m.material.measurement_unit}}</td>
+          <td><a href={% url 'warehouse:material-detail' m.id %}>{{ m.name }}</a></td>
+          <td>{% if m.article_number %}{{ m.article_number }}{% else %}-{% endif %}</td>
+          <td>{{ m.total }} {{ m.measurement_unit}}</td>
         </tr>
       {% endfor %}
     </tbody>

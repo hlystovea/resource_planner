@@ -1,11 +1,11 @@
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.models import Instrument, Material, MaterialStorage, Storage
+from warehouse.models import Instrument, Material, Storage
 
 
 def get_url(request, storage: Storage) -> str:
@@ -65,14 +65,15 @@ class StorageList(ListView):
 
 class MaterialList(ListView):
     paginate_by = 20
-    model = MaterialStorage
+    model = Material
     template_name = 'warehouse/material_list.html'
 
     def get_queryset(self):
-        queryset = MaterialStorage.objects.all()
+        queryset = Material.objects.annotate(
+            total=Sum('amount__amount')).all()
         storage = self.request.GET.get('storage')
         if storage and storage.isdigit():
-            queryset = queryset.filter(storage=storage)
+            queryset = queryset.filter(amount__storage=storage)
         return queryset
 
 
