@@ -40,6 +40,7 @@
       <thead class="table">
         <tr>
           <th scope="col">Наименование</th>
+          <th scope="col">Артикул</th>
           <th scope="col">Инв. номер</th>
           <th scope="col">Количество</th>
         </tr>
@@ -48,6 +49,7 @@
         {% for m in material_list %}
           <tr>
             <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
+            <td>{% if m.material.article_number %}{{ m.material.article_number }}{% else %}-{% endif %}</td>
             <td>{% if m.invetory_number %}{{ m.invetory_number }}</a>{% else %}-{% endif %}</td>
             <td>{{ m.amount }} {{ m.material.measurement_unit}}</td>
           </tr>

@@ -41,7 +41,7 @@
       <tbody>
         {% for s in storage_list %}
           <tr>
-            <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.storage.name }}</a></td>
+            <td><a href="{% url 'warehouse:storage-detail' s.storage.id %}">{{ s.storage.name }}</a></td>
             <td>{{ s.amount }} {{ s.material.measurement_unit }}</td>
             <td>{{ s.owner }}</td>
           </tr>
