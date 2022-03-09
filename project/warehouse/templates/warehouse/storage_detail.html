@@ -25,7 +25,7 @@
               <span class="text-muted">Кол-во материалов:</span> {{ storage.materials.count }}
             </p>
             <p class="mb-1">
-              <span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}">открыть</a>
+              <span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}" target="_blank">открыть</a>
             </p>
           </p>
         </div>

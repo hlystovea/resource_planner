@@ -1,7 +1,6 @@
 from django.db.models import Count, Sum, Prefetch
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.utils.http import urlencode
 from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
@@ -10,9 +9,7 @@ from warehouse.models import Instrument, Material, MaterialStorage, Storage
 
 def get_url(request, storage: Storage) -> str:
     return request.build_absolute_uri(
-            reverse('warehouse:material-list')
-            + '?'
-            + urlencode({'storage': f'{storage.id}'})
+            reverse('warehouse:storage-detail', kwargs={'pk': storage.id})
         )
 
 
@@ -42,9 +39,7 @@ class StorageDetail(DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         materials = MaterialStorage.objects.select_related('material')
-        storage = Storage.objects.annotate(
-            materials_count=Count('materials')
-        ).all()
+        storage = Storage.objects.annotate(materials_count=Count('materials'))
         return queryset.select_related(
             'parent_storage'
         ).prefetch_related(
@@ -56,6 +51,7 @@ class StorageDetail(DetailView):
 class StorageList(ListView):
     paginate_by = 20
     model = Storage
+    ordering = ['name']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -63,18 +59,17 @@ class StorageList(ListView):
             'parent_storage'
         ).annotate(
             materials_count=Count('materials')
-        ).order_by('name')
+        )
 
 
 class MaterialList(ListView):
     paginate_by = 20
     model = Material
     template_name = 'warehouse/material_list.html'
+    ordering = ['name']
 
     def get_queryset(self):
-        return Material.objects.annotate(
-            total=Sum('amount__amount')
-        ).order_by('name')
+        return Material.objects.annotate(total=Sum('amount__amount'))
 
 
 class MaterialDetail(DetailView):
@@ -92,11 +87,10 @@ class MaterialDetail(DetailView):
 class InstrumentList(ListView):
     paginate_by = 20
     model = Instrument
+    ordering = ['name']
 
     def get_queryset(self):
-        queryset = super().get_queryset().select_related(
-            'owner'
-        ).order_by('name')
+        queryset = super().get_queryset().select_related('owner')
         owner = self.request.GET.get('owner')
         if owner and owner.isdigit():
             queryset = queryset.filter(owner=owner)
