@@ -25,6 +25,9 @@
             <p class="mb-1">
               <span class="text-muted">Артикул:</span> {% if material.article_number %}{{ material.article_number }}{% endif %}
             </p>
+            <p class="mb-1">
+              <span class="text-muted">Общее кол-во:</span> {{ material.total }} {{ material.measurement_unit }}
+            </p>
           </p>
         </div>
       </div>
@@ -41,11 +44,11 @@
         </tr>
       </thead>
       <tbody>
-        {% for s in material.amount.all %}
+        {% for m in material.amount.all %}
           <tr>
-            <td><a href="{% url 'warehouse:storage-detail' s.storage.id %}">{{ s.storage.name }}</a></td>
-            <td>{{ s.amount }} {{ s.material.measurement_unit }}</td>
-            <td>{{ s.owner }}</td>
+            <td><a href="{% url 'warehouse:storage-detail' m.storage.id %}">{{ m.storage.name }}</a></td>
+            <td>{{ m.amount }} {{ m.material.measurement_unit }}</td>
+            <td>{% if m.owner %}{{ m.owner }}{% else %}-{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
