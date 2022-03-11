@@ -21,6 +21,7 @@ sorl-thumbnail = "*"
 
 [dev-packages]
 flake8 = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.9"
