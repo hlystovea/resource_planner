@@ -51,7 +51,6 @@ class StorageDetail(DetailView):
 class StorageList(ListView):
     paginate_by = 20
     model = Storage
-    ordering = ['name']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -59,17 +58,18 @@ class StorageList(ListView):
             'parent_storage'
         ).annotate(
             materials_count=Count('materials')
-        )
+        ).order_by('name')
 
 
 class MaterialList(ListView):
-    paginate_by = 20
+    paginate_by = 4
     model = Material
     template_name = 'warehouse/material_list.html'
-    ordering = ['name']
 
     def get_queryset(self):
-        return Material.objects.annotate(total=Sum('amount__amount'))
+        return Material.objects.annotate(
+            total=Sum('amount__amount')
+        ).order_by('name')
 
 
 class MaterialDetail(DetailView):
