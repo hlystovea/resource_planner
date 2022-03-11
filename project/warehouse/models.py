@@ -85,10 +85,8 @@ class MaterialStorage(models.Model):
     storage = models.ForeignKey(
         to=Storage,
         verbose_name=_('Место хранения'),
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='materials',
-        blank=True,
-        null=True,
     )
 
     class Meta:
