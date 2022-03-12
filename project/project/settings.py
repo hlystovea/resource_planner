@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'repairs.apps.RepairsConfig',
     'hardware.apps.HardwareConfig',
     'shortener.apps.ShortenerConfig',
-    'send_email.apps.SendEmailConfig',
     'qr_code',
 ]
 

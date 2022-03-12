@@ -10,8 +10,8 @@ from warehouse.forms import DeptForm
 
 def get_url(request, storage: Storage) -> str:
     return request.build_absolute_uri(
-            reverse('warehouse:storage-detail', kwargs={'pk': storage.id})
-        )
+        reverse('warehouse:storage-detail', kwargs={'pk': storage.id})
+    )
 
 
 def qrcode_view(request, pk):
