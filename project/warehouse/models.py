@@ -71,13 +71,13 @@ class MaterialStorage(models.Model):
         blank=True,
         null=True,
     )
-    amount = models.PositiveSmallIntegerField(
+    amount = models.FloatField(
         verbose_name=_('Количество'),
     )
     owner = models.ForeignKey(
         to='staff.Dept',
         verbose_name=_('Подразделение'),
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='materials',
         blank=True,
         null=True,

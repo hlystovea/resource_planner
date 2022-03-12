@@ -7,6 +7,7 @@
       <li class="breadcrumb-item">Материалы</li>
     </ol>
   </nav>
+  {% include "includes/select_owner.html" %}
   <figure class="text-center">
     <h3>Материалы</h3>
   </figure>
@@ -22,8 +23,8 @@
       {% for m in material_list %}
         <tr>
           <td><a href={% url 'warehouse:material-detail' m.id %}>{{ m.name }}</a></td>
-          <td>{% if m.article_number %}{{ m.article_number }}{% else %}-{% endif %}</td>
-          <td>{{ m.total }} {{ m.measurement_unit}}</td>
+          <td>{{ m.article_number|default:"-" }}</td>
+          <td>{{ m.total|floatformat }} {{ m.measurement_unit}}</td>
         </tr>
       {% endfor %}
     </tbody>

@@ -15,18 +15,10 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ storage.name }}</p>
           <p class="h6">
-            <p class="mb-1">
-              <span class="text-muted">Расположение:</span> {% if storage.parent_storage %}{{ storage.parent_storage }}{% endif %}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage.count }}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">Кол-во материалов:</span> {{ storage.materials.count }}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}" target="_blank">открыть</a>
-            </p>
+            <p class="mb-1"><span class="text-muted">Расположение:</span> {{ storage.parent_storage|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage.count }}</p>
+            <p class="mb-1"><span class="text-muted">Кол-во материалов:</span> {{ storage.materials.count }}</p>
+            <p class="mb-1"><span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}" target="_blank">открыть</a></p>
           </p>
         </div>
       </div>
@@ -70,9 +62,9 @@
         {% for m in storage.materials.all %}
           <tr>
             <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
-            <td>{% if m.material.article_number %}{{ m.material.article_number }}{% else %}-{% endif %}</td>
-            <td>{% if m.invetory_number %}{{ m.invetory_number }}</a>{% else %}-{% endif %}</td>
-            <td>{{ m.amount }} {{ m.material.measurement_unit}}</td>
+            <td>{{ m.material.article_number|default:"-" }}</td>
+            <td>{{ m.invetory_number|default:"-" }}</td>
+            <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
           </tr>
         {% endfor %}
       </tbody>

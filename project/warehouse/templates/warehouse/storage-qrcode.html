@@ -1,44 +1,43 @@
 {% load qr_code %}
 {% block content %}
 <body>
+  <br>
+  {% if materials_url %}
+    <table border="1">
+      <tr>
+        <th width=400>Наименование</th>
+        <th>QR-код</th>
+      </tr>
+      <tr>
+        <td>{{ storage.name }}</td>
+        <td>{% qr_from_text materials_url options=qr_options %}</td>
+      </tr>
+    </table>
     <br>
-    {% if materials_url %}
-        <h3>Содержимое места хранения</h3>
-        <table border="1">
-            <tr>
-                <th width=400>Наименование</th>
-                <th>QR-код</th>
-            </tr>
-            <tr>
-                <td>{{ storage.name }}</td>
-                <td>{% qr_from_text materials_url options=qr_options %}</td>
-            </tr>
-        </table>
+  {% endif %}
+  {% if internal_storage_urls %}
     <br>
-    {% endif %}
-    {% if internal_storage_urls %}
+    <h3>Вложенные места хранения</h3>
+    <table border="1">
+      <tr>
+        <th width=400>Наименование</th>
+        <th>QR-код</th>
+      </tr>
+      {% for s in internal_storage_urls %}
+        <tr>
+          <td>{{ s.0 }}</td>
+          {% with url=s.1 %}
+            <td>{% qr_from_text url options=qr_options %}</td>
+          {% endwith %}
+        </tr>
+      {% endfor %}
+    </table>
     <br>
-        <h3>Содержимое вложенных мест хранения</h3>
-        <table border="1">
-            <tr>
-                <th width=400>Наименование</th>
-                <th>QR-код</th>
-            </tr>
-            {% for s in internal_storage_urls %}
-            <tr>
-                <td>{{ s.0 }}</td>
-                {% with url=s.1 %}
-                <td>{% qr_from_text url options=qr_options %}</td>
-                {% endwith %}
-            </tr>
-            {% endfor %}
-        </table>
-    <br>
-    {% endif %}
-    {% if materials_url or internal_storage_urls %}
-        <a class ="print-doc" href="javascript:(print());">Распечатать</a>
-    {% else %}
-        {{ storage.name }} не содержит материалов
-    {% endif %}
+  {% endif %}
+  {% if materials_url or internal_storage_urls %}
+    <a class ="print-doc" href="javascript:(print());">Распечатать</a>
+  {% else %}
+    {{ storage.name }} не содержит материалов
+  {% endif %}
 </body>
 {% endblock %}

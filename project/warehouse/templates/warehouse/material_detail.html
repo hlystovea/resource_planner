@@ -23,10 +23,10 @@
           <p class="h5 mb-3">{{ material.name }}</p>
           <p class="h6">
             <p class="mb-1">
-              <span class="text-muted">Артикул:</span> {% if material.article_number %}{{ material.article_number }}{% endif %}
+              <span class="text-muted">Артикул:</span> {{ material.article_number|default:"" }}
             </p>
             <p class="mb-1">
-              <span class="text-muted">Общее кол-во:</span> {{ material.total }} {{ material.measurement_unit }}
+              <span class="text-muted">Общее кол-во:</span> {{ material.total|floatformat }} {{ material.measurement_unit }}
             </p>
           </p>
         </div>
@@ -47,8 +47,8 @@
         {% for m in material.amount.all %}
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' m.storage.id %}">{{ m.storage.name }}</a></td>
-            <td>{{ m.amount }} {{ m.material.measurement_unit }}</td>
-            <td>{% if m.owner %}{{ m.owner }}{% else %}-{% endif %}</td>
+            <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit }}</td>
+            <td>{{ m.owner|default:"-" }}</td>
           </tr>
         {% endfor %}
       </tbody>

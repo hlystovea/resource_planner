@@ -7,6 +7,7 @@
       <li class="breadcrumb-item">Инструменты</li>
     </ol>
   </nav>
+  {% include "includes/select_owner.html" %}
   <figure class="text-center">
       <h3>Инструменты/Приборы</h3>
   </figure>
@@ -23,9 +24,9 @@
       {% for i in instrument_list %}
         <tr>
           <td><a href={% url 'warehouse:instrument-detail' i.id %}>{{ i.name }}</a></td>
-          <td>{% if i.inventory_number %}{{ i.inventory_number }}{% else %}-{% endif %}</td>
-          <td>{% if i.serial_number %}{{ i.serial_number }}{% else %}-{% endif %}</td>
-          <td>{% if i.owner %}{{ i.owner }}{% else %}-{% endif %}</td>
+          <td>{{ i.inventory_number|default:"-" }}</td>
+          <td>{{ i.serial_number|default:"-" }}</td>
+          <td>{{ i.owner|default:"-" }}</td>
         </tr>
       {% endfor %}
     </tbody>

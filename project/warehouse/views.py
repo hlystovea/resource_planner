@@ -5,6 +5,7 @@ from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
+from warehouse.forms import DeptForm
 
 
 def get_url(request, storage: Storage) -> str:
@@ -61,17 +62,6 @@ class StorageList(ListView):
         ).order_by('name')
 
 
-class MaterialList(ListView):
-    paginate_by = 4
-    model = Material
-    template_name = 'warehouse/material_list.html'
-
-    def get_queryset(self):
-        return Material.objects.annotate(
-            total=Sum('amount__amount')
-        ).order_by('name')
-
-
 class MaterialDetail(DetailView):
     model = Material
 
@@ -84,17 +74,22 @@ class MaterialDetail(DetailView):
         )
 
 
-class InstrumentList(ListView):
+class MaterialList(ListView):
     paginate_by = 20
-    model = Instrument
-    ordering = ['name']
+    model = Material
+    template_name = 'warehouse/material_list.html'
 
     def get_queryset(self):
-        queryset = super().get_queryset().select_related('owner')
+        queryset = super().get_queryset().prefetch_related('amount')
         owner = self.request.GET.get('owner')
         if owner and owner.isdigit():
-            queryset = queryset.filter(owner=owner)
-        return queryset
+            queryset = queryset.filter(amount__owner=owner)
+        return queryset.annotate(total=Sum('amount__amount')).order_by('name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = DeptForm(self.request.GET or None)
+        return context
 
 
 class InstrumentDetail(DetailView):
@@ -102,3 +97,20 @@ class InstrumentDetail(DetailView):
 
     def get_queryset(self):
         return super().get_queryset().select_related('owner')
+
+
+class InstrumentList(ListView):
+    paginate_by = 20
+    model = Instrument
+
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related('owner')
+        owner = self.request.GET.get('owner')
+        if owner and owner.isdigit():
+            queryset = queryset.filter(owner=owner)
+        return queryset.order_by('name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = DeptForm(self.request.GET or None)
+        return context

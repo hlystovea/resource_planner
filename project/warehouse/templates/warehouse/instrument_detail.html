@@ -22,15 +22,9 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ instrument.name }}</p>
           <p class="h6">
-            <p class="mb-1">
-              <span class="text-muted">Инв. номер:</span> {% if instrument.inventory_number %}{{ instrument.inventory_number }}{% endif %}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">Зав. номер:</span> {% if instrument.serial_number %}{{ instrument.serial_number }}{% endif %}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">Подразделение:</span> {% if instrument.owner %}{{ instrument.owner }}{% endif %}
-            </p>
+            <p class="mb-1"><span class="text-muted">Инв. номер: </span>{{ instrument.inventory_number|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Зав. номер: </span>{{ instrument.serial_number|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Подразделение: </span>{{ instrument.owner|default:"" }}</p>
           </p>
         </div>
       </div>
