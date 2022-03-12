@@ -1,7 +1,7 @@
 from django.db.models import Count, Sum, Prefetch
+from django.views.generic import DetailView, ListView
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.views.generic import DetailView, ListView
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
@@ -16,18 +16,18 @@ def get_url(request, storage: Storage) -> str:
 
 def qrcode_view(request, pk):
     storage = get_object_or_404(Storage, pk=pk)
-    materials_url = None
+    storage_url = None
     if storage.materials.count():
-        materials_url = get_url(request, storage)
+        storage_url = get_url(request, storage)
     internal_storage_urls = [
-        [s.name, get_url(request, s)]
+        (s.name, get_url(request, s))
         for s in storage.storage.all()
         if s.materials.count()
     ]
     qr_options = QRCodeOptions(size='t', border=6, error_correction='L')
     context = {
         'storage': storage,
-        'materials_url': materials_url,
+        'storage_url': storage_url,
         'internal_storage_urls': internal_storage_urls,
         'qr_options': qr_options,
     }

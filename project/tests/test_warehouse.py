@@ -132,6 +132,10 @@ class TestStorage:
             'Проверьте, что передали поле типа Storage в контекст страницы'
         assert type(response.context.get('qr_options')) == QRCodeOptions, \
             'Проверьте, что передали поле типа QRCodeOptions в контекст страницы'
+        assert 'storage_url' in response.context, \
+            'Проверьте, что передали поле "storage_url" в контекст страницы'
+        assert 'internal_storage_urls' in response.context, \
+            'Проверьте, что передали поле "internal_storage_urls" в контекст страницы'
 
     @pytest.mark.django_db
     def test_storage_view_get_list(self, client):

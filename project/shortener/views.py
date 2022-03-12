@@ -1,9 +1,7 @@
-from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-
-from .models import Shortener
+from shortener.models import Shortener
 
 
 def redirect_url_view(request, shortened_part):
