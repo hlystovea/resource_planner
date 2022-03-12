@@ -17,6 +17,12 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DATABASE_URL: "psql://postgres:postgres@localhost:5432/github_actions"
+      EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 
@@ -29,20 +35,8 @@ jobs:
         pip install flake8 pep8-naming flake8-broken-line flake8-return
         pip install -r requirements.txt
     - name: Run migrations
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DATABASE_URL: "psql://postgres:postgres@localhost:5432/github_actions"
-        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-        EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
       run: python project/manage.py migrate
     - name: Test with flake8 and pytest
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DATABASE_URL: "psql://postgres:postgres@localhost:5432/github_actions"
-        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-        EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
       run: python project/manage.py migrate
     - name: Test with flake8 and pytest
       run: |
