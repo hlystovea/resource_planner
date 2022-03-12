@@ -1,6 +1,6 @@
 # Resource planner
 
-![workflow badge](https://github.com/hlystovea/resource-planner/actions/workflows/main.yaml/badge.svg)
+![workflow badge](https://github.com/hlystovea/resource_planner/actions/workflows/main.yml/badge.svg)
 
 ### Описание
 Сервис предназначен для учета и планирования использования ресурсов предприятия.
