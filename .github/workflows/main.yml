@@ -43,6 +43,8 @@ jobs:
         EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
         EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
         EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      run: python project/manage.py migrate
+    - name: Test with flake8 and pytest
       run: |
         python -m flake8
         cd project
