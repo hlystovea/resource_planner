@@ -16,9 +16,7 @@ def get_url(request, storage: Storage) -> str:
 
 def qrcode_view(request, pk):
     storage = get_object_or_404(Storage, pk=pk)
-    storage_url = None
-    if storage.materials.count():
-        storage_url = get_url(request, storage)
+    storage_url = get_url(request, storage)
     internal_storage_urls = [
         (s.name, get_url(request, s))
         for s in storage.storage.all()

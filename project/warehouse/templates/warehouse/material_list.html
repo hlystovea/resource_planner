@@ -30,6 +30,6 @@
     </tbody>
   </table>
   {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
+    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
   {% endif %}
 {% endblock %}

@@ -1,43 +1,54 @@
+<!doctype html>
+<html lang="ru">
 {% load qr_code %}
 {% block content %}
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>{{ storage.name }} | Печать QR-кодов</title>
+  <style type="text/css">
+    .ex-block {
+      position: relative;
+      float: right;
+      right: 50%;
+    }
+    .block {
+      position: relative;
+      float: left;
+      left: 50%;
+      padding: 10px;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td, th {
+      border-width: 3px; 
+      border-style: double;
+    }
+    .w-400 {
+      width: 400px;
+    }
+  </style>
+</head>
 <body>
-  <br>
-  {% if storage_url %}
-    <table border="1">
-      <tr>
-        <th width=400>Наименование</th>
-        <th>QR-код</th>
-      </tr>
-      <tr>
-        <td>{{ storage.name }}</td>
-        <td>{% qr_from_text storage_url options=qr_options %}</td>
-      </tr>
-    </table>
-    <br>
-  {% endif %}
-  {% if internal_storage_urls %}
-    <br>
-    <h3>Вложенные места хранения</h3>
-    <table border="1">
-      <tr>
-        <th width=400>Наименование</th>
-        <th>QR-код</th>
-      </tr>
-      {% for s in internal_storage_urls %}
-        <tr>
-          <td>{{ s.0 }}</td>
-          {% with url=s.1 %}
-            <td>{% qr_from_text url options=qr_options %}</td>
-          {% endwith %}
-        </tr>
-      {% endfor %}
-    </table>
-    <br>
-  {% endif %}
-  {% if materials_url or internal_storage_urls %}
-    <a class ="print-doc" href="javascript:(print());">Распечатать</a>
-  {% else %}
-    {{ storage.name }} не содержит материалов
-  {% endif %}
+  <div class="ex-block">
+    <div class="block">
+      <table>
+        <tr><th class="w-400">Наименование</th><th>QR-код</th></tr>
+        <tr><td style="padding: 10px">{{ storage.name }}</td><td>{% qr_from_text storage_url options=qr_options %}</td></tr>
+      </table>
+      <br>
+      {% if internal_storage_urls %}
+        <p>Вложенные места хранения:</p>
+        <table>
+          <tr><th class="w-400">Наименование</th><th>QR-код</th></tr>
+          {% for s in internal_storage_urls %}
+            <tr><td style="padding: 10px">{{ s.0 }}</td><td>{% qr_from_text s.1 options=qr_options %}</td></tr>
+          {% endfor %}
+        </table>
+      {% endif %}
+      <p><a class ="print-doc" href="javascript:(print());">Распечатать</a></p>
+    </div>
+  </div>
 </body>
 {% endblock %}
+</html>
