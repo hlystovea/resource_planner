@@ -15,10 +15,10 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ storage.name }}</p>
           <p class="h6">
-            <p class="mb-1"><span class="text-muted">Расположение:</span> {{ storage.parent_storage|default:"" }}</p>
-            <p class="mb-1"><span class="text-muted">Кол-во мест хранения:</span> {{ storage.storage.count }}</p>
-            <p class="mb-1"><span class="text-muted">Кол-во материалов:</span> {{ storage.materials.count }}</p>
-            <p class="mb-1"><span class="text-muted">QR-код:</span> <a href="{% url 'warehouse:storage-qrcode' storage.id %}" target="_blank">открыть</a></p>
+            <p class="mb-1"><span class="text-muted">Расположение: </span>{{ storage.parent_storage|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Кол-во мест хранения: </span>{{ storage.storage.count }}</p>
+            <p class="mb-1"><span class="text-muted">Кол-во материалов: </span>{{ storage.materials.count }}</p>
+            <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_id=storage.id %}</p>
           </p>
         </div>
       </div>
@@ -39,7 +39,7 @@
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
             <td>{{ s.materials_count }} поз.</td>
-            <td><a href="{% url 'warehouse:storage-qrcode' s.id %}">открыть</a></td>
+            <td>{% include "includes/new_window_link.html" with storage_id=s.id %}</td>
           </tr>
         {% endfor %}
       </tbody>
