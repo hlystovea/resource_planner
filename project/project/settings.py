@@ -72,10 +72,17 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
-
-DATABASES = {
-    'default': env.db(),
-}
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': env.db(),
+    }
 
 
 AUTH_USER_MODEL = 'auth.User'
@@ -103,7 +110,7 @@ LOGIN_REDIRECT_URL = 'index'
 
 LANGUAGE_CODE = 'ru-Ru'
 
-TIME_ZONE = 'Asia/Krasnoyarsk'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
