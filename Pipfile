@@ -18,6 +18,7 @@ django-extensions = "*"
 werkzeug = "*"
 django-filter = "*"
 sorl-thumbnail = "*"
+tzdata = "*"
 
 [dev-packages]
 flake8 = "*"
