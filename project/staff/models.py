@@ -74,4 +74,4 @@ class Staff(models.Model):
         verbose_name_plural = _('Сотрудники')
 
     def __str__(self):
-        return self.last_name + self.first_name + self.patronymic
+        return f'{self.last_name} {self.first_name} {self.patronymic}'
