@@ -9,18 +9,6 @@ class Defect(models.Model):
     date = models.DateField(
         verbose_name=_('Дата обнаружения')
     )
-    dispatch_object = models.ForeignKey(
-        to='hardware.Facility',
-        verbose_name=_('Объект диспетчеризации'),
-        on_delete=models.CASCADE,
-        related_name='defects'
-    )
-    connection = models.ForeignKey(
-        to='hardware.Connection',
-        verbose_name=_('Присоединение'),
-        on_delete=models.CASCADE,
-        related_name='defects'
-    )
     hardware = models.ForeignKey(
         to='hardware.Hardware',
         verbose_name=_('Оборудование'),
@@ -79,7 +67,7 @@ class Defect(models.Model):
 
     def clean(self):
         errors = {}
-        if self.date > now():
+        if self.date > now().date():
             errors['date'] = ValidationError(
                 _('Дата обнаружения дефекта не может быть в будущем')
             )
@@ -105,7 +93,10 @@ class Effect(models.Model):
     class Meta:
         ordering = ('name', )
         verbose_name = _('Последствие дефекта')
-        verbose_name_plurar = _('Последствия дефекта')
+        verbose_name_plural = _('Последствия дефекта')
+
+    def __str__(self):
+        return self.name
 
 
 class Condition(models.Model):
@@ -122,7 +113,10 @@ class Condition(models.Model):
     class Meta:
         ordering = ('name', )
         verbose_name = _('Условие обнаружения')
-        verbose_name_plurar = _('Условия обнаружения')
+        verbose_name_plural = _('Условия обнаружения')
+
+    def __str__(self):
+        return self.name
 
 
 class Feature(models.Model):
@@ -139,4 +133,7 @@ class Feature(models.Model):
     class Meta:
         ordering = ('name', )
         verbose_name = _('Признак дефекта')
-        verbose_name_plurar = _('Признаки дефекта')
+        verbose_name_plural = _('Признаки дефекта')
+
+    def __str__(self):
+        return self.name
