@@ -6,7 +6,7 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import (Defect, InstrumentSheet, MaterialSheet, Operation,
+from .models import (InstrumentSheet, MaterialSheet, Operation,
                      OperationSheet, Repair, Sheet, TypeRepair)
 
 
@@ -57,20 +57,6 @@ class RepairMonthFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value():
             return queryset.filter(start_at__month=self.value())
-        return queryset
-
-
-class DefectYearFilter(admin.SimpleListFilter):
-    title = _('год')
-    parameter_name = 'year'
-
-    def lookups(self, request, model_admin):
-        dates = Defect.objects.dates('date', 'year')
-        return [(d.year, d.year) for d in dates]
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(date__year=self.value())
         return queryset
 
 
@@ -163,46 +149,3 @@ class SheetAdmin(MixinAdmin):
         return format_html(
             '<a href="{}">{} чел./ч</a>', url, man_hours['total']
         )
-
-
-@admin.register(Defect)
-class DefectAdmin(ImageTagField, MixinAdmin):
-    list_display = ('id', 'hardware_connection', 'hardware_name',
-                    'defect_description', 'defect_repair', 'format_date',
-                    'format_repair_date', 'image_tag')
-    search_fields = ('description', 'repair')
-    list_filter = ('hardware__facility', 'hardware__connection',
-                   'date', DefectYearFilter)
-    autocomplete_fields = ('hardware', )
-
-    @admin.display(description=_('Присоединение'))
-    def hardware_connection(self, obj):
-        return obj.hardware.connection
-
-    @admin.display(description=_('Оборудование'))
-    def hardware_name(self, obj):
-        return obj.hardware.name[:80]
-
-    @admin.display(description=_('Описание'))
-    def defect_description(self, obj):
-        if obj.description:
-            return obj.description[:50]
-        return None
-
-    @admin.display(description=_('Мероприятия'))
-    def defect_repair(self, obj):
-        if obj.repair:
-            return obj.repair[:50]
-        return None
-
-    @admin.display(description=_('Дата обнаружения'))
-    def format_date(self, obj):
-        if obj.date:
-            return obj.date.strftime('%d.%m.%Y')
-        return None
-
-    @admin.display(description=_('Дата устранения'))
-    def format_repair_date(self, obj):
-        if obj.repair_date:
-            return obj.repair_date.strftime('%d.%m.%Y')
-        return None

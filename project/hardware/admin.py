@@ -42,7 +42,7 @@ class HardwareAdmin(MixinAdmin):
     def count_defects(self, obj):
         count = obj.defects.count()
         url = (
-            reverse('admin:repairs_defect_changelist')
+            reverse('admin:defects_defect_changelist')
             + '?'
             + urlencode({'hardware__id': f'{obj.id}'})
         )

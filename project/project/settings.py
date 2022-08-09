@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'repairs.apps.RepairsConfig',
     'hardware.apps.HardwareConfig',
     'shortener.apps.ShortenerConfig',
+    'defects.apps.DefectsConfig',
     'qr_code',
 ]
 
