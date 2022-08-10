@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Дефекты{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item">Дефекты</li>
+    </ol>
+  </nav>
+  {% include "includes/defect_filter.html" %}
+  <figure class="text-center">
+    <h3>Дефекты</h3>
+  </figure>
+  <table class="table table-hover">
+    <thead class="table">
+      <tr>
+        <th scope="col">Дата обнаружения</th>
+        <th scope="col">Объект</th>
+        <th scope="col">Присоединение</th>
+        <th scope="col">Оборудование</th>
+        <th scope="col">Описание</th>
+        <th scope="col">Дата устранения</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in defect_list %}
+          <tr>
+            <td><a href={% url 'defects:defect-detail' d.id %}>{{ d.date|date:"Y-m-d" }}</a></td>
+            <td>{{ d.hardware.facility }}</td>
+            <td>{{ d.hardware.connection }}</td>
+            <td>{{ d.hardware.name }}</td>
+            <td>{{ d.description }}</td>
+            <td>{{ d.repair_date|date:"Y-m-d" }}</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}
+    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
+  {% endif %}
+{% endblock %}

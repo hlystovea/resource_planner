@@ -1,0 +1,20 @@
+{% with current_namespace=request.resolver_match.view_name %}
+<div class="row justify-content-end">
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectObject" name="object" onchange="window.location.href = this.options[this.selectedIndex].value">
+      <option value="{% url current_namespace %}" selected>Объект...</option>
+      {% for id, name in form.fields.dispatch_object.choices %}
+        <option value="{% url current_namespace %}?object={{ id }}" {% if request.GET.dict.object == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectConnection" name="object" onchange="window.location.href = this.options[this.selectedIndex].value">
+      <option value="{% url current_namespace %}" selected>Объект...</option>
+      {% for id, name in form.fields.connection.choices %}
+        <option value="{% url current_namespace %}?connection={{ id }}" {% if request.GET.dict.connection == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+{% endwith %}

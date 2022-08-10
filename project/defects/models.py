@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
@@ -71,12 +72,15 @@ class Defect(models.Model):
             errors['date'] = ValidationError(
                 _('Дата обнаружения дефекта не может быть в будущем')
             )
-        if self.date > self.repair_date:
+        if self.repair_date and self.date > self.repair_date:
             errors['repair_date'] = ValidationError(
                 _('Дата устранения дефекта не может быть раньше обнаружения')
             )
         if errors:
             raise ValidationError(errors)
+
+    def get_absolute_url(self):
+        return reverse('defects:defect-detail', kwargs={'pk': self.pk})
 
 
 class Effect(models.Model):

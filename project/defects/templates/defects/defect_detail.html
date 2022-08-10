@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Дефекты{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+    </ol>
+  </nav>
+  <div class="card mb-3 mt-1 shadow-sm">
+    <div class="row">
+      {% if defect.image %}
+      <div class="col-4">
+        <!-- Отображение картинки -->
+        {% load thumbnail %}
+        {% thumbnail defect.image "400x400" crop="center" upscale=True as im %}
+          <a href="{{ defect.image.url }}" target="_blank">
+            <img class="img-fluid m-1" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="Фото"/>
+          </a>
+        {% endthumbnail %}
+      </div>
+      {% endif %}
+      <div class="col">
+        <!-- Отображение текста -->
+        <div class="card-body">
+          <p class="h6">
+            <p class="mb-1"><span class="text-muted">Дата обнаружения: </span>{{ defect.date|date:"Y-m-d" }}</p>
+            <p class="mb-1"><span class="text-muted">Объект: </span>{{ defect.hardware.facility }}</p>
+            <p class="mb-1"><span class="text-muted">Присоединение: </span>{{ defect.hardware.connection }}</p>
+            <p class="mb-1"><span class="text-muted">Оборудование: </span>{{ defect.hardware.name }}</p>
+            <p class="mb-1"><span class="text-muted">Обнаруживший: </span>{{ defect.employee }}</p>
+            <p class="mb-1"><span class="text-muted">Описание: </span>{{ defect.description }}</p>
+            <p class="mb-1"><span class="text-muted">Условия обнаружения: </span>{{ defect.condition }}</p>
+            <p class="mb-1"><span class="text-muted">Выполненные мероприятия: </span>{{ defect.repair }}</p>
+            <p class="mb-1"><span class="text-muted">Дата устранения: </span>{{ defect.repair_date|date:"Y-m-d" }}</p>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include "includes/back.html" %}
+{% endblock %}

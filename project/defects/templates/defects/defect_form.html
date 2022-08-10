@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Дефекты{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+      <li class="breadcrumb-item">Добавить дефект</li>
+    </ol>
+  </nav>
+  <figure class="text-center">
+    <h3>Добавить новый дефект</h3>
+  </figure>
+  {% include 'includes/form.html' %}
+    <div class="col-md-6 offset-md-4">              
+      <button type="submit" class="btn btn-primary">
+          {% if is_edit %}
+              Сохранить
+          {% else %}
+              Добавить
+          {% endif %}
+      </button>
+    </div>
+  </form>
+  {% include "includes/back.html" %}
+{% endblock %}
