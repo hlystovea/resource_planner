@@ -1,20 +1,34 @@
 {% with current_namespace=request.resolver_match.view_name %}
 <div class="row justify-content-end">
   <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectObject" name="object" onchange="window.location.href = this.options[this.selectedIndex].value">
+    <select class="form-select form-select-sm" id="selectObject" name="dispatchObject">
       <option value="{% url current_namespace %}" selected>Объект...</option>
       {% for id, name in form.fields.dispatch_object.choices %}
-        <option value="{% url current_namespace %}?object={{ id }}" {% if request.GET.dict.object == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+        <option value="{{ id }}" {% if request.GET.dict.object == id|urlencode  %}selected{% endif %}>{{ name }}</option>
       {% endfor %}
     </select>
   </div>
   <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectConnection" name="object" onchange="window.location.href = this.options[this.selectedIndex].value">
+    <select class="form-select form-select-sm" id="selectConnection" name="connection">
       <option value="{% url current_namespace %}" selected>Объект...</option>
       {% for id, name in form.fields.connection.choices %}
-        <option value="{% url current_namespace %}?connection={{ id }}" {% if request.GET.dict.connection == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+        <option value="{{ id }}" {% if request.GET.dict.connection == id|urlencode  %}selected{% endif %}>{{ name }}</option>
       {% endfor %}
     </select>
   </div>
+  <div class="col-auto">
+    <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="redirectPage();">Показать</button>
+  </div>
 </div>
+<script>
+  function redirectPage() {
+      url = "{% url 'defects:defect-list' %}?"
+      object = document.getElementById("selectObject").value;
+      connection = document.getElementById("selectConnection").value;
+      if (object !== null) url += "&object=" + object;
+      if (connection !== null) url += "&connection=" + connection;
+      console.log(url)
+      window.location.replace(url)
+  }
+</script>
 {% endwith %}
