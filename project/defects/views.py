@@ -1,6 +1,7 @@
-from django.views.generic import CreateView, DetailView, ListView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from defects.forms import DefectFilterForm
+from defects.forms import DefectFilterForm, DefectForm
 from defects.models import Defect
 
 
@@ -34,8 +35,14 @@ class DefectDetail(DetailView):
 
 class DefectCreateView(CreateView):
     model = Defect
-    fields = '__all__'
+    form_class = DefectForm
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.select_related('hardware', 'employee', 'condition')
+
+class DefectUpdateView(UpdateView):
+    model = Defect
+    form_class = DefectForm
+
+
+class DefectDeleteView(UpdateView):
+    model = Defect
+    success_url = reverse_lazy('defects:defect-list')
