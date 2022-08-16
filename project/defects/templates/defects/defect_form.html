@@ -9,16 +9,23 @@
     </ol>
   </nav>
   <figure class="text-center">
-    <h3>Добавить новый дефект</h3>
+    <h3>
+      {% if is_edit %}
+        Изменить
+      {% else %}
+        Добавить
+      {% endif %}
+        дефект
+    </h3>
   </figure>
   {% include 'includes/form.html' %}
-    <div class="col-md-6 offset-md-4">              
+    <div class="col-md-6 offset-md-4 my-2">              
       <button type="submit" class="btn btn-primary">
-          {% if is_edit %}
-              Сохранить
-          {% else %}
-              Добавить
-          {% endif %}
+        {% if is_edit %}
+          Сохранить
+        {% else %}
+          Добавить
+        {% endif %}
       </button>
     </div>
   </form>
