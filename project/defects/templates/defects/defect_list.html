@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Дефекты{% endblock %}
 {% block content %}
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -7,10 +7,13 @@
       <li class="breadcrumb-item">Дефекты</li>
     </ol>
   </nav>
-  {% include "includes/defect_filter.html" %}
+  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'defects:defect-create' %}" role="button">
+    Добавить новый
+  </a>
   <figure class="text-center">
     <h3>Дефекты</h3>
   </figure>
+  {% include './defect_filter.html' %}
   <table class="table table-hover">
     <thead class="table">
       <tr>
@@ -25,17 +28,17 @@
     <tbody>
       {% for d in defect_list %}
           <tr>
-            <td><a href={% url 'defects:defect-detail' d.id %}>{{ d.date|date:"Y-m-d" }}</a></td>
+            <td><a href="{% url 'defects:defect-detail' d.id %}">{{ d.date|date:'Y-m-d' }}</a></td>
             <td>{{ d.hardware.facility }}</td>
             <td>{{ d.hardware.connection }}</td>
             <td>{{ d.hardware.name }}</td>
             <td>{{ d.description }}</td>
-            <td>{{ d.repair_date|date:"Y-m-d" }}</td>
+            <td>{{ d.repair_date|date:'Y-m-d' }}</td>
           </tr>
       {% endfor %}
     </tbody>
   </table>
   {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
+    {% include 'includes/paginator.html' with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
   {% endif %}
 {% endblock %}

@@ -1,33 +1,26 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Дефекты{% endblock %}
 {% block content %}
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
       <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
-      <li class="breadcrumb-item">Добавить дефект</li>
+      <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} дефект</li>
     </ol>
   </nav>
   <figure class="text-center">
-    <h3>
-      {% if is_edit %}
-        Изменить
-      {% else %}
-        Добавить
-      {% endif %}
-        дефект
-    </h3>
+    <h3>{% if is_new %}Добавить{% else %}Изменить{% endif %} дефект</h3>
   </figure>
-  {% include 'includes/form.html' %}
-    <div class="col-md-6 offset-md-4 my-2">              
-      <button type="submit" class="btn btn-primary">
-        {% if is_edit %}
-          Сохранить
-        {% else %}
-          Добавить
-        {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card shadow-sm mb-3 mt-1 p-3">
+      {% include 'includes/form.html' %}
+    </div>
+    <div class="d-flex justify-content-end">
+      {% include 'includes/back.html' %}            
+      <button type="submit" class="btn btn-sm btn-secondary me-1">
+        {% if is_new %}Добавить{% else %}Сохранить{% endif %}
       </button>
     </div>
   </form>
-  {% include "includes/back.html" %}
 {% endblock %}

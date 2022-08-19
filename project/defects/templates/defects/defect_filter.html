@@ -10,7 +10,7 @@
   </div>
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectConnection" name="connection">
-      <option value="{% url current_namespace %}" selected>Объект...</option>
+      <option value="{% url current_namespace %}" selected>Присоединение...</option>
       {% for id, name in form.fields.connection.choices %}
         <option value="{{ id }}" {% if request.GET.dict.connection == id|urlencode  %}selected{% endif %}>{{ name }}</option>
       {% endfor %}

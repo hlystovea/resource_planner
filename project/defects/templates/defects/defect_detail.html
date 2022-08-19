@@ -7,7 +7,7 @@
       <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
     </ol>
   </nav>
-  <div class="card mb-3 mt-1 shadow-sm">
+  <div class="card shadow-sm mb-3 mt-1 p-3">
     <div class="row">
       {% if defect.image %}
       <div class="col-4">
@@ -22,21 +22,46 @@
       {% endif %}
       <div class="col">
         <!-- Отображение текста -->
-        <div class="card-body">
-          <p class="h6">
-            <p class="mb-1"><span class="text-muted">Дата обнаружения: </span>{{ defect.date|date:"Y-m-d" }}</p>
-            <p class="mb-1"><span class="text-muted">Объект: </span>{{ defect.hardware.facility }}</p>
-            <p class="mb-1"><span class="text-muted">Присоединение: </span>{{ defect.hardware.connection }}</p>
-            <p class="mb-1"><span class="text-muted">Оборудование: </span>{{ defect.hardware.name }}</p>
-            <p class="mb-1"><span class="text-muted">Обнаруживший: </span>{{ defect.employee }}</p>
-            <p class="mb-1"><span class="text-muted">Описание: </span>{{ defect.description }}</p>
-            <p class="mb-1"><span class="text-muted">Условия обнаружения: </span>{{ defect.condition }}</p>
-            <p class="mb-1"><span class="text-muted">Выполненные мероприятия: </span>{{ defect.repair }}</p>
-            <p class="mb-1"><span class="text-muted">Дата устранения: </span>{{ defect.repair_date|date:"Y-m-d" }}</p>
-          </p>
-        </div>
+        <p class="mb-1"><span class="text-muted">Дата обнаружения: </span>{{ defect.date|date:"Y-m-d" }}</p>
+        <p class="mb-1"><span class="text-muted">Объект: </span>{{ defect.hardware.facility }}</p>
+        <p class="mb-1"><span class="text-muted">Присоединение: </span>{{ defect.hardware.connection }}</p>
+        <p class="mb-1"><span class="text-muted">Оборудование: </span>{{ defect.hardware.name }}</p>
+        <p class="mb-1"><span class="text-muted">Обнаруживший: </span>{{ defect.employee }}</p>
+        <p class="mb-1"><span class="text-muted">Описание: </span>{{ defect.description }}</p>
+        <p class="mb-1"><span class="text-muted">Условия обнаружения: </span>{{ defect.condition }}</p>
+        <p class="mb-1"><span class="text-muted">Выполненные мероприятия: </span>{{ defect.repair }}</p>
+        <p class="mb-1"><span class="text-muted">Дата устранения: </span>{{ defect.repair_date|date:"Y-m-d" }}</p>
       </div>
     </div>
   </div>
-  {% include "includes/back.html" %}
+  <div class="d-flex justify-content-end">
+    {% include "includes/back.html" %}
+    <a class="btn btn-sm btn-secondary me-1" href="{% url 'defects:defect-update' defect.id %}" role="button">
+      Редактировать
+    </a>
+    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+      Удалить
+    </button>
+  </div>
+<!-- Delete modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Удаление</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        Вы действительно хотите удалить дефект?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <form id="defect_del" method="post" action="{% url 'defects:defect-delete' defect.id %}">
+          {% csrf_token %}
+          <input type="submit" class="btn btn-sm btn-danger me-1" form="defect_del" value="Удалить">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

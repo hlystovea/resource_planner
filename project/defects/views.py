@@ -1,5 +1,6 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
 from defects.forms import DefectFilterForm, DefectForm
 from defects.models import Defect
@@ -37,12 +38,17 @@ class DefectCreateView(CreateView):
     model = Defect
     form_class = DefectForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_new'] = True
+        return context
+
 
 class DefectUpdateView(UpdateView):
     model = Defect
     form_class = DefectForm
 
 
-class DefectDeleteView(UpdateView):
+class DefectDeleteView(DeleteView):
     model = Defect
     success_url = reverse_lazy('defects:defect-list')
