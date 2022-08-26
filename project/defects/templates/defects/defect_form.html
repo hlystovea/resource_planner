@@ -23,4 +23,52 @@
       </button>
     </div>
   </form>
+{% block jquery %}
+  <script>
+    $(document).ready(function() {
+      $("#id_hardware").change(function() {
+        let url = "{% url 'api:cabinet-list' %}"
+        let pk = $("#id_hardware").val()
+        if (pk !== "") {
+          url = "{% url 'api:hardware-list' %}" + pk + "/cabinets"
+        };
+        $.ajax({
+          method: "GET",
+          url: url,
+          success: function(data) {
+            $("#id_cabinet option").remove();
+            $("#id_cabinet").append("<option value='' selected=''>---------</option>");
+            for (var i in data)
+              $("#id_cabinet").append("<option value=" + data[i].id + ">" + data[i].abbreviation + " " + data[i].name + "</option>");
+          },
+          error: function(error_data) {
+            console.log(error_data);
+          }
+        });
+      });
+    });
+    $(document).ready(function() {
+      $("#id_cabinet").change(function() {
+        let url = "{% url 'api:component-list' %}"
+        let pk = $("#id_cabinet").val()
+        if (pk !== "") {
+          url = "{% url 'api:cabinet-list' %}" + pk + "/components"
+        };
+        $.ajax({
+          method: "GET",
+          url: url,
+          success: function(data) {
+            $("#id_component option").remove();
+            $("#id_component").append("<option value='' selected=''>---------</option>");
+            for (var i in data)
+              $("#id_component").append("<option value=" + data[i].id + ">" + data[i].name + "</option>");
+          },
+          error: function(error_data) {
+            console.log(error_data);
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}
 {% endblock %}

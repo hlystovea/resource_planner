@@ -4,11 +4,12 @@ from django.forms import Textarea, TextInput
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from .models import Condition, Defect, Effect, Feature
+from .models import (Condition, Defect, Effect, Feature,
+                     OrganizationalReason, TechnicalReason)
 
 
 class MixinAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'slug')
+    list_display = ('id', 'name')
     empty_value_display = _('-пусто-')
     formfield_overrides = {
         CharField: {'widget': TextInput(attrs={'size': 80})},
@@ -35,14 +36,14 @@ class DefectAdmin(ImageTagField, MixinAdmin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('hardware__facility', 'hardware__connection',
-                   'date')
-    autocomplete_fields = ('hardware', )
+    list_filter = ('hardware__connection__facility', 'hardware__connection',
+                   'date', 'technical_reasons', 'organizational_reasons')
+    autocomplete_fields = ('hardware', 'cabinet', 'component')
     date_hierarchy = 'date'
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
-        return obj.hardware.facility
+        return obj.hardware.connection.facility
 
     @admin.display(description=_('Присоединение'))
     def hardware_connection(self, obj):
@@ -79,14 +80,24 @@ class DefectAdmin(ImageTagField, MixinAdmin):
 
 @admin.register(Condition)
 class ConditionAdmin(MixinAdmin):
-    prepopulated_fields = {'slug': ('name', )}
+    pass
 
 
 @admin.register(Effect)
 class EffectAdmin(MixinAdmin):
-    prepopulated_fields = {'slug': ('name', )}
+    pass
 
 
 @admin.register(Feature)
 class FeatureAdmin(MixinAdmin):
-    prepopulated_fields = {'slug': ('name', )}
+    pass
+
+
+@admin.register(TechnicalReason)
+class TechnicalReasonAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(OrganizationalReason)
+class OrganizationalReasonAdmin(MixinAdmin):
+    pass

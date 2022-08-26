@@ -19,6 +19,8 @@ werkzeug = "*"
 django-filter = "*"
 sorl-thumbnail = "*"
 tzdata = "*"
+djangorestframework = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 flake8 = "*"

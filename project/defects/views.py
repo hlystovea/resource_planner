@@ -12,12 +12,21 @@ class DefectList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related('hardware')
-        dispatch_object = self.request.GET.get('object')
+
+        facility = self.request.GET.get('facility')
         connection = self.request.GET.get('connection')
-        if dispatch_object and dispatch_object.isdigit():
-            queryset = queryset.filter(hardware__facility=dispatch_object)
+        hardware = self.request.GET.get('hardware')
+        cabinet = self.request.GET.get('cabinet')
+
+        if facility and facility.isdigit():
+            queryset = queryset.filter(hardware__connection__facility=facility)
         if connection and connection.isdigit():
             queryset = queryset.filter(hardware__connection=connection)
+        if hardware and hardware.isdigit():
+            queryset = queryset.filter(hardware=hardware)
+        if cabinet and cabinet.isdigit():
+            queryset = queryset.filter(cabinet=cabinet)
+
         return queryset.order_by('-date')
 
     def get_context_data(self, **kwargs):

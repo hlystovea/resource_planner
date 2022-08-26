@@ -76,7 +76,7 @@ class RepairAdmin(MixinAdmin):
     list_display = ('id', 'name', 'hardware_connection', 'hardware_name',
                     'format_start_at', 'format_end_at', 'pdf_sheet')
     search_fields = ('name', )
-    list_filter = ('hardware__facility', 'hardware__connection', 'start_at',
+    list_filter = ('hardware__connection__facility', 'hardware__connection', 'start_at',
                    RepairYearFilter, RepairMonthFilter)
     autocomplete_fields = ('hardware', )
 

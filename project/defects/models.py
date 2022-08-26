@@ -16,6 +16,18 @@ class Defect(models.Model):
         on_delete=models.CASCADE,
         related_name='defects'
     )
+    cabinet = models.ForeignKey(
+        to='hardware.Cabinet',
+        verbose_name=_('Шкаф/панель'),
+        on_delete=models.CASCADE,
+        related_name='defects'
+    )
+    component = models.ForeignKey(
+        to='hardware.Component',
+        verbose_name=_('Комплектующее'),
+        on_delete=models.CASCADE,
+        related_name='defects'
+    )
     employee = models.ForeignKey(
         to='staff.Staff',
         verbose_name=_('Сотрудник обнаруживший дефект'),
@@ -49,6 +61,18 @@ class Defect(models.Model):
         on_delete=models.PROTECT,
         related_name='defects'
     )
+    technical_reasons = models.ManyToManyField(
+        to='defects.TechnicalReason',
+        verbose_name=_('Технические причины дефекта'),
+        related_name='defects',
+        blank=True
+    )
+    organizational_reasons = models.ManyToManyField(
+        to='defects.OrganizationalReason',
+        verbose_name=_('Организационные причины'),
+        related_name='defects',
+        blank=True
+    )
     repair = models.TextField(
         verbose_name=_('Выполненые мероприятия'),
         max_length=500,
@@ -68,14 +92,20 @@ class Defect(models.Model):
 
     def clean(self):
         errors = {}
-        if self.date > now().date():
+        if self.component and self.cabinet:
+            if self.component.cabinet != self.cabinet:
+                errors['component'] = ValidationError(
+                    _('Комплектующее не может быть из другого шкафа/панели')
+                )
+        if self.date and self.date > now().date():
             errors['date'] = ValidationError(
                 _('Дата обнаружения дефекта не может быть в будущем')
             )
-        if self.repair_date and self.date > self.repair_date:
-            errors['repair_date'] = ValidationError(
-                _('Дата устранения дефекта не может быть раньше обнаружения')
-            )
+        if self.repair_date and self.date:
+            if self.date > self.repair_date:
+                errors['repair_date'] = ValidationError(
+                    _('Дата устранения дефекта не может быть раньше обнаружения')
+                )
         if errors:
             raise ValidationError(errors)
 
@@ -87,10 +117,6 @@ class Effect(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=100,
-        unique=True
-    )
-    slug = models.SlugField(
-        verbose_name=_('Короткая ссылка'),
         unique=True
     )
 
@@ -109,10 +135,6 @@ class Condition(models.Model):
         max_length=100,
         unique=True
     )
-    slug = models.SlugField(
-        verbose_name=_('Короткая ссылка'),
-        unique=True
-    )
 
     class Meta:
         ordering = ('name', )
@@ -129,15 +151,51 @@ class Feature(models.Model):
         max_length=100,
         unique=True
     )
-    slug = models.SlugField(
-        verbose_name=_('Короткая ссылка'),
-        unique=True
-    )
 
     class Meta:
         ordering = ('name', )
         verbose_name = _('Признак дефекта')
         verbose_name_plural = _('Признаки дефекта')
+
+    def __str__(self):
+        return self.name
+
+
+class TechnicalReason(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True
+    )
+    is_dependent = models.BooleanField(
+        verbose_name=_('Зависит от внешних условий'),
+        default=False
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Техническая причина')
+        verbose_name_plural = _('Технические причины')
+
+    def __str__(self):
+        return self.name
+
+
+class OrganizationalReason(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True
+    )
+    is_dependent = models.BooleanField(
+        verbose_name=_('Зависит от внешних условий'),
+        default=False
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Организационная причина')
+        verbose_name_plural = _('Организационные причины')
 
     def __str__(self):
         return self.name

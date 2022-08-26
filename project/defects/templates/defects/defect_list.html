@@ -21,6 +21,7 @@
         <th scope="col">Объект</th>
         <th scope="col">Присоединение</th>
         <th scope="col">Оборудование</th>
+        <th scope="col">Шкаф/панель</th>
         <th scope="col">Описание</th>
         <th scope="col">Дата устранения</th>
       </tr>
@@ -29,9 +30,10 @@
       {% for d in defect_list %}
           <tr>
             <td><a href="{% url 'defects:defect-detail' d.id %}">{{ d.date|date:'Y-m-d' }}</a></td>
-            <td>{{ d.hardware.facility }}</td>
-            <td>{{ d.hardware.connection }}</td>
+            <td>{{ d.hardware.connection.facility }}</td>
+            <td>{{ d.hardware.connection.abbreviation }}</td>
             <td>{{ d.hardware.name }}</td>
+            <td>{{ d.cabinet.abbreviation }}</td>
             <td>{{ d.description }}</td>
             <td>{{ d.repair_date|date:'Y-m-d' }}</td>
           </tr>
