@@ -29,7 +29,7 @@ class Defect(models.Model):
         related_name='defects'
     )
     employee = models.ForeignKey(
-        to='staff.Staff',
+        to='staff.Employee',
         verbose_name=_('Сотрудник обнаруживший дефект'),
         on_delete=models.PROTECT,
         related_name='defects'

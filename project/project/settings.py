@@ -87,7 +87,7 @@ else:
     }
 
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'staff.Employee'
 
 # Password validation
 
