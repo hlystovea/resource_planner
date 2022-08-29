@@ -6,8 +6,9 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import (Cabinet, Component, ComponentDesign, ComponentFunction,
-                     ComponentRepairMethod, Connection, Facility, Hardware)
+from .models import (Cabinet, Component, ComponentDesign,
+                     ComponentFunction, ComponentRepairMethod,
+                     Connection, Facility, Group, Hardware)
 
 
 class MixinAdmin(admin.ModelAdmin):
@@ -36,6 +37,7 @@ class ComponentInline(admin.TabularInline):
     model = Component
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
+    readonly_fields = ('cabinet', )
 
 
 @admin.register(Component)
@@ -74,6 +76,12 @@ class ComponentAdmin(MixinAdmin):
             return format_html('<a href="{}">{}</a>', url, obj.component)
         return ''
 
+    def save_formset(self, request, form, formset, change) -> None:
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.cabinet = form.cleaned_data['cabinet']
+            instance.save()
+
 
 @admin.register(Cabinet)
 class CabinetAdmin(MixinAdmin):
@@ -105,14 +113,13 @@ class HardwareAdmin(MixinAdmin):
 
     @admin.display(description=_('Кол-во дефектов'))
     def count_defects(self, obj):
-        count = obj.defects.count()
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
             + urlencode({'hardware__id': f'{obj.id}'})
         )
         return format_html(
-            '<a href="{}">{}</a>', url, count
+            '<a href="{}">{}</a>', url, obj.defects.count()
         )
 
 
@@ -141,14 +148,29 @@ class FacilityAdmin(MixinAdmin):
 
     @admin.display(description=_('Кол-во присоединений'))
     def count_connections(self, obj):
-        count = obj.connections.count()
         url = (
             reverse('admin:hardware_connection_changelist')
             + '?'
             + urlencode({'facility__id': f'{obj.id}'})
         )
         return format_html(
-            '<a href="{}">{}</a>', url, count
+            '<a href="{}">{}</a>', url, obj.connections.count()
+        )
+
+
+@admin.register(Group)
+class GroupAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'abbreviation', 'count_hardware')
+
+    @admin.display(description=_('Кол-во оборудования'))
+    def count_hardware(self, obj):
+        url = (
+            reverse('admin:hardware_hardware_changelist')
+            + '?'
+            + urlencode({'group__id': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{}</a>', url, obj.hardware.count()
         )
 
 

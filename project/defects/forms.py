@@ -10,7 +10,7 @@ from hardware.models import Cabinet, Connection, Facility, Hardware
 class DefectForm(ModelForm):
     class Meta:
         model = Defect
-        fields = '__all__'
+        exclude = ('employee', )
         widgets = {
             'date': DateInput(
                 format=('%Y-%m-%d'),

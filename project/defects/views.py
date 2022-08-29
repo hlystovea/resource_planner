@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
@@ -51,6 +52,11 @@ class DefectCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['is_new'] = True
         return context
+
+    @login_required
+    def post(self, request, *args, **kwargs):
+        kwargs['employee'] = request.user
+        return super().post(request, *args, **kwargs)
 
 
 class DefectUpdateView(UpdateView):

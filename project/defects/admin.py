@@ -40,6 +40,7 @@ class DefectAdmin(ImageTagField, MixinAdmin):
                    'date', 'technical_reasons', 'organizational_reasons')
     autocomplete_fields = ('hardware', 'cabinet', 'component')
     date_hierarchy = 'date'
+    readonly_fields = ('employee', )
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
@@ -76,6 +77,11 @@ class DefectAdmin(ImageTagField, MixinAdmin):
         if obj.repair_date:
             return obj.repair_date.strftime('%d.%m.%Y')
         return None
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.employee = request.user
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Condition)

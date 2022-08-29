@@ -28,11 +28,11 @@ class Facility(models.Model):
 class Connection(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200,
+        max_length=200
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
-        max_length=30,
+        max_length=30
     )
     facility = models.ForeignKey(
         to='hardware.Facility',
@@ -60,6 +60,27 @@ class Connection(models.Model):
         return f'{self.facility}/{self.abbreviation}'
 
 
+class Group(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True
+    )
+    abbreviation = models.CharField(
+        verbose_name=_('Аббревиатура'),
+        max_length=30,
+        unique=True
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Группа оборудования')
+        verbose_name_plural = _('Группы оборудования')
+
+    def __str__(self):
+        return self.abbreviation
+
+
 class Hardware(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
@@ -75,8 +96,14 @@ class Hardware(models.Model):
         verbose_name=_('Присоединение'),
         on_delete=models.SET_NULL,
         related_name='hardware',
-        blank=True,
-        null=True,
+        null=True
+    )
+    group = models.ForeignKey(
+        to='hardware.Group',
+        verbose_name=_('Группа оборудования'),
+        on_delete=models.SET_NULL,
+        related_name='hardware',
+        null=True
     )
 
     class Meta:
@@ -91,7 +118,9 @@ class Hardware(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.connection}/{self.name} (Инв.№{self.inventory_number})'
+        if self.connection:
+            return f'{self.connection}/{self.name} (Инв.№{self.inventory_number})'  # noqa(E501)
+        return f'{self.name} (Инв.№{self.inventory_number})'
 
 
 class Cabinet(models.Model):
