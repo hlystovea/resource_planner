@@ -1,5 +1,5 @@
 from django.forms import ChoiceField, ModelForm, Form
-from django.forms.widgets import DateInput, TextInput, CheckboxSelectMultiple
+from django.forms.widgets import DateInput
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
@@ -36,7 +36,7 @@ class DefectFilterForm(Form):
         connections = Connection.objects.all()
         hardware = Hardware.objects.all()
         cabinets = Cabinet.objects.all()
-    
+
         query_dict = args[0]
 
         if query_dict:
