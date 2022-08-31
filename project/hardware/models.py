@@ -292,7 +292,7 @@ class ComponentRepairMethod(models.Model):
         ordering = ('name', )
         verbose_name = _('Метод устранения дефекта')
         verbose_name_plural = _('Методы устранения дефектов')
-    
+
     def __str__(self):
         return self.name
 
@@ -313,7 +313,7 @@ class ComponentDesign(models.Model):
         ordering = ('id', )
         verbose_name = _('Вариант исполнения')
         verbose_name_plural = _('Варианты исполнения')
-    
+
     def __str__(self):
         return f'{self.abbreviation} - {self.name}'
 
@@ -329,6 +329,6 @@ class ComponentFunction(models.Model):
         ordering = ('name', )
         verbose_name = _('Назначение комплектующего')
         verbose_name_plural = _('Назначения комплектующих')
-    
+
     def __str__(self):
         return self.name
