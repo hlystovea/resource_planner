@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
@@ -44,7 +44,7 @@ class DefectDetail(DetailView):
         return queryset.select_related('hardware', 'employee', 'condition')
 
 
-class DefectCreateView(CreateView):
+class DefectCreateView(LoginRequiredMixin, CreateView):
     model = Defect
     form_class = DefectForm
 
@@ -53,10 +53,13 @@ class DefectCreateView(CreateView):
         context['is_new'] = True
         return context
 
-    @login_required
     def post(self, request, *args, **kwargs):
-        kwargs['employee'] = request.user
-        return super().post(request, *args, **kwargs)
+        form = self.get_form()
+        if form.is_valid():
+            form.instance.employee = request.user
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class DefectUpdateView(UpdateView):
