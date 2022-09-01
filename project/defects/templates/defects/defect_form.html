@@ -12,7 +12,6 @@
     <h3>{% if is_new %}Добавить{% else %}Изменить{% endif %} дефект</h3>
   </figure>
   <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
     <div class="card shadow-sm mb-3 mt-1 p-3">
       {% include 'includes/form.html' %}
     </div>
