@@ -65,6 +65,7 @@ class DefectUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/auth/login/'
 
 
-class DefectDeleteView(DeleteView):
+class DefectDeleteView(LoginRequiredMixin, DeleteView):
     model = Defect
+    login_url = '/auth/login/'
     success_url = reverse_lazy('defects:defect-list')
