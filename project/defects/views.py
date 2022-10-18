@@ -44,9 +44,10 @@ class DefectDetail(DetailView):
         return queryset.select_related('hardware', 'employee', 'condition')
 
 
-class DefectCreateView(CreateView):
+class DefectCreateView(LoginRequiredMixin, CreateView):
     model = Defect
     form_class = DefectForm
+    login_url = '/auth/login/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -58,9 +59,10 @@ class DefectCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DefectUpdateView(UpdateView):
+class DefectUpdateView(LoginRequiredMixin, UpdateView):
     model = Defect
     form_class = DefectForm
+    login_url = '/auth/login/'
 
 
 class DefectDeleteView(DeleteView):

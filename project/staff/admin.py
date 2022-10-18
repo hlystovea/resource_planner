@@ -112,7 +112,7 @@ class EmployeeAdmin(UserAdmin):
         }),
         (_('Персональная информация'), {
             'fields': (
-                ('first_name', 'last_name', 'patronymic'), 'email', 'dept'
+                ('last_name', 'first_name', 'patronymic'), 'email', 'dept'
             )
         }),
         (_('Права доступа'), {

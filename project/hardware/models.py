@@ -269,11 +269,6 @@ class Component(models.Model):
 
     def clean(self):
         errors = {}
-        if self.component and self.cabinet:
-            if self.component.cabinet != self.cabinet:
-                errors['component'] = ValidationError(
-                    _('Комплектующее не может быть из другого шкафа/панели')
-                )
         if self.release_year and self.launch_year:
             if self.release_year > self.launch_year:
                 errors['release_year'] = ValidationError(
@@ -297,7 +292,7 @@ class ComponentRepairMethod(models.Model):
         ordering = ('name', )
         verbose_name = _('Метод устранения дефекта')
         verbose_name_plural = _('Методы устранения дефектов')
-    
+
     def __str__(self):
         return self.name
 
@@ -318,7 +313,7 @@ class ComponentDesign(models.Model):
         ordering = ('id', )
         verbose_name = _('Вариант исполнения')
         verbose_name_plural = _('Варианты исполнения')
-    
+
     def __str__(self):
         return f'{self.abbreviation} - {self.name}'
 
@@ -334,6 +329,6 @@ class ComponentFunction(models.Model):
         ordering = ('name', )
         verbose_name = _('Назначение комплектующего')
         verbose_name_plural = _('Назначения комплектующих')
-    
+
     def __str__(self):
         return self.name
