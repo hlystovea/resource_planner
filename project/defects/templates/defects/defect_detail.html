@@ -53,6 +53,7 @@
       </div>
     </div>
   </div>
+  {% if user.is_authenticated %}
   <div class="d-flex justify-content-end">
     {% include "includes/back.html" %}
     <a class="btn btn-sm btn-secondary me-1" href="{% url 'defects:defect-update' defect.id %}" role="button">
@@ -62,6 +63,7 @@
       Удалить
     </button>
   </div>
+  {% endif %}
 <!-- Delete modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
