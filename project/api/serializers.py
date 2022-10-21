@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
-from hardware.models import Cabinet, Component, Connection, Facility, Hardware
+from hardware.models import (Cabinet, Component, Connection,
+                             Facility, Group, Hardware)
 
 
 class FacilitySerializer(ModelSerializer):
@@ -12,6 +13,12 @@ class FacilitySerializer(ModelSerializer):
 class ConnectionSerializer(ModelSerializer):
     class Meta:
         model = Connection
+        fields = '__all__'
+
+
+class GroupSerializer(ModelSerializer):
+    class Meta:
+        model = Group
         fields = '__all__'
 
 

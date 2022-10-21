@@ -3,10 +3,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from hardware.models import Cabinet, Component, Connection, Facility, Hardware
+from hardware.models import (Cabinet, Component, Connection,
+                             Facility, Group, Hardware)
 from .serializers import (CabinetSerializer, ComponentSerializer,
                           ConnectionSerializer, FacilitySerializer,
-                          HardwareSerializer)
+                          GroupSerializer, HardwareSerializer)
 
 
 
@@ -29,6 +30,17 @@ class ConnectionViewSet(ReadOnlyModelViewSet):
     def hardware(self, request, *args, **kwargs):
         connection = get_object_or_404(Connection, pk=kwargs['pk'])
         serializer = HardwareSerializer(connection.hardware, many=True)
+        return Response(serializer.data)
+
+
+class GroupViewSet(ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+    @action(methods=['get'], url_name='hardware', detail=True)
+    def hardware(self, request, *args, **kwargs):
+        group = get_object_or_404(Group, pk=kwargs['pk'])
+        serializer = HardwareSerializer(group.hardware, many=True)
         return Response(serializer.data)
 
 

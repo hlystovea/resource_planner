@@ -14,13 +14,13 @@
           <dt class="col-sm-4">Дата обнаружения</dt>
           <dd class="col-sm-8">{{ defect.date|date:"d.m.Y" }}</dd>
           <dt class="col-sm-4">Объект</dt>
-          <dd class="col-sm-8">{{ defect.hardware.connection.facility }}</dd>
+          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.connection.facility }}</dd>
           <dt class="col-sm-4">Присоединение</dt>
-          <dd class="col-sm-8">{{ defect.hardware.connection.abbreviation }}</dd>
+          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.connection.abbreviation }}</dd>
           <dt class="col-sm-4">Оборудование</dt>
-          <dd class="col-sm-8">{{ defect.hardware.name }}</dd>
+          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.name }}</dd>
           <dt class="col-sm-4">Шкаф/панель</dt>
-          <dd class="col-sm-8">{{ defect.cabinet }}</dd>
+          <dd class="col-sm-8">{{ defect.component.cabinet }}</dd>
           <dt class="col-sm-4">Комплектующее</dt>
           <dd class="col-sm-8">{{ defect.component }}</dd>
           <dt class="col-sm-4">Обнаруживший</dt>

@@ -15,15 +15,23 @@
       {% endfor %}
     </select>
   </div>
+  <!--
   <div class="col-sm-2">
-    <fieldset id="disableHardware" disabled>
     <select class="form-select form-select-sm" id="selectHardware" name="hardware" onchange="updateSelectCabinet()">
       <option value="" selected>Оборудование...</option>
       {% for id, name in form.fields.hardware.choices %}
         <option value="{{ id }}" {% if request.GET.dict.hardware == id|urlencode  %}selected{% endif %}>{{ name }}</option>
       {% endfor %}
     </select>
-    </fieldset>
+  </div>
+  -->
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectGroup" name="group" onchange="">
+      <option value="" selected>Группа оборудования...</option>
+      {% for id, name in form.fields.group.choices %}
+        <option value="{{ id }}" {% if request.GET.dict.group == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
   </div>
   <!--
   <div class="col-sm-2">
@@ -48,11 +56,13 @@
     url = "{% url 'defects:defect-list' %}?";
     facility = document.getElementById("selectFacility").value;
     connection = document.getElementById("selectConnection").value;
-    hardware = document.getElementById("selectHardware").value;
+    group = document.getElementById("selectGroup").value;
+    // hardware = document.getElementById("selectHardware").value;
     // cabinet = document.getElementById("selectCabinet").value;
     if (facility !== null) url += "&facility=" + facility;
     if (connection !== null) url += "&connection=" + connection;
-    if (hardware !== null) url += "&hardware=" + hardware;
+    if (group !== null) url += "&group=" + group;
+    // if (hardware !== null) url += "&hardware=" + hardware;
     // if (cabinet !== null) url += "&cabinet=" + cabinet;
     window.location.replace(url);
   };

@@ -16,6 +16,7 @@ class DefectList(ListView):
 
         facility = self.request.GET.get('facility')
         connection = self.request.GET.get('connection')
+        group = self.request.GET.get('group')
         hardware = self.request.GET.get('hardware')
         cabinet = self.request.GET.get('cabinet')
 
@@ -23,6 +24,8 @@ class DefectList(ListView):
             queryset = queryset.filter(hardware__connection__facility=facility)
         if connection and connection.isdigit():
             queryset = queryset.filter(hardware__connection=connection)
+        if group and group.isdigit():
+            queryset = queryset.filter(hardware__group=group)
         if hardware and hardware.isdigit():
             queryset = queryset.filter(hardware=hardware)
         if cabinet and cabinet.isdigit():
