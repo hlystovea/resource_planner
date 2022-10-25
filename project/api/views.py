@@ -1,3 +1,5 @@
+from django.db.models import Value
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,12 +20,21 @@ class FacilityViewSet(ReadOnlyModelViewSet):
     @action(methods=['get'], url_name='connections', detail=True)
     def connections(self, request, *args, **kwargs):
         facility = get_object_or_404(Facility, pk=kwargs['pk'])
-        serializer = ConnectionSerializer(facility.connections, many=True)
+        queryset = facility.connections.annotate(
+            abbreviation_with_facility=Concat(
+                'abbreviation', Value(' '), 'facility__abbreviation'
+            )
+        )
+        serializer = ConnectionSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
 class ConnectionViewSet(ReadOnlyModelViewSet):
-    queryset = Connection.objects.all()
+    queryset = Connection.objects.annotate(
+            abbreviation_with_facility=Concat(
+                'abbreviation', Value(' '), 'facility__abbreviation'
+            )
+        )
     serializer_class = ConnectionSerializer
 
     @action(methods=['get'], url_name='hardware', detail=True)

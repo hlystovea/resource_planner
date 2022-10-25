@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer
+from operator import truediv
+from rest_framework.serializers import ModelSerializer, CharField
 
 from hardware.models import (Cabinet, Component, Connection,
                              Facility, Group, Hardware)
@@ -11,6 +12,8 @@ class FacilitySerializer(ModelSerializer):
 
 
 class ConnectionSerializer(ModelSerializer):
+    abbreviation_with_facility = CharField(read_only=True)
+
     class Meta:
         model = Connection
         fields = '__all__'

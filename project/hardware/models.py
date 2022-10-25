@@ -57,7 +57,7 @@ class Connection(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.facility}/{self.abbreviation}'
+        return f'{self.abbreviation} {self.facility}'
 
 
 class Group(models.Model):

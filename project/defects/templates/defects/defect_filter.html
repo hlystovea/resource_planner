@@ -2,44 +2,29 @@
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectFacility" name="facility" onchange="updateSelectConnection()">
       <option value="" selected>Объект...</option>
-      {% for id, name in form.fields.facility.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.facility == id|urlencode  %}selected{% endif %}>{{ name }}</option>
-      {% endfor %}
     </select>
   </div>
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectConnection" name="connection" onchange="updateSelectHardware()">
       <option value="" selected>Присоединение...</option>
-      {% for id, name in form.fields.connection.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.connection == id|urlencode  %}selected{% endif %}>{{ name }}</option>
-      {% endfor %}
     </select>
   </div>
   <!--
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectHardware" name="hardware" onchange="updateSelectCabinet()">
       <option value="" selected>Оборудование...</option>
-      {% for id, name in form.fields.hardware.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.hardware == id|urlencode  %}selected{% endif %}>{{ name }}</option>
-      {% endfor %}
     </select>
   </div>
   -->
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectGroup" name="group" onchange="">
       <option value="" selected>Группа оборудования...</option>
-      {% for id, name in form.fields.group.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.group == id|urlencode  %}selected{% endif %}>{{ name }}</option>
-      {% endfor %}
     </select>
   </div>
   <!--
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectCabinet" name="cabinet" onchange="redirectPage()">
       <option value="" selected>Шкаф/панель...</option>
-      {% for id, name in form.fields.cabinet.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.cabinet == id|urlencode  %}selected{% endif %}>{{ name }}</option>
-      {% endfor %}
     </select>
   </div>
   -->
@@ -53,17 +38,17 @@
   });
 
   function redirectPage() {
-    url = "{% url 'defects:defect-list' %}?";
-    facility = document.getElementById("selectFacility").value;
-    connection = document.getElementById("selectConnection").value;
-    group = document.getElementById("selectGroup").value;
+    let url = "{% url 'defects:defect-list' %}?";
+    let facility = document.getElementById("selectFacility").value;
+    let connection = document.getElementById("selectConnection").value;
+    let group = document.getElementById("selectGroup").value;
     // hardware = document.getElementById("selectHardware").value;
     // cabinet = document.getElementById("selectCabinet").value;
-    if (facility !== null) url += "&facility=" + facility;
-    if (connection !== null) url += "&connection=" + connection;
-    if (group !== null) url += "&group=" + group;
-    // if (hardware !== null) url += "&hardware=" + hardware;
-    // if (cabinet !== null) url += "&cabinet=" + cabinet;
+    if (facility !== '') url += "&facility=" + facility;
+    if (connection !== '') url += "&connection=" + connection;
+    if (group !== '') url += "&group=" + group;
+    // if (hardware !== '') url += "&hardware=" + hardware;
+    // if (cabinet !== '') url += "&cabinet=" + cabinet;
     window.location.replace(url);
   };
 
@@ -75,7 +60,7 @@
     return option
   };
 
-  function updateSelectOptions(id, url, selectedValue="", firstOption="Выбрать..") {
+  function updateSelectOptions(id, url, selectedValue="", firstOption="Выбрать..", key="abbreviation") {
     fetch(url)
       .then(function(response) {
         return response.json()
@@ -85,7 +70,7 @@
         options.push(createOptionElement("", firstOption, true))
         data.forEach(obj => {
           let selected = obj.id == selectedValue;
-          options.push(createOptionElement(obj.id, obj.abbreviation || obj.name, selected));
+          options.push(createOptionElement(obj.id, obj[key], selected));
         });
         parent.replaceChildren(...options);
       }).catch(function(ex) {
@@ -101,6 +86,14 @@
     updateSelectOptions(id, url, selectedValue, firstOption);
   };
 
+  function updateSelectGroup() {
+    let id = "selectGroup"
+    let url = "{% url 'api:group-list' %}"
+    let selectedValue = params.group
+    let firstOption = "Группа оборудования..."
+    updateSelectOptions(id, url, selectedValue, firstOption, "name");
+  };
+
   function updateSelectConnection() {
     let id = "selectConnection"
     let url = "{% url 'api:connection-list' %}"
@@ -108,7 +101,7 @@
     if (facility) url = "{% url 'api:facility-list' %}" + facility + "/connections";
     let selectedValue = params.connection
     let firstOption = "Присоединение..."
-    updateSelectOptions(id, url, selectedValue, firstOption);
+    updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
   };
 
   function updateSelectHardware() {
@@ -118,7 +111,7 @@
     if (connection) url = "{% url 'api:connection-list' %}" + connection + "/hardware";
     let selectedValue = params.hardware
     let firstOption = "Оборудование..."
-    updateSelectOptions(id, url, selectedValue, firstOption);
+    updateSelectOptions(id, url, selectedValue, firstOption, "name");
   };
 
   function updateSelectCabinet() {
@@ -130,4 +123,8 @@
     let firstOption = "Шкаф/панель..."
     updateSelectOptions(id, url, selectedValue, firstOption);
   };
+
+  updateSelectFacility();
+  updateSelectConnection();
+  updateSelectGroup();
 </script>

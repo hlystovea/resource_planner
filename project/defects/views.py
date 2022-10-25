@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
 
-from defects.forms import DefectFilterForm, DefectForm
+from defects.forms import DefectForm
 from defects.models import Defect
 
 
@@ -32,11 +32,6 @@ class DefectList(ListView):
             queryset = queryset.filter(cabinet=cabinet)
 
         return queryset.order_by('-date')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = DefectFilterForm(self.request.GET or None)
-        return context
 
 
 class DefectDetail(DetailView):
