@@ -12,7 +12,8 @@ class DefectList(ListView):
     model = Defect
 
     def get_queryset(self):
-        queryset = super().get_queryset().select_related('hardware')
+        queryset = super().get_queryset().select_related(
+            'component__cabinet__hardware__connection__facility')
 
         facility = self.request.GET.get('facility')
         connection = self.request.GET.get('connection')
@@ -39,7 +40,16 @@ class DefectDetail(DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.select_related('hardware', 'employee', 'condition')
+        return queryset.select_related(
+            'employee',
+            'condition',
+            'component__cabinet__hardware__connection'
+        ).prefetch_related(
+            'effects',
+            'features',
+            'technical_reasons',
+            'organizational_reasons'
+        )
 
 
 class DefectCreateView(LoginRequiredMixin, CreateView):
@@ -61,6 +71,10 @@ class DefectUpdateView(LoginRequiredMixin, UpdateView):
     model = Defect
     form_class = DefectForm
     login_url = '/auth/login/'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.select_related('component__cabinet__hardware__connection')
 
 
 class DefectDeleteView(LoginRequiredMixin, DeleteView):
