@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from django.forms.widgets import DateInput
+from django.forms.widgets import DateInput, CheckboxSelectMultiple, RadioSelect
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
@@ -18,5 +18,7 @@ class DefectForm(ModelForm):
             'repair_date': DateInput(
                 format=('%Y-%m-%d'),
                 attrs={'type': 'date', 'max': now().date().isoformat()}
-            )
+            ),
+            'features': CheckboxSelectMultiple,
+            'condition': RadioSelect,
         }
