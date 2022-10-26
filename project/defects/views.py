@@ -22,15 +22,19 @@ class DefectList(ListView):
         cabinet = self.request.GET.get('cabinet')
 
         if facility and facility.isdigit():
-            queryset = queryset.filter(hardware__connection__facility=facility)
+            queryset = queryset.filter(
+                component__cabinet__hardware__connection__facility=facility)
         if connection and connection.isdigit():
-            queryset = queryset.filter(hardware__connection=connection)
+            queryset = queryset.filter(
+                component__cabinet__hardware__connection=connection)
         if group and group.isdigit():
-            queryset = queryset.filter(hardware__group=group)
+            queryset = queryset.filter(
+                component__cabinet__hardware__group=group)
         if hardware and hardware.isdigit():
-            queryset = queryset.filter(hardware=hardware)
+            queryset = queryset.filter(
+                component__cabinet__hardware=hardware)
         if cabinet and cabinet.isdigit():
-            queryset = queryset.filter(cabinet=cabinet)
+            queryset = queryset.filter(component__cabinet=cabinet)
 
         return queryset.order_by('-date')
 

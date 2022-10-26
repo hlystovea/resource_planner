@@ -32,10 +32,10 @@
       {% for d in defect_list %}
           <tr>
             <td><a href="{% url 'defects:defect-detail' d.id %}">{{ d.date|date:'Y-m-d' }}</a></td>
-            <td>{{ d.hardware.connection.facility }}</td>
-            <td>{{ d.hardware.connection.abbreviation }}</td>
-            <td>{{ d.hardware.name }}</td>
-            <td>{{ d.cabinet.abbreviation }}</td>
+            <td>{{ d.component.cabinet.hardware.connection.facility }}</td>
+            <td>{{ d.component.cabinet.hardware.connection.abbreviation }}</td>
+            <td>{{ d.component.cabinet.hardware.name }}</td>
+            <td>{{ d.component.cabinet.abbreviation }}</td>
             <td>{{ d.description }}</td>
             <td>{{ d.repair_date|date:'Y-m-d' }}</td>
           </tr>

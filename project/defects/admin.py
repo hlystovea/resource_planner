@@ -36,23 +36,24 @@ class DefectAdmin(ImageTagField, MixinAdmin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('hardware__connection__facility', 'hardware__connection',
+    list_filter = ('component__cabinet__hardware__connection__facility',
+                   'component__cabinet__hardware__connection',
                    'date', 'technical_reasons', 'organizational_reasons')
-    autocomplete_fields = ('hardware', 'cabinet', 'component')
+    autocomplete_fields = ('component', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
-        return obj.hardware.connection.facility
+        return obj.component.cabinet.hardware.connection.facility
 
     @admin.display(description=_('Присоединение'))
     def hardware_connection(self, obj):
-        return obj.hardware.connection
+        return obj.component.cabinet.hardware.connection
 
     @admin.display(description=_('Оборудование'))
     def hardware_name(self, obj):
-        return obj.hardware.name[:80]
+        return obj.component.cabinet.hardware.name[:80]
 
     @admin.display(description=_('Описание'))
     def defect_description(self, obj):

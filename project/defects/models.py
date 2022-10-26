@@ -10,18 +10,6 @@ class Defect(models.Model):
     date = models.DateField(
         verbose_name=_('Дата обнаружения')
     )
-    hardware = models.ForeignKey(
-        to='hardware.Hardware',
-        verbose_name=_('Оборудование'),
-        on_delete=models.CASCADE,
-        related_name='defects'
-    )
-    cabinet = models.ForeignKey(
-        to='hardware.Cabinet',
-        verbose_name=_('Шкаф/панель'),
-        on_delete=models.CASCADE,
-        related_name='defects'
-    )
     component = models.ForeignKey(
         to='hardware.Component',
         verbose_name=_('Комплектующее'),
@@ -92,11 +80,6 @@ class Defect(models.Model):
 
     def clean(self):
         errors = {}
-        if self.component and self.cabinet:
-            if self.component.cabinet != self.cabinet:
-                errors['component'] = ValidationError(
-                    _('Комплектующее не может быть из другого шкафа/панели')
-                )
         if self.date and self.date > now().date():
             errors['date'] = ValidationError(
                 _('Дата обнаружения дефекта не может быть в будущем')
