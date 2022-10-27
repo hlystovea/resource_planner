@@ -5,64 +5,74 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
       <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+      <li class="breadcrumb-item">#{{ defect.id }}</li>
     </ol>
   </nav>
-  <div class="card shadow-sm mb-3 mt-1 p-3">
-    <div class="row">
-      <div class="col-6">
-        <dl class="row">
-          <dt class="col-sm-4">Дата обнаружения</dt>
-          <dd class="col-sm-8">{{ defect.date|date:"d.m.Y" }}</dd>
-          <dt class="col-sm-4">Объект</dt>
-          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.connection.facility }}</dd>
-          <dt class="col-sm-4">Присоединение</dt>
-          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.connection.abbreviation }}</dd>
-          <dt class="col-sm-4">Оборудование</dt>
-          <dd class="col-sm-8">{{ defect.component.cabinet.hardware.name }}</dd>
-          <dt class="col-sm-4">Шкаф/панель</dt>
-          <dd class="col-sm-8">{{ defect.component.cabinet }}</dd>
-          <dt class="col-sm-4">Комплектующее</dt>
-          <dd class="col-sm-8">{{ defect.component }}</dd>
-          <dt class="col-sm-4">Обнаруживший</dt>
-          <dd class="col-sm-8">{{ defect.employee }}</dd>
-          <dt class="col-sm-4">Последствия</dt>
-          <dd class="col-sm-8"><ul class="list-unstyled">{% for e in defect.effects.all %}<li>{{ e }}</li>{% endfor %}</ul></dd>
-          <dt class="col-sm-4">Признаки</dt>
-          <dd class="col-sm-8"><ul class="list-unstyled">{% for f in defect.features.all %}<li>{{ f }}</li>{% endfor %}</ul></dd>
-          <dt class="col-sm-4">Условия обнаружения</dt>
-          <dd class="col-sm-8">{{ defect.condition }}</dd>
-          <dt class="col-sm-4">Описание</dt>
-          <dd class="col-sm-8">{{ defect.description }}</dd>
-          {% if defect.image %}
-            <dt class="col-sm-4">Фотография</dt>
-            <dd class="col-sm-8"><a href="{{ defect.image.url }}" target="_blank">Открыть</a></dd>
-          {% endif %}
-        </dl>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5 pt-2">
+      <div class="card my-2">
+        <div class="card-header {% if defect.repair_date %}bg-success{% else %}bg-danger{% endif %}">
+          <div class="d-flex justify-content-end">
+            <span class="text me-auto">Дефект #{{ defect.id }}</span>
+            {% if defect.repair_date %}Устранено{% else %}Не устранено{% endif %}
+          </div>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-4">Дата обнаружения</dt>
+            <dd class="col-sm-8">{{ defect.date|date:"d.m.Y" }}</dd>
+            <dt class="col-sm-4">Место неисправности</dt>
+            <dd class="col-sm-8">
+              {{ defect.component.cabinet.hardware.connection.facility }} /
+              {{ defect.component.cabinet.hardware.connection.abbreviation }} /
+              {{ defect.component.cabinet.hardware.name }} /
+              {{ defect.component.cabinet }}</dt>
+            <dt class="col-sm-4">Комплектующее</dt>
+            <dd class="col-sm-8">{{ defect.component }}</dd>
+            <dt class="col-sm-4">Обнаруживший</dt>
+            <dd class="col-sm-8">{{ defect.employee }}</dd>
+            <dt class="col-sm-4">Последствия</dt>
+            <dd class="col-sm-8"><ul class="list-unstyled">{% for e in defect.effects.all %}<li>{{ e }}</li>{% endfor %}</ul></dd>
+            <dt class="col-sm-4">Признаки</dt>
+            <dd class="col-sm-8"><ul class="list-unstyled">{% for f in defect.features.all %}<li>{{ f }}</li>{% endfor %}</ul></dd>
+            <dt class="col-sm-4">Условия обнаружения</dt>
+            <dd class="col-sm-8">{{ defect.condition }}</dd>
+            <dt class="col-sm-4">Описание</dt>
+            <dd class="col-sm-8">{{ defect.description }}</dd>
+            {% if defect.image %}
+              <dt class="col-sm-4">Фотография</dt>
+              <dd class="col-sm-8"><a href="{{ defect.image.url }}" target="_blank">Открыть</a></dd>
+            {% endif %}
+          </dl>
+        </div>
+        {% if defect.repair_date %}
+          <div class="card-footer bg-transparent">
+            <dl class="row">
+              <dt class="col-sm-4">Дата устранения</dt>
+              <dd class="col-sm-8">{{ defect.repair_date|date:"d.m.Y"|default:"Не устранено" }}</dd>
+              <dt class="col-sm-4">Технические причины</dt>
+              <dd class="col-sm-8"><ul class="list-unstyled">{% for t in defect.technical_reasons.all %}<li>{{ t }}</li>{% endfor %}</ul></dd>
+              <dt class="col-sm-4">Организационные причины</dt>
+              <dd class="col-sm-8"><ul class="list-unstyled">{% for o in defect.organizational_reasons.all %}<li>{{ o }}</li>{% endfor %}</ul></dd>
+              <dt class="col-sm-4">Выполненные мероприятия</dt>
+              <dd class="col-sm-8">{{ defect.repair }}</dd>
+            </dl>
+          </div>
+        {% endif %}
       </div>
-      <div class="col-6">
-        <dl class="row">
-          <dt class="col-sm-4">Дата устранения</dt>
-          <dd class="col-sm-8">{{ defect.repair_date|date:"d.m.Y"|default:"Не устранено" }}</dd>
-          <dt class="col-sm-4">Технические причины</dt>
-          <dd class="col-sm-8"><ul class="list-unstyled">{% for t in defect.technical_reasons.all %}<li>{{ t }}</li>{% endfor %}</ul></dd>
-          <dt class="col-sm-4">Организационные причины</dt>
-          <dd class="col-sm-8"><ul class="list-unstyled">{% for o in defect.organizational_reasons.all %}<li>{{ o }}</li>{% endfor %}</ul></dd>
-          <dt class="col-sm-4">Выполненные мероприятия</dt>
-          <dd class="col-sm-8">{{ defect.repair }}</dd>
-        </dl>
-      </div>
+      {% if user.is_authenticated %}
+        <div class="d-flex justify-content-end">
+          <a class="btn btn-sm btn-secondary me-1" href="{% url 'defects:defect-update' defect.id %}" role="button">
+            Редактировать
+          </a>
+          <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Удалить
+          </button>
+        </div>
+        <!-- Delete modal -->
+        {% include 'defects/defect_confirm_delete.html' %}
+      {% endif %}
     </div>
   </div>
-  {% if user.is_authenticated %}
-    <div class="d-flex justify-content-end">
-      <a class="btn btn-sm btn-secondary me-1" href="{% url 'defects:defect-update' defect.id %}" role="button">
-        Редактировать
-      </a>
-      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-        Удалить
-      </button>
-    </div>
-    <!-- Delete modal -->
-    {% include 'defects/defect_confirm_delete.html' %}
-  {% endif %}
 {% endblock %}
