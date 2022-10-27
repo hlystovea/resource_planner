@@ -79,6 +79,11 @@ class DefectAdmin(ImageTagField, MixinAdmin):
             return obj.repair_date.strftime('%d.%m.%Y')
         return None
 
+    def lookup_allowed(self, key, value):
+        if key in ('component__cabinet__hardware__id__exact', ):
+            return True
+        return super().lookup_allowed(key, value)
+
     def save_model(self, request, obj, form, change):
         if not obj.pk:
             obj.employee = request.user

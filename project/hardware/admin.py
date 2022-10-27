@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import (Cabinet, Component, ComponentDesign,
                      ComponentFunction, ComponentRepairMethod,
                      Connection, Facility, Group, Hardware)
+from defects.models import Defect
 
 
 class MixinAdmin(admin.ModelAdmin):
@@ -116,10 +117,12 @@ class HardwareAdmin(MixinAdmin):
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
-            + urlencode({'hardware__id': f'{obj.id}'})
+            + urlencode({'component__cabinet__hardware__id__exact': f'{obj.id}'})
         )
         return format_html(
-            '<a href="{}">{}</a>', url, obj.defects.count()
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(component__cabinet__hardware=obj).count()
         )
 
 
