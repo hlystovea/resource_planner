@@ -3,6 +3,7 @@ from django.urls import path
 from defects.views import (DefectCreateView, DefectDeleteView,
                            DefectDetail, DefectList, DefectUpdateView)
 
+
 app_name = 'defects'
 
 urlpatterns = [

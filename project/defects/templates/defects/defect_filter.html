@@ -28,8 +28,19 @@
     </select>
   </div>
   -->
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectStatus" name="status">
+      <option value="" selected>Статус...</option>
+      <option value="false">Устранено</option>
+      <option value="true">Не устранено</option>
+    </select>
+  </div>
   <div class="col-auto">
     <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="redirectPage()">Показать</button>
+  </div>
+</div>
+<div class="row justify-content-end">
+  <div class="col-auto" id="yearLinks">
   </div>
 </div>
 <script>
@@ -37,18 +48,23 @@
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  function redirectPage() {
+  function redirectPage(year=null) {
     let url = "{% url 'defects:defect-list' %}?";
+    year = year || document.getElementById("selectedYear").innerText;
     let facility = document.getElementById("selectFacility").value;
     let connection = document.getElementById("selectConnection").value;
     let group = document.getElementById("selectGroup").value;
     // hardware = document.getElementById("selectHardware").value;
     // cabinet = document.getElementById("selectCabinet").value;
+    let status = document.getElementById("selectStatus").value;
+
+    if (year !== '') url += "&year=" + year;
     if (facility !== '') url += "&facility=" + facility;
     if (connection !== '') url += "&connection=" + connection;
     if (group !== '') url += "&group=" + group;
     // if (hardware !== '') url += "&hardware=" + hardware;
     // if (cabinet !== '') url += "&cabinet=" + cabinet;
+    if (status !== '') url += "&unrepaired=" + status;
     window.location.replace(url);
   };
 
@@ -124,6 +140,39 @@
     updateSelectOptions(id, url, selectedValue, firstOption);
   };
 
+  function createLinkElement(value, color="secondary") {
+    let link = document.createElement("a");
+    link.innerText = value;
+    link.href = "#";
+    link.className = "text-decoration-none link-" + color;
+    if (color == "dark") {
+      link.id = "selectedYear";
+      link.className += " bg-warning";
+    }
+    link.addEventListener("click", () => redirectPage((color == "dark") ? "*" : value));
+    return link
+  };
+
+  function updateYearLinks() {
+    fetch("{% url 'api:defect-years' %}")
+      .then(function(response) {
+        return response.json()
+      }).then(function(data) {
+        let parent = document.getElementById("yearLinks");
+        let links = [];
+        links.push("Год: ")
+        data.years.forEach(year => {
+          let color = (year == params.year) ? "dark" : "secondary";
+          links.push(createLinkElement(year, color));
+          links.push(" ")
+        });
+        parent.replaceChildren(...links);
+      }).catch(function(ex) {
+        console.log('Error: ', ex)
+      });
+  };
+
+  updateYearLinks();
   updateSelectFacility();
   updateSelectConnection();
   updateSelectGroup();

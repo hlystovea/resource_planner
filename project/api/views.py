@@ -1,16 +1,33 @@
 from django.db.models import Value
-from django.db.models.functions import Concat
+from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
                              Facility, Group, Hardware)
 from .serializers import (CabinetSerializer, ComponentSerializer,
-                          ConnectionSerializer, FacilitySerializer,
-                          GroupSerializer, HardwareSerializer)
+                          ConnectionSerializer, DefectSerializer,
+                          FacilitySerializer, GroupSerializer,
+                          HardwareSerializer, YearSerializer)
 
+
+class DefectViewSet(ReadOnlyModelViewSet):
+    queryset = Defect.objects.all()
+    serializer_class = DefectSerializer
+
+    @action(methods=['get'], url_name='years', detail=False)
+    def years(self, request, *args, **kwargs):
+        years = Defect.objects.dates(
+            'date', 'year'
+        ).values_list(
+            ExtractYear('date'),
+            flat=True
+        )
+        serializer = YearSerializer(instance={'years': years})
+        return Response(serializer.data)
 
 
 class FacilityViewSet(ReadOnlyModelViewSet):

@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+from django.views.generic import (CreateView, DeleteView, DetailView,
+                                  ListView, UpdateView)
 
+from defects.filters import DefectFilter
 from defects.forms import DefectForm
 from defects.models import Defect
 
@@ -10,41 +11,18 @@ from defects.models import Defect
 class DefectList(ListView):
     paginate_by = 20
     model = Defect
-
-    def get_queryset(self):
-        queryset = super().get_queryset().select_related(
+    queryset = Defect.objects.select_related(
             'component__cabinet__hardware__connection__facility')
 
-        facility = self.request.GET.get('facility')
-        connection = self.request.GET.get('connection')
-        group = self.request.GET.get('group')
-        hardware = self.request.GET.get('hardware')
-        cabinet = self.request.GET.get('cabinet')
-
-        if facility and facility.isdigit():
-            queryset = queryset.filter(
-                component__cabinet__hardware__connection__facility=facility)
-        if connection and connection.isdigit():
-            queryset = queryset.filter(
-                component__cabinet__hardware__connection=connection)
-        if group and group.isdigit():
-            queryset = queryset.filter(
-                component__cabinet__hardware__group=group)
-        if hardware and hardware.isdigit():
-            queryset = queryset.filter(
-                component__cabinet__hardware=hardware)
-        if cabinet and cabinet.isdigit():
-            queryset = queryset.filter(component__cabinet=cabinet)
-
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = DefectFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('-date')
 
 
 class DefectDetail(DetailView):
     model = Defect
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.select_related(
+    queryset = Defect.objects.select_related(
             'employee',
             'condition',
             'component__cabinet__hardware__connection'
@@ -75,10 +53,8 @@ class DefectUpdateView(LoginRequiredMixin, UpdateView):
     model = Defect
     form_class = DefectForm
     login_url = '/auth/login/'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.select_related('component__cabinet__hardware__connection')
+    queryset = Defect.objects.select_related(
+            'component__cabinet__hardware__connection')
 
 
 class DefectDeleteView(LoginRequiredMixin, DeleteView):

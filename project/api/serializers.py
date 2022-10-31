@@ -1,8 +1,19 @@
-from operator import truediv
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import (CharField, ListField,
+                                        ModelSerializer, Serializer)
 
+from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
                              Facility, Group, Hardware)
+
+
+class DefectSerializer(ModelSerializer):
+    class Meta:
+        model = Defect
+        fields = '__all__'
+
+
+class YearSerializer(Serializer):
+    years = ListField()
 
 
 class FacilitySerializer(ModelSerializer):
