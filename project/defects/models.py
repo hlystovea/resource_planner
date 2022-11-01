@@ -22,7 +22,7 @@ class Defect(models.Model):
         on_delete=models.PROTECT,
         related_name='defects'
     )
-    description = models.TextField(
+    description = models.CharField(
         verbose_name=_('Описание дефекта'),
         max_length=1500,
     )
@@ -62,7 +62,7 @@ class Defect(models.Model):
         blank=True
     )
     repair = models.TextField(
-        verbose_name=_('Выполненые мероприятия'),
+        verbose_name=_('Выполненные мероприятия'),
         max_length=500,
         blank=True,
         null=True,
