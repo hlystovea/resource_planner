@@ -48,10 +48,10 @@ class FacilityViewSet(ReadOnlyModelViewSet):
 
 class ConnectionViewSet(ReadOnlyModelViewSet):
     queryset = Connection.objects.annotate(
-            abbreviation_with_facility=Concat(
-                'abbreviation', Value(' '), 'facility__abbreviation'
-            )
+        abbreviation_with_facility=Concat(
+            'abbreviation', Value(' '), 'facility__abbreviation'
         )
+    )
     serializer_class = ConnectionSerializer
 
     @action(methods=['get'], url_name='hardware', detail=True)
@@ -97,7 +97,6 @@ class CabinetViewSet(ReadOnlyModelViewSet):
 class ComponentViewSet(ReadOnlyModelViewSet):
     queryset = Component.objects.all()
     serializer_class = ComponentSerializer
-
 
     @action(methods=['get'], url_name='components', detail=True)
     def components(self, request, *args, **kwargs):

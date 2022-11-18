@@ -137,7 +137,7 @@ class ConnectionAdmin(MixinAdmin):
     list_filter = ('facility', )
     autocomplete_fields = ('facility', )
     inlines = (HardwareInline, )
-    
+
 
 class ConnectionInline(admin.TabularInline):
     model = Connection
