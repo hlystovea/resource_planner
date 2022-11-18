@@ -2,7 +2,8 @@ from django.urls import include, path
 from rest_framework_nested import routers
 
 from .views import (CabinetViewSet, ComponentViewSet, ConnectionViewSet,
-                    DefectViewSet, FacilityViewSet, GroupViewSet, HardwareViewSet)
+                    DefectViewSet, FacilityViewSet, GroupViewSet,
+                    HardwareViewSet)
 
 app_name = 'api'
 
@@ -13,7 +14,7 @@ facility_router = routers.SimpleRouter()
 facility_router.register(r'facilities', FacilityViewSet, basename='facility')
 
 connection_router = routers.SimpleRouter()
-connection_router.register(r'connections', ConnectionViewSet, basename='connection')
+connection_router.register(r'connections', ConnectionViewSet, basename='connection')  # noqa(E501)
 
 group_router = routers.SimpleRouter()
 group_router.register(r'groups', GroupViewSet, basename='group')
