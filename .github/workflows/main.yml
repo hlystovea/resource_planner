@@ -63,7 +63,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "*,!.git,!.github,!.venv,!.env"
           target: "~/resource_planner"
-          rm: true
+          overwrite: true
 
   deploy:
     runs-on: ubuntu-latest
