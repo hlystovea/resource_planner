@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'django_filters',
     'sorl.thumbnail',
     'staff.apps.StaffConfig',
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     'repairs.apps.RepairsConfig',
     'hardware.apps.HardwareConfig',
     'shortener.apps.ShortenerConfig',
+    'defects.apps.DefectsConfig',
     'qr_code',
 ]
 
@@ -72,13 +74,20 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': env.db(),
+    }
 
-DATABASES = {
-    'default': env.db(),
-}
 
-
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'staff.Employee'
 
 # Password validation
 
@@ -98,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
 
 # Internationalization
 

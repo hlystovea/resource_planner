@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -48,30 +49,25 @@ class Dept(models.Model):
         return self.abbreviation
 
 
-class Staff(models.Model):
-    last_name = models.CharField(
-        verbose_name=_('Фамилия'),
-        max_length=20,
-    )
-    first_name = models.CharField(
-        verbose_name=_('Имя'),
-        max_length=20,
-    )
+class Employee(AbstractUser):
     patronymic = models.CharField(
         verbose_name=_('Отчество'),
-        max_length=20,
+        max_length=150,
+        blank=True
     )
-    department = models.ForeignKey(
-        to=Dept,
+    dept = models.ForeignKey(
+        Dept,
         verbose_name=_('Подразделение'),
         on_delete=models.CASCADE,
-        related_name='staff',
+        related_name='employees',
+        null=True
+    )
+    is_chief = models.BooleanField(
+        verbose_name=_('Руководитель подразделения'),
+        default=False
     )
 
-    class Meta:
-        ordering = ('last_name', )
-        verbose_name = _('Сотрудник')
-        verbose_name_plural = _('Сотрудники')
-
     def __str__(self):
-        return self.last_name + self.first_name + self.patronymic
+        if self.last_name:
+            return f'{self.last_name} {self.first_name[:1]}.{self.patronymic[:1]}.'  # noqa(E501)
+        return self.username
