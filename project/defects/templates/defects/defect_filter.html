@@ -5,7 +5,7 @@
     </select>
   </div>
   <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectConnection" name="connection" onchange="updateSelectHardware()">
+    <select class="form-select form-select-sm" id="selectConnection" name="connection">
       <option value="" selected>Присоединение...</option>
     </select>
   </div>
@@ -48,7 +48,7 @@
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  function redirectPage(year=null) {
+  function redirectPage(year="*") {
     let url = "{% url 'defects:defect-list' %}?";
     year = year || document.getElementById("selectedYear").innerText;
     let facility = document.getElementById("selectFacility").value;
