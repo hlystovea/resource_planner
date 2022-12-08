@@ -28,7 +28,7 @@ class Defect(models.Model):
     )
     image = ResizedImageField(
         verbose_name=_('Фото'),
-        upload_to='defects/',
+        upload_to='defects/images/%Y/%m/%d/',
         blank=True,
         null=True,
         size=[1280, 720],
