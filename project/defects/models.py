@@ -72,6 +72,12 @@ class Defect(models.Model):
         blank=True,
         null=True,
     )
+    attachment = models.FileField(
+        verbose_name=_('Приложение'),
+        upload_to='defects/attachments/%Y/%m/%d/',
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ('-date', )
