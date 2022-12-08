@@ -70,6 +70,14 @@ class TestDefect:
         assert image_field.blank, \
             'Поле "image" модели Defect не должно быть обязательным'
 
+        attachment_field = search_field(model_fields, 'attachment')
+        assert attachment_field is not None, \
+            'Модель Defect должна содержать поле "attachment"'
+        assert type(attachment_field) == fields.files.FileField, \
+            'Поле "attachment" модели Defect должно быть FileField'
+        assert attachment_field.blank, \
+            'Поле "attachment" модели Defect не должно быть обязательным'
+
     @pytest.mark.django_db
     def test_defect_view_get_list(self, client):
         try:
@@ -110,8 +118,8 @@ class TestDefect:
 
         assert 'form' in response.context, \
             'Проверьте, что передали поле "form" в контекст страницы'
-        assert len(response.context['form'].fields) == 11, \
-            'Проверьте, что в форме "form" 11 полей'
+        assert len(response.context['form'].fields) == 12, \
+            'Проверьте, что в форме "form" 12 полей'
 
         assert 'date' in response.context['form'].fields, \
             'Проверьте, что в форме "form" есть поле "date"'
@@ -192,3 +200,10 @@ class TestDefect:
             'Проверьте, что в форме "form" поле "repair_date" типа "DateField"'
         assert not response.context['form'].fields['repair_date'].required, \
             'Проверьте, что в форме "form" поле "repair_date" не обязательно'
+
+        assert 'attachment' in response.context['form'].fields, \
+            'Проверьте, что в форме "form" есть поле "attachment"'
+        assert type(response.context['form'].fields['attachment']) == forms.fields.FileField, \
+            'Проверьте, что в форме "form" поле "attachment" типа "FileField"'
+        assert not response.context['form'].fields['attachment'].required, \
+            'Проверьте, что в форме "form" поле "attachment" не обязательно'

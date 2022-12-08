@@ -221,6 +221,19 @@
               </div>
             </div>
 
+            <!-- Приложение -->
+            <div class="form-group row my-1" aria-required={% if form.attachment.required %}"true"{% else %}"false"{% endif %}>
+              <label for="{{ form.attachment_for_label }}" class="col-md-4 col-form-label text-md-right">
+                {{ form.attachment.label }}
+              </label>
+              <div class="col-md-8">
+                {{ form.attachment|addclass:"form-control" }}
+                {% if form.attachment.help_text %}
+                  <small id="{{ form.attachment.id_for_label }}-help" class="form-text text-muted">{{ form.attachment.help_text|safe }}</small>
+                {% endif %}
+              </div>
+            </div>
+
             <!-- Кнопка -->
             <div class="d-flex justify-content-end mt-3">          
               <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>

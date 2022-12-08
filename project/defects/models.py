@@ -28,7 +28,7 @@ class Defect(models.Model):
     )
     image = ResizedImageField(
         verbose_name=_('Фото'),
-        upload_to='defects/',
+        upload_to='defects/images/%Y/%m/%d/',
         blank=True,
         null=True,
         size=[1280, 720],
@@ -69,6 +69,12 @@ class Defect(models.Model):
     )
     repair_date = models.DateField(
         verbose_name=_('Дата устранения'),
+        blank=True,
+        null=True,
+    )
+    attachment = models.FileField(
+        verbose_name=_('Приложение'),
+        upload_to='defects/attachments/%Y/%m/%d/',
         blank=True,
         null=True,
     )
