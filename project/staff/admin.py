@@ -106,25 +106,6 @@ class EmployeeAdmin(UserAdmin):
     autocomplete_fields = ('dept', )
     readonly_fields = ('date_joined', 'last_login')
 
-    add_fieldsets = (
-        (_('Логин/пароль'), {
-            'fields': ('username', )
-        }),
-        (_('Персональная информация'), {
-            'fields': (
-                ('last_name', 'first_name', 'patronymic'), 'email', 'dept'
-            )
-        }),
-        (_('Права доступа'), {
-            'fields': (
-                'is_active', 'is_staff', 'is_chief', 'is_superuser', 'groups'
-            )
-        }),
-        (_('Даты последнего входа/регистрации'), {
-            'fields': ('last_login', 'date_joined')
-        })
-    )
-
     fieldsets = (
         (_('Логин/пароль'), {
             'fields': ('username', 'password')
@@ -148,11 +129,10 @@ class EmployeeAdmin(UserAdmin):
         form = super().get_form(request, obj, **kwargs)
         is_superuser = request.user.is_superuser
         disabled_fields = set()
+
         if not is_superuser:
-            disabled_fields |= {
-                'is_superuser',
-                'user_permissions',
-            }
+            disabled_fields |= {'is_superuser', 'user_permissions'}
+
         if (
             not is_superuser
             and obj is not None
@@ -166,7 +146,9 @@ class EmployeeAdmin(UserAdmin):
                 'groups',
                 'user_permissions',
             }
+
         for f in disabled_fields:
             if f in form.base_fields:
                 form.base_fields[f].disabled = True
+
         return form
