@@ -78,7 +78,7 @@ class Group(models.Model):
         verbose_name_plural = _('Группы оборудования')
 
     def __str__(self):
-        return self.abbreviation
+        return self.name
 
 
 class Hardware(models.Model):
