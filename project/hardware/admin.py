@@ -163,7 +163,7 @@ class FacilityAdmin(MixinAdmin):
 
 @admin.register(Group)
 class GroupAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'abbreviation', 'count_hardware')
+    list_display = ('id', 'name', 'count_hardware')
 
     @admin.display(description=_('Кол-во оборудования'))
     def count_hardware(self, obj):
