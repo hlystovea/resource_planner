@@ -188,6 +188,71 @@ class Cabinet(models.Model):
         return f'{self.abbreviation}'
 
 
+class Part(models.Model):
+    name = models.CharField(
+        verbose_name=_('Условное обозначение'),
+        max_length=200,
+    )
+    component = models.ForeignKey(
+        'hardware.Component',
+        verbose_name=_('Компонент'),
+        on_delete=models.PROTECT,
+        related_name='parts'
+    )
+    release_year = models.IntegerField(
+        verbose_name=_('Год выпуска'),
+        validators=[
+            MinValueValidator(1972),
+            MaxValueValidator(2050)
+        ]
+    )
+    launch_year = models.IntegerField(
+        verbose_name=_('Год ввода в эксплуатацию'),
+        validators=[
+            MinValueValidator(1972),
+            MaxValueValidator(2050)
+        ]
+    )
+    cabinet = models.ForeignKey(
+        to='hardware.Cabinet',
+        verbose_name=_('Шкаф/Панель'),
+        on_delete=models.CASCADE,
+        related_name='parts'
+    )
+    part = models.ForeignKey(
+        to='hardware.Part',
+        verbose_name=_('Комплектующее'),
+        on_delete=models.SET_NULL,
+        related_name='parts',
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Комплектующее / Деталь')
+        verbose_name_plural = _('Комплектующие / Детали')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'cabinet'),
+                name='name_cabinet_uniquetogether'
+            )
+        ]
+
+    def clean(self):
+        errors = {}
+        if self.release_year and self.launch_year:
+            if self.release_year > self.launch_year:
+                errors['release_year'] = ValidationError(
+                    _('Год выпуска не может быть позже ввода в эксплуатацию')
+                )
+        if errors:
+            raise ValidationError(errors)
+
+    def __str__(self):
+        return f'{self.name} - {self.component.name}'
+
+
 class Component(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
@@ -205,9 +270,11 @@ class Component(models.Model):
         on_delete=models.PROTECT,
         related_name='components'
     )
-    manufacturer = models.CharField(
+    manufacturer = models.ForeignKey(
+        to='hardware.Manufacturer',
         verbose_name=_('Изготовитель'),
-        max_length=200,
+        on_delete=models.PROTECT,
+        related_name='components'
     )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
@@ -221,55 +288,17 @@ class Component(models.Model):
         blank=True,
         null=True
     )
-    release_year = models.IntegerField(
-        verbose_name=_('Год выпуска'),
-        validators=[
-            MinValueValidator(1972),
-            MaxValueValidator(2050)
-        ]
-    )
-    launch_year = models.IntegerField(
-        verbose_name=_('Год ввода в эксплуатацию'),
-        validators=[
-            MinValueValidator(1972),
-            MaxValueValidator(2050)
-        ]
-    )
     repair_method = models.ForeignKey(
         to='hardware.ComponentRepairMethod',
         verbose_name=_('Метод устранения дефекта'),
         on_delete=models.PROTECT,
         related_name='components'
     )
-    cabinet = models.ForeignKey(
-        to='hardware.Cabinet',
-        verbose_name=_('Шкаф/Панель'),
-        on_delete=models.CASCADE,
-        related_name='components'
-    )
-    component = models.ForeignKey(
-        to='hardware.Component',
-        verbose_name=_('Комплектующее'),
-        on_delete=models.SET_NULL,
-        related_name='components',
-        blank=True,
-        null=True
-    )
 
     class Meta:
         ordering = ('name', )
-        verbose_name = _('Комплектующее изделие')
-        verbose_name_plural = _('Комплектующие изделия')
-
-    def clean(self):
-        errors = {}
-        if self.release_year and self.launch_year:
-            if self.release_year > self.launch_year:
-                errors['release_year'] = ValidationError(
-                    _('Год выпуска не может быть позже ввода в эксплуатацию')
-                )
-        if errors:
-            raise ValidationError(errors)
+        verbose_name = _('Компонент / запчасть')
+        verbose_name_plural = _('Компоненты / запчасти')
 
     def __str__(self):
         return f'{self.name}'
@@ -323,6 +352,22 @@ class ComponentFunction(models.Model):
         ordering = ('name', )
         verbose_name = _('Назначение комплектующего')
         verbose_name_plural = _('Назначения комплектующих')
+
+    def __str__(self):
+        return self.name
+
+
+class Manufacturer(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Изготовитель оборудования')
+        verbose_name_plural = _('Изготовители оборудования')
 
     def __str__(self):
         return self.name

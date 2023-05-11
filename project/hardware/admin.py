@@ -8,7 +8,8 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import (Cabinet, Component, ComponentDesign,
                      ComponentFunction, ComponentRepairMethod,
-                     Connection, Facility, Group, Hardware)
+                     Connection, Facility, Group, Hardware,
+                     Manufacturer, Part)
 from defects.models import Defect
 
 
@@ -34,24 +35,21 @@ class ImageTagField(admin.ModelAdmin):
         return None
 
 
-class ComponentInline(admin.TabularInline):
-    model = Component
+class PartInline(admin.TabularInline):
+    model = Part
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
     readonly_fields = ('cabinet', )
 
 
-@admin.register(Component)
-class ComponentAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'get_design', 'get_cabinet',
-                    'get_component', 'release_year', 'launch_year')
-    list_filter = ('design', 'repair_method', 'launch_year')
-    autocomplete_fields = ('component', 'cabinet')
-    inlines = (ComponentInline, )
-
-    @admin.display(description=_('Исполнение'))
-    def get_design(self, obj):
-        return obj.design.abbreviation
+@admin.register(Part)
+class PartAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'component', 'get_cabinet',
+                    'get_part', 'release_year', 'launch_year')
+    list_filter = ('component__design', 'component__repair_method',
+                   'launch_year')
+    autocomplete_fields = ('component', 'part', 'cabinet')
+    inlines = (PartInline, )
 
     @admin.display(description=_('Шкаф/Панель'))
     def get_cabinet(self, obj):
@@ -66,15 +64,15 @@ class ComponentAdmin(MixinAdmin):
         return ''
 
     @admin.display(description=_('Комплектующее'))
-    def get_component(self, obj):
-        if obj.component:
+    def get_part(self, obj):
+        if obj.part:
             url = (
                 reverse(
-                    'admin:hardware_component_change',
-                    args=(obj.component.id, )
+                    'admin:hardware_part_change',
+                    args=(obj.part.id, )
                 )
             )
-            return format_html('<a href="{}">{}</a>', url, obj.component)
+            return format_html('<a href="{}">{}</a>', url, obj.part)
         return ''
 
     def save_formset(self, request, form, formset, change) -> None:
@@ -84,6 +82,12 @@ class ComponentAdmin(MixinAdmin):
             instance.save()
 
 
+@admin.register(Component)
+class ComponentAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'manufacturer', 'design', 'series', 'type')
+    list_filter = ('design', 'function', 'repair_method')
+
+
 @admin.register(Cabinet)
 class CabinetAdmin(MixinAdmin):
     list_display = ('id', 'abbreviation', 'hardware',
@@ -91,7 +95,7 @@ class CabinetAdmin(MixinAdmin):
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', )
-    inlines = (ComponentInline, )
+    inlines = (PartInline, )
 
 
 class CabinetInline(admin.TabularInline):
@@ -117,7 +121,7 @@ class HardwareAdmin(MixinAdmin):
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
-            + urlencode({'component__cabinet__hardware__id__exact': f'{obj.id}'})
+            + urlencode({'component__cabinet__hardware__id__exact': obj.id})
         )
         return format_html(
             '<a href="{}">{}</a>',
@@ -154,7 +158,7 @@ class FacilityAdmin(MixinAdmin):
         url = (
             reverse('admin:hardware_connection_changelist')
             + '?'
-            + urlencode({'facility__id': f'{obj.id}'})
+            + urlencode({'facility__id': obj.id})
         )
         return format_html(
             '<a href="{}">{}</a>', url, obj.connections.count()
@@ -170,7 +174,7 @@ class GroupAdmin(MixinAdmin):
         url = (
             reverse('admin:hardware_hardware_changelist')
             + '?'
-            + urlencode({'group__id': f'{obj.id}'})
+            + urlencode({'group__id': obj.id})
         )
         return format_html(
             '<a href="{}">{}</a>', url, obj.hardware.count()
@@ -188,5 +192,10 @@ class ComponentRepairMethodAdmin(MixinAdmin):
 
 
 @admin.register(ComponentFunction)
-class ComponentFunctiondmin(MixinAdmin):
+class ComponentFunctionAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(MixinAdmin):
     pass
