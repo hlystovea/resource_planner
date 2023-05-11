@@ -66,11 +66,6 @@ class Group(models.Model):
         max_length=200,
         unique=True
     )
-    abbreviation = models.CharField(
-        verbose_name=_('Аббревиатура'),
-        max_length=30,
-        unique=True
-    )
 
     class Meta:
         ordering = ('name', )
@@ -88,8 +83,7 @@ class Hardware(models.Model):
     )
     inventory_number = models.CharField(
         verbose_name=_('Инв. номер'),
-        max_length=50,
-        unique=True
+        max_length=50
     )
     connection = models.ForeignKey(
         to='hardware.Connection',
@@ -315,7 +309,7 @@ class ComponentDesign(models.Model):
         verbose_name_plural = _('Варианты исполнения')
 
     def __str__(self):
-        return f'{self.abbreviation} - {self.name}'
+        return self.abbreviation
 
 
 class ComponentFunction(models.Model):
