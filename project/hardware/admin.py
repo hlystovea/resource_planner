@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import (Cabinet, Component, ComponentDesign,
                      ComponentFunction, ComponentRepairMethod,
-                     Connection, Facility, Group, Hardware)
+                     Connection, Facility, Group, Hardware, Manufacturer, Part)
 from defects.models import Defect
 
 
@@ -34,6 +34,53 @@ class ImageTagField(admin.ModelAdmin):
         return None
 
 
+class PartInline(admin.TabularInline):
+    model = Part
+    show_change_link = True
+    verbose_name_plural = _('Входящие в состав комплектующие')
+    readonly_fields = ('cabinet', )
+
+
+@admin.register(Part)
+class PartAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'component', 'get_cabinet',
+                    'get_part', 'release_year', 'launch_year')
+    list_filter = ('component__design', 'component__repair_method',
+                   'launch_year')
+    autocomplete_fields = ('component', 'part', 'cabinet')
+    inlines = (PartInline, )
+
+    @admin.display(description=_('Шкаф/Панель'))
+    def get_cabinet(self, obj):
+        if obj.cabinet:
+            url = (
+                reverse(
+                    'admin:hardware_cabinet_change',
+                    args=(obj.cabinet.id, )
+                )
+            )
+            return format_html('<a href="{}">{}</a>', url, obj.cabinet)
+        return ''
+
+    @admin.display(description=_('Комплектующее'))
+    def get_part(self, obj):
+        if obj.part:
+            url = (
+                reverse(
+                    'admin:hardware_part_change',
+                    args=(obj.part.id, )
+                )
+            )
+            return format_html('<a href="{}">{}</a>', url, obj.part)
+        return ''
+
+    def save_formset(self, request, form, formset, change) -> None:
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.cabinet = form.cleaned_data['cabinet']
+            instance.save()
+
+
 @admin.register(Component)
 class ComponentAdmin(MixinAdmin):
     list_display = ('id', 'name', 'manufacturer', 'design', 'series', 'type')
@@ -47,6 +94,7 @@ class CabinetAdmin(MixinAdmin):
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', )
+    inlines = (PartInline, )
 
 
 class CabinetInline(admin.TabularInline):
@@ -72,12 +120,12 @@ class HardwareAdmin(MixinAdmin):
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
-            + urlencode({'component__cabinet__hardware__id__exact': f'{obj.id}'})
+            + urlencode({'part__cabinet__hardware__id__exact': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{}</a>',
             url,
-            Defect.objects.filter(component__cabinet__hardware=obj).count()
+            Defect.objects.filter(part__cabinet__hardware=obj).count()
         )
 
 
@@ -144,4 +192,9 @@ class ComponentRepairMethodAdmin(MixinAdmin):
 
 @admin.register(ComponentFunction)
 class ComponentFunctiondmin(MixinAdmin):
+    pass
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(MixinAdmin):
     pass

@@ -43,15 +43,15 @@ class DefectAdmin(ImageTagField, MixinAdmin):
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
-        return obj.component.cabinet.hardware.connection.facility
+        return obj.part.cabinet.hardware.connection.facility
 
     @admin.display(description=_('Присоединение'))
     def hardware_connection(self, obj):
-        return obj.component.cabinet.hardware.connection
+        return obj.part.cabinet.hardware.connection
 
     @admin.display(description=_('Оборудование'))
     def hardware_name(self, obj):
-        return obj.component.cabinet.hardware.name[:80]
+        return obj.part.cabinet.hardware.name[:80]
 
     @admin.display(description=_('Описание'))
     def defect_description(self, obj):
