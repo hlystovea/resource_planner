@@ -132,10 +132,6 @@ class Cabinet(models.Model):
         on_delete=models.CASCADE,
         related_name='cabinets'
     )
-    manufacturer = models.CharField(
-        verbose_name=_('Изготовитель'),
-        max_length=200,
-    )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
         max_length=100,
@@ -185,7 +181,7 @@ class Cabinet(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return f'{self.abbreviation}'
+        return self.abbreviation
 
 
 class Component(models.Model):
@@ -204,10 +200,6 @@ class Component(models.Model):
         verbose_name=_('Исполнение'),
         on_delete=models.PROTECT,
         related_name='components'
-    )
-    manufacturer = models.CharField(
-        verbose_name=_('Изготовитель'),
-        max_length=200,
     )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
