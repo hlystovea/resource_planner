@@ -36,9 +36,7 @@ class DefectAdmin(ImageTagField, MixinAdmin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('component__cabinet__hardware__connection__facility',
-                   'component__cabinet__hardware__connection',
-                   'date', 'technical_reasons', 'organizational_reasons')
+    list_filter = ('date', 'technical_reasons', 'organizational_reasons')
     autocomplete_fields = ('component', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )

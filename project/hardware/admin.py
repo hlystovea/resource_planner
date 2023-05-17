@@ -34,54 +34,10 @@ class ImageTagField(admin.ModelAdmin):
         return None
 
 
-class ComponentInline(admin.TabularInline):
-    model = Component
-    show_change_link = True
-    verbose_name_plural = _('Входящие в состав комплектующие')
-    readonly_fields = ('cabinet', )
-
-
 @admin.register(Component)
 class ComponentAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'get_design', 'get_cabinet',
-                    'get_component', 'release_year', 'launch_year')
-    list_filter = ('design', 'repair_method', 'launch_year')
-    autocomplete_fields = ('component', 'cabinet')
-    inlines = (ComponentInline, )
-
-    @admin.display(description=_('Исполнение'))
-    def get_design(self, obj):
-        return obj.design.abbreviation
-
-    @admin.display(description=_('Шкаф/Панель'))
-    def get_cabinet(self, obj):
-        if obj.cabinet:
-            url = (
-                reverse(
-                    'admin:hardware_cabinet_change',
-                    args=(obj.cabinet.id, )
-                )
-            )
-            return format_html('<a href="{}">{}</a>', url, obj.cabinet)
-        return ''
-
-    @admin.display(description=_('Комплектующее'))
-    def get_component(self, obj):
-        if obj.component:
-            url = (
-                reverse(
-                    'admin:hardware_component_change',
-                    args=(obj.component.id, )
-                )
-            )
-            return format_html('<a href="{}">{}</a>', url, obj.component)
-        return ''
-
-    def save_formset(self, request, form, formset, change) -> None:
-        instances = formset.save(commit=False)
-        for instance in instances:
-            instance.cabinet = form.cleaned_data['cabinet']
-            instance.save()
+    list_display = ('id', 'name', 'manufacturer', 'design', 'series', 'type')
+    list_filter = ('design', 'function', 'repair_method')
 
 
 @admin.register(Cabinet)
@@ -91,7 +47,6 @@ class CabinetAdmin(MixinAdmin):
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', )
-    inlines = (ComponentInline, )
 
 
 class CabinetInline(admin.TabularInline):
