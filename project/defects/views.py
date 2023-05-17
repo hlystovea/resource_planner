@@ -12,7 +12,8 @@ class DefectList(ListView):
     paginate_by = 20
     model = Defect
     queryset = Defect.objects.select_related(
-        'component__cabinet__hardware__connection__facility')
+        'part__cabinet__hardware__connection__facility',
+    )
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -25,7 +26,7 @@ class DefectDetail(DetailView):
     queryset = Defect.objects.select_related(
         'employee',
         'condition',
-        'component__cabinet__hardware__connection'
+        'part__cabinet__hardware__connection'
     ).prefetch_related(
         'effects',
         'features',
@@ -54,7 +55,7 @@ class DefectUpdateView(LoginRequiredMixin, UpdateView):
     form_class = DefectForm
     login_url = '/auth/login/'
     queryset = Defect.objects.select_related(
-        'component__cabinet__hardware__connection')
+        'part__cabinet__hardware__connection')
 
 
 class DefectDeleteView(LoginRequiredMixin, DeleteView):

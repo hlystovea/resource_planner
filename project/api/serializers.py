@@ -3,7 +3,7 @@ from rest_framework.serializers import (CharField, ListField,
 
 from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
-                             Facility, Group, Hardware)
+                             Facility, Group, Hardware, Part)
 
 
 class DefectSerializer(ModelSerializer):
@@ -45,6 +45,12 @@ class HardwareSerializer(ModelSerializer):
 class CabinetSerializer(ModelSerializer):
     class Meta:
         model = Cabinet
+        fields = '__all__'
+
+
+class PartSerializer(ModelSerializer):
+    class Meta:
+        model = Part
         fields = '__all__'
 
 

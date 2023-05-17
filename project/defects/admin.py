@@ -37,7 +37,7 @@ class DefectAdmin(ImageTagField, MixinAdmin):
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
     list_filter = ('date', 'technical_reasons', 'organizational_reasons')
-    autocomplete_fields = ('component', )
+    autocomplete_fields = ('part', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )
 
@@ -78,7 +78,7 @@ class DefectAdmin(ImageTagField, MixinAdmin):
         return None
 
     def lookup_allowed(self, key, value):
-        if key in ('component__cabinet__hardware__id__exact', ):
+        if key in ('part__cabinet__hardware__id__exact', ):
             return True
         return super().lookup_allowed(key, value)
 

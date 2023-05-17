@@ -7,11 +7,11 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
-                             Facility, Group, Hardware)
+                             Facility, Group, Hardware, Part)
 from .serializers import (CabinetSerializer, ComponentSerializer,
                           ConnectionSerializer, DefectSerializer,
                           FacilitySerializer, GroupSerializer,
-                          HardwareSerializer, YearSerializer)
+                          HardwareSerializer, PartSerializer, YearSerializer)
 
 
 class DefectViewSet(ReadOnlyModelViewSet):
@@ -94,12 +94,23 @@ class CabinetViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
+class PartViewSet(ReadOnlyModelViewSet):
+    queryset = Part.objects.all()
+    serializer_class = PartSerializer
+
+    @action(methods=['get'], url_name='parts', detail=True)
+    def parts(self, request, *args, **kwargs):
+        part = get_object_or_404(Part, pk=kwargs['pk'])
+        serializer = PartSerializer(part.parts, many=True)
+        return Response(serializer.data)
+
+
 class ComponentViewSet(ReadOnlyModelViewSet):
     queryset = Component.objects.all()
     serializer_class = ComponentSerializer
 
-    @action(methods=['get'], url_name='components', detail=True)
-    def components(self, request, *args, **kwargs):
+    @action(methods=['get'], url_name='parts', detail=True)
+    def parts(self, request, *args, **kwargs):
         component = get_object_or_404(Component, pk=kwargs['pk'])
-        serializer = ComponentSerializer(component.components, many=True)
+        serializer = PartSerializer(component.parts, many=True)
         return Response(serializer.data)

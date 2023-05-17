@@ -10,11 +10,12 @@ class Defect(models.Model):
     date = models.DateField(
         verbose_name=_('Дата обнаружения')
     )
-    component = models.ForeignKey(
-        to='hardware.Component',
+    part = models.ForeignKey(
+        to='hardware.Part',
         verbose_name=_('Комплектующее'),
         on_delete=models.CASCADE,
-        related_name='defects'
+        related_name='defects',
+        null=True
     )
     employee = models.ForeignKey(
         to='staff.Employee',
