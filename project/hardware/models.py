@@ -132,6 +132,13 @@ class Cabinet(models.Model):
         on_delete=models.CASCADE,
         related_name='cabinets'
     )
+    manufacturer = models.ForeignKey(
+        to='hardware.Manufacturer',
+        verbose_name=_('Изготовитель'),
+        on_delete=models.SET_NULL,
+        related_name='components',
+        null=True
+    )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
         max_length=100,
@@ -315,6 +322,22 @@ class ComponentFunction(models.Model):
         ordering = ('name', )
         verbose_name = _('Назначение комплектующего')
         verbose_name_plural = _('Назначения комплектующих')
+
+    def __str__(self):
+        return self.name
+
+
+class Manufacturer(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Изготовитель оборудования')
+        verbose_name_plural = _('Изготовители оборудования')
 
     def __str__(self):
         return self.name
