@@ -1,3 +1,4 @@
+import autocomplete_all
 from django.contrib import admin
 from django.db.models import CharField, TextField
 from django.forms import Textarea, TextInput
@@ -34,7 +35,7 @@ class ImageTagField(admin.ModelAdmin):
         return None
 
 
-class PartInline(admin.TabularInline):
+class PartInline(autocomplete_all.TabularInline):
     model = Part
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
@@ -85,6 +86,7 @@ class PartAdmin(MixinAdmin):
 class ComponentAdmin(MixinAdmin):
     list_display = ('id', 'name', 'manufacturer', 'design', 'series', 'type')
     list_filter = ('design', 'function', 'repair_method')
+    autocomplete_fields = ('manufacturer', )
 
 
 @admin.register(Cabinet)
@@ -97,7 +99,7 @@ class CabinetAdmin(MixinAdmin):
     inlines = (PartInline, )
 
 
-class CabinetInline(admin.TabularInline):
+class CabinetInline(autocomplete_all.TabularInline):
     model = Cabinet
     show_change_link = True
     verbose_name_plural = _('Входящие в состав шкафы/панели')
