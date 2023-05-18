@@ -97,7 +97,7 @@ class CabinetViewSet(ReadOnlyModelViewSet):
 class PartViewSet(ReadOnlyModelViewSet):
     queryset = Part.objects.annotate(
         name_with_component=Concat(
-            'name', Value(' '), 'component'
+            'name', Value(' '), 'component__name'
         )
     )
     serializer_class = PartSerializer
