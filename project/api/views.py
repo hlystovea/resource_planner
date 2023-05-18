@@ -87,10 +87,10 @@ class CabinetViewSet(ReadOnlyModelViewSet):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
 
-    @action(methods=['get'], url_name='components', detail=True)
-    def components(self, request, *args, **kwargs):
+    @action(methods=['get'], url_name='parts', detail=True)
+    def parts(self, request, *args, **kwargs):
         cabinet = get_object_or_404(Cabinet, pk=kwargs['pk'])
-        serializer = ComponentSerializer(cabinet.components, many=True)
+        serializer = PartSerializer(cabinet.parts, many=True)
         return Response(serializer.data)
 
 
@@ -112,9 +112,3 @@ class PartViewSet(ReadOnlyModelViewSet):
 class ComponentViewSet(ReadOnlyModelViewSet):
     queryset = Component.objects.all()
     serializer_class = ComponentSerializer
-
-    @action(methods=['get'], url_name='parts', detail=True)
-    def parts(self, request, *args, **kwargs):
-        component = get_object_or_404(Component, pk=kwargs['pk'])
-        serializer = PartSerializer(component.parts, many=True)
-        return Response(serializer.data)
