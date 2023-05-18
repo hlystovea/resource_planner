@@ -23,7 +23,7 @@ class FacilitySerializer(ModelSerializer):
 
 
 class ConnectionSerializer(ModelSerializer):
-    abbreviation_with_facility = CharField(read_only=True)
+    facility_with_abbreviation = CharField(read_only=True)
 
     class Meta:
         model = Connection
@@ -49,6 +49,8 @@ class CabinetSerializer(ModelSerializer):
 
 
 class PartSerializer(ModelSerializer):
+    name_with_component = CharField(read_only=True)
+
     class Meta:
         model = Part
         fields = '__all__'

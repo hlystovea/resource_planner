@@ -279,7 +279,7 @@
       let url = "{% url 'api:connection-list' %}"
       let selectedValue = "{% if defect %}{{ defect.part.cabinet.hardware.connection.id }}{% endif %}"
       let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
+      updateSelectOptions(id, url, selectedValue, firstOption, "facility_with_abbreviation");
     };
 
     function updateSelectHardware() {
@@ -310,7 +310,7 @@
       let selectedValue = "{% if form.part.value %}{{ form.part.value }}{% endif %}"
       console.log(selectedValue)
       let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "name");
+      updateSelectOptions(id, url, selectedValue, firstOption, "name_with_component");
     };
 
     updateSelectConnection();
