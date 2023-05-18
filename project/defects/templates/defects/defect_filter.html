@@ -54,7 +54,7 @@
     let facility = document.getElementById("selectFacility").value;
     let connection = document.getElementById("selectConnection").value;
     let group = document.getElementById("selectGroup").value;
-    let hardware = document.getElementById("selectHardware").value;
+    // let hardware = document.getElementById("selectHardware").value;
     // cabinet = document.getElementById("selectCabinet").value;
     let status = document.getElementById("selectStatus").value;
 
@@ -62,7 +62,7 @@
     if (facility !== '') url += "&facility=" + facility;
     if (connection !== '') url += "&connection=" + connection;
     if (group !== '') url += "&group=" + group;
-    if (hardware !== '') url += "&hardware=" + hardware;
+    // if (hardware !== '') url += "&hardware=" + hardware;
     // if (cabinet !== '') url += "&cabinet=" + cabinet;
     if (status !== '') url += "&unrepaired=" + status;
     window.location.replace(url);
@@ -176,5 +176,4 @@
   updateSelectFacility();
   updateSelectConnection();
   updateSelectGroup();
-  updateSelectHardware();
 </script>
