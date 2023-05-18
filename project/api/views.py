@@ -38,10 +38,10 @@ class FacilityViewSet(ReadOnlyModelViewSet):
     def connections(self, request, *args, **kwargs):
         facility = get_object_or_404(Facility, pk=kwargs['pk'])
         queryset = facility.connections.annotate(
-            abbreviation_with_facility=Concat(
-                'abbreviation', Value(' '), 'facility__abbreviation'
-            )
+        facility_with_abbreviation=Concat(
+            'facility__abbreviation', Value(' '), 'abbreviation'
         )
+    )
         serializer = ConnectionSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -90,7 +90,12 @@ class CabinetViewSet(ReadOnlyModelViewSet):
     @action(methods=['get'], url_name='parts', detail=True)
     def parts(self, request, *args, **kwargs):
         cabinet = get_object_or_404(Cabinet, pk=kwargs['pk'])
-        serializer = PartSerializer(cabinet.parts, many=True)
+        queryset = cabinet.parts.annotate(
+            name_with_component=Concat(
+                'name', Value(' '), 'component__name'
+            )
+        )
+        serializer = PartSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -105,7 +110,12 @@ class PartViewSet(ReadOnlyModelViewSet):
     @action(methods=['get'], url_name='parts', detail=True)
     def parts(self, request, *args, **kwargs):
         part = get_object_or_404(Part, pk=kwargs['pk'])
-        serializer = PartSerializer(part.parts, many=True)
+        queryset = part.parts.annotate(
+            name_with_component=Concat(
+                'name', Value(' '), 'component__name'
+            )
+        )
+        serializer = PartSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
