@@ -60,7 +60,7 @@ def facility():
     from hardware.models import Facility
     return Facility.objects.create(
         name='facility',
-        abbreviation='f'
+        abbreviation='f',
     )
 
 
@@ -70,7 +70,7 @@ def connection(facility):
     return Connection.objects.create(
         name='connection',
         abbreviation='c',
-        facility=facility
+        facility=facility,
     )
 
 
@@ -78,7 +78,7 @@ def connection(facility):
 def group():
     from hardware.models import Group
     return Group.objects.create(
-        name='group'
+        name='group',
     )
 
 
@@ -89,35 +89,52 @@ def hardware(connection, group):
         name='hardware',
         inventory_number='007',
         connection=connection,
-        group=group
+        group=group,
     )
 
 
 @pytest.fixture
-def cabinet(hardware):
+def manufacturer():
+    from hardware.models import Manufacturer
+    return Manufacturer.objects.create(
+        name='manufacturer',
+    )
+
+
+@pytest.fixture
+def cabinet(hardware, manufacturer):
     from hardware.models import Cabinet
     return Cabinet.objects.create(
         name='cabinet',
         abbreviation='c',
         hardware=hardware,
-        manufacturer='manufacturer',
+        manufacturer=manufacturer,
         release_year=2000,
-        launch_year=2000
+        launch_year=2000,
     )
 
 
 @pytest.fixture
-def component(function, design, repair_method, cabinet):
+def component(function, design, manufacturer, repair_method):
     from hardware.models import Component
     return Component.objects.create(
         name='component',
         function=function,
         design=design,
-        manufacturer='manufacturer',
+        manufacturer=manufacturer,
+        repair_method=repair_method,
+    )
+
+
+@pytest.fixture
+def part(cabinet, component):
+    from hardware.models import Part
+    return Part.objects.create(
+        name='part',
         release_year=2000,
         launch_year=2000,
-        repair_method=repair_method,
-        cabinet=cabinet
+        cabinet=cabinet,
+        component=component,
     )
 
 
@@ -147,11 +164,11 @@ def organizational_reason():
     return OrganizationalReason.objects.create(name='organizational_reason')
 
 @pytest.fixture
-def defect(component, user, effect, feature, condition):
+def defect(part, user, effect, feature, condition):
     from defects.models import Defect
     defect = Defect(
         date='2000-01-01',
-        component=component,
+        part=part,
         employee=user,
         description='Описание дефекта',
         condition=condition

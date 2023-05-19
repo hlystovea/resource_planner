@@ -36,13 +36,13 @@ class TestDefect:
         assert not date_field.blank, \
             'Поле "date" модели Defect должно быть обязательным'
 
-        component_field = search_field(model_fields, 'component_id')
-        assert component_field is not None, \
-            'Модель Defect должна содержать поле "component"'
-        assert type(component_field) == fields.related.ForeignKey, \
-            'Поле "component" модели Defect должно быть ForeignKey'
-        assert not component_field.blank, \
-            'Поле "component" модели Defect должно быть обязательным'
+        part_field = search_field(model_fields, 'part_id')
+        assert part_field is not None, \
+            'Модель Defect должна содержать поле "part"'
+        assert type(part_field) == fields.related.ForeignKey, \
+            'Поле "part" модели Defect должно быть ForeignKey'
+        assert not part_field.blank, \
+            'Поле "part" модели Defect должно быть обязательным'
 
         employee_field = search_field(model_fields, 'employee_id')
         assert employee_field is not None, \
@@ -57,8 +57,8 @@ class TestDefect:
         description_field = search_field(model_fields, 'description')
         assert description_field is not None, \
             'Модель Defect должна содержать поле "description"'
-        assert type(description_field) == fields.CharField, \
-            'Поле description модели Defect должно быть текстовым CharField'
+        assert type(description_field) == fields.TextField, \
+            'Поле description модели Defect должно быть текстовым TextField'
         assert not description_field.blank, \
             'Поле description модели Defect должно быть обязательным'
 
@@ -128,12 +128,12 @@ class TestDefect:
         assert response.context['form'].fields['date'].required, \
             'Проверьте, что в форме "form" поле "date" обязательно'
 
-        assert 'component' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "component"'
-        assert type(response.context['form'].fields['component']) == forms.models.ModelChoiceField, \
-            'Проверьте, что в форме "form" поле "component" типа "ModelChoiceField"'
-        assert response.context['form'].fields['component'].required, \
-            'Проверьте, что в форме "form" поле "component" обязательно'
+        assert 'part' in response.context['form'].fields, \
+            'Проверьте, что в форме "form" есть поле "part"'
+        assert type(response.context['form'].fields['part']) == forms.models.ModelChoiceField, \
+            'Проверьте, что в форме "form" поле "part" типа "ModelChoiceField"'
+        assert response.context['form'].fields['part'].required, \
+            'Проверьте, что в форме "form" поле "part" обязательно'
 
         assert not 'employee' in response.context['form'].fields, \
             'Проверьте, что в форме "form" нет поля "employee"'
