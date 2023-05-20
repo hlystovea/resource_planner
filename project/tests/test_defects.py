@@ -7,7 +7,7 @@ from django_resized import ResizedImageField
 from sorl.thumbnail.fields import ImageFormField
 
 from defects.forms import DefectForm
-from defects.models import Defect, Effect
+from defects.models import Defect
 from staff.models import Employee
 
 
@@ -85,6 +85,7 @@ class TestDefect:
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
+
         assert response.status_code == 200
         assert 'defect_list' in response.context, \
             'Проверьте, что передали поле "defect_list" в контекст страницы'
@@ -98,6 +99,7 @@ class TestDefect:
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
+
         assert response.status_code == 200
         assert type(response.context.get('defect')) == Defect, \
             'Проверьте, что передали поле типа Defect в контекст страницы'
@@ -109,9 +111,6 @@ class TestDefect:
             response = user_client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
-        if response.status_code in (301, 302):
-            url = reverse('defects:defect-create')
-            response = user_client.get(url)
 
         assert response.status_code != 404, \
             'Страница не найдена, проверьте этот адрес в *urls.py*'
@@ -207,3 +206,63 @@ class TestDefect:
             'Проверьте, что в форме "form" поле "attachment" типа "FileField"'
         assert not response.context['form'].fields['attachment'].required, \
             'Проверьте, что в форме "form" поле "attachment" не обязательно'
+
+    @pytest.mark.django_db
+    def test_defect_view_update_unautorized_user(self, client, defect):
+        try:
+            url = reverse('defects:defect-update', kwargs={'pk': defect.id})
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
+
+        assert response.status_code in (301, 302) and response.url.startswith(reverse('login')), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+
+    @pytest.mark.django_db
+    def test_defect_view_update_autorized_user(self, user_client, defect):
+        try:
+            url = reverse('defects:defect-update', kwargs={'pk': defect.id})
+            response = user_client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
+
+        assert response.status_code == 200
+        assert type(response.context.get('form')) == DefectForm, \
+            'Проверьте, что передали поле `form` типа DefectForm в контекст страницы'
+
+        defect_context = get_field_context(response.context, Defect)
+        assert defect_context is not None, \
+            'Проверьте, что передали дефект в контекст страницы'
+        
+
+    @pytest.mark.django_db
+    def test_defect_view_delete_unautorized_user(self, client, defect):
+        try:
+            url = reverse('defects:defect-delete', kwargs={'pk': defect.id})
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
+
+        assert response.status_code in (301, 302) and response.url.startswith(reverse('login')), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_defect_view_delete_autorized_user(self, user_client, defect):
+        try:
+            url = reverse('defects:defect-delete', kwargs={'pk': defect.id})
+            response = user_client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
