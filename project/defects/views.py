@@ -38,7 +38,7 @@ class DefectDetail(DetailView):
 class DefectCreateView(LoginRequiredMixin, CreateView):
     model = Defect
     form_class = DefectForm
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,12 +53,12 @@ class DefectCreateView(LoginRequiredMixin, CreateView):
 class DefectUpdateView(LoginRequiredMixin, UpdateView):
     model = Defect
     form_class = DefectForm
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
     queryset = Defect.objects.select_related(
         'part__cabinet__hardware__connection')
 
 
 class DefectDeleteView(LoginRequiredMixin, DeleteView):
     model = Defect
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
     success_url = reverse_lazy('defects:defect-list')
