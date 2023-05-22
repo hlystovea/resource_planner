@@ -28,13 +28,13 @@ def instrument():
 @pytest.fixture
 def material_in_storage_1(material, storage_1):
     from warehouse.models import MaterialStorage
-    return MaterialStorage.objects.create(material=material, storage=storage_1, amount=2)
+    return MaterialStorage.objects.create(material=material, storage=storage_1, amount=2)  # noqa (E501)
 
 
 @pytest.fixture
 def material_in_storage_2(material, storage_2):
     from warehouse.models import MaterialStorage
-    return MaterialStorage.objects.create(material=material, storage=storage_2, amount=4)
+    return MaterialStorage.objects.create(material=material, storage=storage_2, amount=4)  # noqa (E501)
 
 
 @pytest.fixture
@@ -143,25 +143,30 @@ def effect():
     from defects.models import Effect
     return Effect.objects.create(name='effect')
 
+
 @pytest.fixture
 def condition():
     from defects.models import Condition
     return Condition.objects.create(name='condition')
+
 
 @pytest.fixture
 def feature():
     from defects.models import Feature
     return Feature.objects.create(name='feature')
 
+
 @pytest.fixture
 def technical_reason():
     from defects.models import TechnicalReason
     return TechnicalReason.objects.create(name='technical_reason')
 
+
 @pytest.fixture
 def organizational_reason():
     from defects.models import OrganizationalReason
     return OrganizationalReason.objects.create(name='organizational_reason')
+
 
 @pytest.fixture
 def defect(part, user, effect, feature, condition):
