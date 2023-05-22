@@ -1,11 +1,32 @@
+import csv
 from django.contrib import admin
 from django.db.models import CharField, TextField
 from django.forms import Textarea, TextInput
+from django.http import HttpResponse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from .models import (Condition, Defect, Effect, Feature,
                      OrganizationalReason, TechnicalReason)
+
+
+class ExportCsvMixin(admin.ModelAdmin):
+    def export_as_csv(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={meta}.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    export_as_csv.short_description = 'Сохранить выбранные в csv-файл'
 
 
 class MixinAdmin(admin.ModelAdmin):
@@ -31,7 +52,7 @@ class ImageTagField(admin.ModelAdmin):
 
 
 @admin.register(Defect)
-class DefectAdmin(ImageTagField, MixinAdmin):
+class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     list_display = ('id', 'dispatch_object', 'hardware_connection',
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
