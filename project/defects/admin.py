@@ -12,17 +12,34 @@ from .models import (Condition, Defect, Effect, Feature,
 
 class ExportCsvMixin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
-
         meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
+        field_names = list(self.list_display)
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = f'attachment; filename={meta}.csv'
         writer = csv.writer(response)
 
         writer.writerow(field_names)
+
         for obj in queryset:
-            writer.writerow([getattr(obj, field) for field in field_names])
+            result = []
+
+            for field in field_names:
+                attr = getattr(obj, field, None)
+
+                if attr and callable(attr):
+                    result.append(attr())
+                elif attr:
+                    result.append(attr)
+                else:
+                    attr = getattr(self, field, None)
+
+                    if attr:
+                        result.append(attr(obj))
+                    else:
+                        result.append(attr)
+
+            writer.writerow(result)
 
         return response
 
