@@ -26,7 +26,7 @@ class ExportCsvMixin(admin.ModelAdmin):
 
         return response
 
-    export_as_csv.short_description = 'Сохранить выбранные в csv-файл'
+    export_as_csv.short_description = 'Сохранить выбранное в csv-файл'
 
 
 class MixinAdmin(admin.ModelAdmin):
@@ -61,6 +61,7 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     autocomplete_fields = ('part', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )
+    actions = ('export_as_csv',) 
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
