@@ -1,6 +1,6 @@
 import csv
 from django.contrib import admin
-from django.db.models import CharField, TextField
+from django.db.models import CharField, F, TextField
 from django.forms import Textarea, TextInput
 from django.http import HttpResponse
 from django.utils.html import format_html
@@ -12,34 +12,21 @@ from .models import (Condition, Defect, Effect, Feature,
 
 class ExportCsvMixin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
-        meta = self.model._meta
-        field_names = list(self.list_display)
+        if not hasattr(self, 'list_csv_export'):
+            self.list_csv_export = [
+                field.name for field in self.model._meta.fields
+            ]
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = f'attachment; filename={meta}.csv'
-        writer = csv.writer(response)
 
-        writer.writerow(field_names)
+        writer = csv.writer(response)
+        writer.writerow(self.list_csv_export)
 
         for obj in queryset:
-            result = []
-
-            for field in field_names:
-                attr = getattr(obj, field, None)
-
-                if attr and callable(attr):
-                    result.append(attr())
-                elif attr:
-                    result.append(attr)
-                else:
-                    attr = getattr(self, field, None)
-
-                    if attr:
-                        result.append(attr(obj))
-                    else:
-                        result.append(attr)
-
-            writer.writerow(result)
+            writer.writerow(
+                [getattr(obj, field) for field in self.list_csv_export]
+            )
 
         return response
 
@@ -78,7 +65,12 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     autocomplete_fields = ('part', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )
-    actions = ('export_as_csv',) 
+    actions = ('export_as_csv',)
+    list_csv_export = ('facility_name', 'connection_name', 'hardware_name',
+                       'cabinet_name', 'component_name', 'date', 'description',
+                       'repair_date', 'repair', 'employee', 'effects',
+                       'features', 'condition', 'technical_reasons',
+                       'organizational_reasons')
 
     @admin.display(description=_('Объект диспетч.'))
     def dispatch_object(self, obj):
@@ -125,6 +117,16 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
         if not obj.pk:
             obj.employee = request.user
         super().save_model(request, obj, form, change)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.annotate(
+            component_name = F('part__component__name'),
+            cabinet_name = F('part__cabinet__name'),
+            hardware_name = F('part__cabinet__hardware__name'),
+            connection_name = F('part__cabinet__hardware__connection__name'),
+            facility_name = F('part__cabinet__hardware__connection__facility__name'),  # noqa(E501)
+        )
 
 
 @admin.register(Condition)
