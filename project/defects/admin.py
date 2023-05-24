@@ -24,13 +24,23 @@ class ExportCsvMixin(admin.ModelAdmin):
         writer.writerow(self.list_csv_export)
 
         for obj in queryset:
-            writer.writerow(
-                [getattr(obj, field) for field in self.list_csv_export]
-            )
+            result = []
+
+            for field in self.list_csv_export:
+                attr = getattr(obj, field, None)
+
+                if attr and attr.__class__.__name__ == 'ManyRelatedManager':
+                    result.append(
+                        '\n'.join(attr.values_list('name', flat=True))
+                    )
+                else:
+                    result.append(attr)
+
+            writer.writerow(result)
 
         return response
 
-    export_as_csv.short_description = 'Сохранить выбранное в csv-файл'
+    export_as_csv.short_description = 'Сохранить выбранные в csv-файл'
 
 
 class MixinAdmin(admin.ModelAdmin):
