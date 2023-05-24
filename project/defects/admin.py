@@ -12,10 +12,10 @@ from .models import (Condition, Defect, Effect, Feature,
 
 class ExportCsvMixin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
+        meta = self.model._meta
+
         if not hasattr(self, 'list_csv_export'):
-            self.list_csv_export = [
-                field.name for field in self.model._meta.fields
-            ]
+            self.list_csv_export = [field.name for field in meta.fields]
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = f'attachment; filename={meta}.csv'
@@ -121,11 +121,11 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(
-            component_name = F('part__component__name'),
-            cabinet_name = F('part__cabinet__name'),
-            hardware_name = F('part__cabinet__hardware__name'),
-            connection_name = F('part__cabinet__hardware__connection__name'),
-            facility_name = F('part__cabinet__hardware__connection__facility__name'),  # noqa(E501)
+            component_name=F('part__component__name'),
+            cabinet_name=F('part__cabinet__name'),
+            hardware_name=F('part__cabinet__hardware__name'),
+            connection_name=F('part__cabinet__hardware__connection__name'),
+            facility_name=F('part__cabinet__hardware__connection__facility__name'),  # noqa(E501)
         )
 
 
