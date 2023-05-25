@@ -48,7 +48,8 @@ class PartAdmin(MixinAdmin):
                     'get_part', 'release_year', 'launch_year')
     list_filter = ('component__design', 'component__repair_method',
                    'launch_year')
-    autocomplete_fields = ('component', 'part', 'cabinet')
+    autocomplete_fields = ('component', 'part')
+    readonly_fields = ('cabinet', )
     inlines = (PartInline, )
 
     @admin.display(description=_('Шкаф/Панель'))
