@@ -111,7 +111,7 @@ class HardwareAdmin(MixinAdmin):
     list_display = ('id', 'facility', 'connection', 'name',
                     'inventory_number', 'count_defects')
     search_fields = ('name', 'inventory_number')
-    list_filter = ('connection__facility', 'connection')
+    list_filter = ('connection__facility', 'connection', 'group')
     inlines = (CabinetInline, )
 
     @admin.display(description=_('Объект дисп.'))
