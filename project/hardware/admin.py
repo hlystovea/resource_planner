@@ -85,9 +85,23 @@ class PartAdmin(MixinAdmin):
 
 @admin.register(Component)
 class ComponentAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'manufacturer', 'design', 'series', 'type')
+    list_display = ('id', 'name', 'manufacturer', 'design',
+                    'series', 'type', 'defect_count')
     list_filter = ('design', 'function', 'repair_method')
     autocomplete_fields = ('manufacturer', )
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode({'part__component__id__exact': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(part__component=obj).count()
+        )
 
 
 @admin.register(Cabinet)
