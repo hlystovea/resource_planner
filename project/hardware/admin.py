@@ -253,4 +253,19 @@ class ComponentFunctiondmin(MixinAdmin):
 
 @admin.register(Manufacturer)
 class ManufacturerAdmin(MixinAdmin):
-    pass
+    list_display = ('id', 'name', 'defect_count')
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__component__manufacturer__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(part__component__manufacturer=obj).count()
+        )

@@ -126,6 +126,7 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
             'part__cabinet__hardware__group__id__exact',
             'part__cabinet__hardware__connection__id__exact',
             'part__component__id__exact',
+            'part__component__manufacturer__id__exact',
         ):
             return True
         return super().lookup_allowed(key, value)
