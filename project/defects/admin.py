@@ -71,7 +71,9 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('date', 'technical_reasons', 'organizational_reasons')
+    list_filter = ('date', 'technical_reasons', 'organizational_reasons',
+                   'part__cabinet__hardware__group',
+                   'part__cabinet__hardware__connection')
     autocomplete_fields = ('part', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )
@@ -119,7 +121,12 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
         return None
 
     def lookup_allowed(self, key, value):
-        if key in ('part__cabinet__hardware__id__exact', ):
+        if key in (
+            'part__cabinet__hardware__id__exact',
+            'part__cabinet__hardware__group__id__exact',
+            'part__cabinet__hardware__connection__id__exact',
+            'part__component__id__exact',
+        ):
             return True
         return super().lookup_allowed(key, value)
 
