@@ -116,7 +116,8 @@ class HardwareAdmin(MixinAdmin):
 
     @admin.display(description=_('Объект дисп.'))
     def facility(self, obj):
-        return obj.connection.facility
+        if obj.connection:
+            return obj.connection.facility
 
     @admin.display(description=_('Кол-во дефектов'))
     def count_defects(self, obj):
