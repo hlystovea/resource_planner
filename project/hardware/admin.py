@@ -109,7 +109,7 @@ class CabinetInline(autocomplete_all.TabularInline):
 @admin.register(Hardware)
 class HardwareAdmin(MixinAdmin):
     list_display = ('id', 'facility', 'connection', 'name',
-                    'inventory_number', 'count_defects')
+                    'inventory_number', 'defect_count')
     search_fields = ('name', 'inventory_number')
     list_filter = ('connection__facility', 'connection', 'group')
     inlines = (CabinetInline, )
@@ -120,7 +120,7 @@ class HardwareAdmin(MixinAdmin):
             return obj.connection.facility
 
     @admin.display(description=_('Кол-во дефектов'))
-    def count_defects(self, obj):
+    def defect_count(self, obj):
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
@@ -140,10 +140,27 @@ class HardwareInline(admin.TabularInline):
 
 @admin.register(Connection)
 class ConnectionAdmin(MixinAdmin):
-    list_display = ('id', 'facility', 'name', 'abbreviation')
+    list_display = ('id', 'facility', 'name', 'abbreviation', 'defect_count')
     list_filter = ('facility', )
     autocomplete_fields = ('facility', )
     inlines = (HardwareInline, )
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__cabinet__hardware__connection__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(
+                part__cabinet__hardware__connection=obj
+            ).count()
+        )
 
 
 class ConnectionInline(admin.TabularInline):
