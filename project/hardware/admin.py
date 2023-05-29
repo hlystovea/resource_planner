@@ -191,10 +191,10 @@ class FacilityAdmin(MixinAdmin):
 
 @admin.register(Group)
 class GroupAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'count_hardware')
+    list_display = ('id', 'name', 'hardware_count', 'defect_count')
 
-    @admin.display(description=_('Кол-во оборудования'))
-    def count_hardware(self, obj):
+    @admin.display(description=_('Кол-во ед. оборудования'))
+    def hardware_count(self, obj):
         url = (
             reverse('admin:hardware_hardware_changelist')
             + '?'
@@ -202,6 +202,23 @@ class GroupAdmin(MixinAdmin):
         )
         return format_html(
             '<a href="{}">{}</a>', url, obj.hardware.count()
+        )
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__cabinet__hardware__group__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(
+                part__cabinet__hardware__group=obj
+            ).count()
         )
 
 
