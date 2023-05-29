@@ -170,18 +170,22 @@ class ConnectionInline(admin.TabularInline):
 
 @admin.register(Facility)
 class FacilityAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'abbreviation', 'count_connections')
+    list_display = ('id', 'name', 'abbreviation', 'hardware_count')
     inlines = (ConnectionInline, )
 
-    @admin.display(description=_('Кол-во присоединений'))
-    def count_connections(self, obj):
+    @admin.display(description=_('Кол-во ед. оборудования'))
+    def hardware_count(self, obj):
         url = (
-            reverse('admin:hardware_connection_changelist')
+            reverse('admin:hardware_hardware_changelist')
             + '?'
-            + urlencode({'facility__id': f'{obj.id}'})
+            + urlencode({'connection__facility__id': f'{obj.id}'})
         )
         return format_html(
-            '<a href="{}">{}</a>', url, obj.connections.count()
+            '<a href="{}">{}</a>',
+            url,
+            Hardware.objects.filter(
+                connection__facility=obj
+            ).count()
         )
 
 
