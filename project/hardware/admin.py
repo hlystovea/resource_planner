@@ -13,7 +13,7 @@ from .models import (Cabinet, Component, ComponentDesign,
 from defects.models import Defect
 
 
-class MixinAdmin(admin.ModelAdmin):
+class MixinAdmin(autocomplete_all.ModelAdmin):
     search_fields = ('name', )
     empty_value_display = _('-пусто-')
     formfield_overrides = {
@@ -40,26 +40,6 @@ class PartInline(autocomplete_all.TabularInline):
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
     readonly_fields = ('cabinet', )
-
-    def get_parent_object_from_request(self, request):
-        resolved = resolve(request.path_info)
-        if resolved.args:
-            return self.parent_model.objects.get(pk=resolved.args[0])
-        return None
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        parent_obj = self.get_parent_object_from_request(request)
-
-        if db_field.name == 'part' and parent_obj:
-            if parent_obj.__class__.__name__ == 'Cabinet':
-                kwargs['queryset'] = Part.objects.filter(
-                    cabinet=parent_obj
-                )
-            if parent_obj.__class__.__name__ == 'Part':
-                kwargs['queryset'] = Part.objects.filter(
-                    cabinet=parent_obj.cabinet
-                )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Part)
