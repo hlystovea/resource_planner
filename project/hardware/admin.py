@@ -42,14 +42,14 @@ class PartInline(autocomplete_all.TabularInline):
     readonly_fields = ('cabinet', )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and self.parent_obj:
-            if self.parent_obj.__class__.__name__ == 'Cabinet':
+        if db_field.name == 'part' and request.parent_obj:
+            if request.parent_obj.__class__.__name__ == 'Cabinet':
                 kwargs['queryset'] = Part.objects.filter(
-                    cabinet=self.parent_obj
+                    cabinet=request.parent_obj
                 )
-            if self.parent_obj.__class__.__name__ == 'Part':
+            if request.parent_obj.__class__.__name__ == 'Part':
                 kwargs['queryset'] = Part.objects.filter(
-                    cabinet=self.parent_obj.cabinet
+                    cabinet=request.parent_obj.cabinet
                 )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -89,7 +89,7 @@ class PartAdmin(MixinAdmin):
         return ''
 
     def get_form(self, request, obj=None, **kwargs):
-        self.parent_obj = obj
+        request.parent_obj = obj
         return super().get_form(request, obj, **kwargs)
 
     def save_formset(self, request, form, formset, change) -> None:
@@ -130,7 +130,7 @@ class CabinetAdmin(MixinAdmin):
     inlines = (PartInline, )
 
     def get_form(self, request, obj=None, **kwargs):
-        self.parent_obj = obj
+        request.parent_obj = obj
         return super().get_form(request, obj, **kwargs)
 
 
