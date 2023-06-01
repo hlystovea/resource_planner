@@ -42,8 +42,8 @@ class PartInline(autocomplete_all.TabularInline):
     readonly_fields = ('cabinet', )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part':
-            kwargs['queryset'] = Part.objects.filter(cabinet=self.cabinet)
+        if db_field.name == 'part' and request.GET['cabinet']:
+            kwargs['queryset'] = Part.objects.filter(cabinet=request.GET['cabinet'])
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
