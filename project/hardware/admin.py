@@ -46,14 +46,15 @@ class PartInline(autocomplete_all.TabularInline):
         return super().get_formset(request, obj, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and isinstance(self.parent_obj, Cabinet):
-            kwargs['queryset'] = Part.objects.filter(
-                cabinet=self.parent_obj
-            )
-        if db_field.name == 'part' and isinstance(self.parent_obj, Part):
-            kwargs['queryset'] = Part.objects.filter(
-                cabinet=self.parent_obj.cabinet
-            )
+        if db_field.name == 'part' and self.parent_obj:
+            if self.parent_obj.__class__.__name__ == 'Cabinet':
+                kwargs['queryset'] = Part.objects.filter(
+                    cabinet=self.parent_obj
+                )
+            if self.parent_obj.__class__.__name__ == 'Part':
+                kwargs['queryset'] = Part.objects.filter(
+                    cabinet=self.parent_obj.cabinet
+                )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
