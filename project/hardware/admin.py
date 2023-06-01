@@ -2,7 +2,7 @@ import autocomplete_all
 from django.contrib import admin
 from django.db.models import CharField, TextField
 from django.forms import Textarea, TextInput
-from django.urls import resolve, reverse
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
@@ -13,7 +13,7 @@ from .models import (Cabinet, Component, ComponentDesign,
 from defects.models import Defect
 
 
-class MixinAdmin(autocomplete_all.ModelAdmin):
+class MixinAdmin(admin.ModelAdmin):
     search_fields = ('name', )
     empty_value_display = _('-пусто-')
     formfield_overrides = {
