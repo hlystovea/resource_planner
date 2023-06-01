@@ -41,10 +41,6 @@ class PartInline(autocomplete_all.TabularInline):
     verbose_name_plural = _('Входящие в состав комплектующие')
     readonly_fields = ('cabinet', )
 
-    def get_formset(self, request, obj=None, **kwargs):
-        self.parent_obj = obj
-        return super().get_formset(request, obj, **kwargs)
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'part' and self.parent_obj:
             if self.parent_obj.__class__.__name__ == 'Cabinet':
@@ -92,6 +88,10 @@ class PartAdmin(MixinAdmin):
             return format_html('<a href="{}">{}</a>', url, obj.part)
         return ''
 
+    def get_form(self, request, obj=None, **kwargs):
+        self.parent_obj = obj
+        return super().get_form(request, obj, **kwargs)
+
     def save_formset(self, request, form, formset, change) -> None:
         instances = formset.save(commit=False)
         for instance in instances:
@@ -128,6 +128,10 @@ class CabinetAdmin(MixinAdmin):
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', )
     inlines = (PartInline, )
+
+    def get_form(self, request, obj=None, **kwargs):
+        self.parent_obj = obj
+        return super().get_form(request, obj, **kwargs)
 
 
 class CabinetInline(autocomplete_all.TabularInline):
