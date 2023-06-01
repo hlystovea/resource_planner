@@ -110,7 +110,7 @@ class CabinetAdmin(MixinAdmin):
                     'release_year', 'launch_year')
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
-    autocomplete_fields = ('hardware', )
+    autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
 
 
