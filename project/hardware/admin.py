@@ -41,6 +41,11 @@ class PartInline(autocomplete_all.TabularInline):
     verbose_name_plural = _('Входящие в состав комплектующие')
     readonly_fields = ('cabinet', )
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'part':
+            kwargs['queryset'] = Part.objects.filter(cabinet=self.cabinet)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(Part)
 class PartAdmin(MixinAdmin):
