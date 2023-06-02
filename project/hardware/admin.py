@@ -65,7 +65,7 @@ class PartAdmin(MixinAdmin):
                     'get_part', 'release_year', 'launch_year')
     list_filter = ('component__design', 'component__repair_method',
                    'launch_year')
-    autocomplete_fields = ('component', 'part')
+    autocomplete_fields = ('component', )
     readonly_fields = ('cabinet', )
     inlines = (PartInline, )
 
