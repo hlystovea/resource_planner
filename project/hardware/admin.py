@@ -42,15 +42,19 @@ class PartInline(autocomplete_all.TabularInline):
     readonly_fields = ('cabinet', )
     autocomplete_except = ('part', )
 
+    def get_formset(self, request, obj=None, **kwargs):
+        self.parent_obj = obj
+        return super().get_formset(request, obj, **kwargs)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and request.parent_obj:
-            if request.parent_obj.__class__.__name__ == 'Cabinet':
+        if db_field.name == 'part' and self.parent_obj:
+            if self.parent_obj.__class__.__name__ == 'Cabinet':
                 kwargs['queryset'] = Part.objects.filter(
-                    cabinet=request.parent_obj
+                    cabinet=self.parent_obj
                 )
-            if request.parent_obj.__class__.__name__ == 'Part':
+            if self.parent_obj.__class__.__name__ == 'Part':
                 kwargs['queryset'] = Part.objects.filter(
-                    cabinet=request.parent_obj.cabinet
+                    cabinet=self.parent_obj.cabinet
                 )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -89,16 +93,16 @@ class PartAdmin(MixinAdmin):
             return format_html('<a href="{}">{}</a>', url, obj.part)
         return ''
 
+    def get_form(self, request, obj=None, **kwargs):
+        self._obj = obj
+        return super().get_form(request, obj, **kwargs)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and request.parent_obj:
+        if db_field.name == 'part' and self._obj:
             kwargs['queryset'] = Part.objects.filter(
-                cabinet=request.parent_obj.cabinet
+                cabinet=self._obj.cabinet
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def get_form(self, request, obj=None, **kwargs):
-        request.parent_obj = obj
-        return super().get_form(request, obj, **kwargs)
 
     def save_formset(self, request, form, formset, change) -> None:
         instances = formset.save(commit=False)
@@ -136,10 +140,6 @@ class CabinetAdmin(MixinAdmin):
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
-
-    def get_form(self, request, obj=None, **kwargs):
-        request.parent_obj = obj
-        return super().get_form(request, obj, **kwargs)
 
 
 class CabinetInline(autocomplete_all.TabularInline):
