@@ -137,6 +137,10 @@ class CabinetAdmin(MixinAdmin):
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
 
+    def get_form(self, request, obj=None, **kwargs):
+        request.parent_obj = obj
+        return super().get_form(request, obj, **kwargs)
+
 
 class CabinetInline(autocomplete_all.TabularInline):
     model = Cabinet
