@@ -15,7 +15,13 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ storage.name }}</p>
           <p class="h6">
-            <p class="mb-1"><span class="text-muted">Расположение: </span>{{ storage.parent_storage|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Расположение: </span>
+              {% if storage.parent_storage %}
+                <a href="{% url 'warehouse:storage-detail' storage.parent_storage.id %}">
+                  {{ storage.parent_storage }}
+                </a>
+              {% endif %}
+            </p>
             <p class="mb-1"><span class="text-muted">Кол-во мест хранения: </span>{{ storage.storage.count }}</p>
             <p class="mb-1"><span class="text-muted">Кол-во материалов: </span>{{ storage.materials.count }}</p>
             <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_id=storage.id %}</p>
