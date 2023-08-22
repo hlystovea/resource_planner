@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
@@ -53,6 +54,9 @@ class Material(models.Model):
         ordering = ('name', )
         verbose_name = _('Список материалов')
         verbose_name_plural = _('Список материалов')
+
+    def get_absolute_url(self):
+        return reverse('warehouse:material-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
