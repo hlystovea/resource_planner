@@ -2,8 +2,9 @@ from django.urls import path
 
 from warehouse.views import (InstrumentDetail, InstrumentList, MaterialCreate,
                              MaterialDelete, MaterialDetail, MaterialList,
-                             MaterialUpdate, StorageDetail, StorageList,
-                             qrcode_view)
+                             MaterialUpdate, MaterialStorageCreate,
+                             MaterialStorageDelete, MaterialStorageUpdate,
+                             StorageDetail, StorageList, qrcode_view)
 
 app_name = 'warehouse'
 
