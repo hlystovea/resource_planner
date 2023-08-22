@@ -1,13 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Sum, Prefetch
+from django.http import Http404
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import gettext as _
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
-from warehouse.forms import DeptForm, MaterialForm
+from warehouse.forms import DeptForm, MaterialForm, MaterialStorageForm
 
 
 def get_url(request, storage: Storage) -> str:
@@ -137,3 +139,93 @@ class InstrumentList(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = DeptForm(self.request.GET or None)
         return context
+
+
+class MaterialStorageCreate(LoginRequiredMixin, CreateView):
+    model = MaterialStorage
+    form_class = MaterialStorageForm
+    login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_new'] = True
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_id']}
+        )
+
+
+class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
+    model = MaterialStorage
+    form_class = MaterialStorageForm
+    login_url = reverse_lazy('login')
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        storage_id = self.kwargs.get('storage_id')
+        material_id = self.kwargs.get('material_id')
+
+        if storage_id is None and material_id is None:
+            raise AttributeError(
+                "Generic detail view %s must be called with either an object "
+                "storage_id and material_id in the URLconf."
+                % self.__class__.__name__
+            )
+
+        queryset = queryset.filter(storage=storage_id, material=material_id)
+
+        try:
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(
+                _("No %(verbose_name)s found matching the query")
+                % {"verbose_name": queryset.model._meta.verbose_name}
+            )
+        return obj
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_id']}
+        )
+
+
+class MaterialStorageDelete(LoginRequiredMixin, DeleteView):
+    model = MaterialStorage
+    login_url = reverse_lazy('login')
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        storage_id = self.kwargs.get('storage_id')
+        material_id = self.kwargs.get('material_id')
+
+        if storage_id is None and material_id is None:
+            raise AttributeError(
+                "Generic detail view %s must be called with either an object "
+                "storage_id and material_id in the URLconf."
+                % self.__class__.__name__
+            )
+
+        queryset = queryset.filter(storage=storage_id, material=material_id)
+
+        try:
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(
+                _("No %(verbose_name)s found matching the query")
+                % {"verbose_name": queryset.model._meta.verbose_name}
+            )
+        return obj
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_id']}
+        )
