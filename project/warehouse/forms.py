@@ -17,3 +17,4 @@ class DeptForm(Form):
 class MaterialForm(ModelForm):
     class Meta:
         model = Material()
+        fields = '__all__'
