@@ -32,21 +32,21 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      {% if user.is_authenticated %}
-      <div class="d-flex justify-content-end">
-        <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-update' material.id %}" role="button">
-          Редактировать
-        </a>
-        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-          Удалить
-        </button>
-      </div>
-      <!-- Delete modal -->
-      {% include 'warehouse/material_confirm_delete.html' %}
-    {% endif %}
-    </div>
   </div>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+      <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-update' material.id %}" role="button">
+        Редактировать
+      </a>
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Удалить
+      </button>
+    </div>
+    <!-- Delete modal -->
+    {% include 'warehouse/material_confirm_delete.html' %}
+  {% endif %}
+
   {% if material.amount.all %}
     <h4>Места хранения</h4>
     <table class="table table-hover">
