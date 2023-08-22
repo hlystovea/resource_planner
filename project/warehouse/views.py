@@ -1,11 +1,13 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Sum, Prefetch
-from django.views.generic import DetailView, ListView
+from django.views.generic import (CreateView, DeleteView,
+                                  DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
-from warehouse.forms import DeptForm
+from warehouse.forms import DeptForm, MaterialForm
 
 
 def get_url(request, storage: Storage) -> str:
@@ -88,6 +90,24 @@ class MaterialList(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = DeptForm(self.request.GET or None)
         return context
+
+
+class MaterialCreate(LoginRequiredMixin, CreateView):
+    model = Material
+    form_class = MaterialForm
+    login_url = reverse_lazy('login')
+
+
+class MaterialUpdate(LoginRequiredMixin, UpdateView):
+    model = Material
+    form_class = MaterialForm
+    login_url = reverse_lazy('login')
+
+
+class MaterialDelete(LoginRequiredMixin, DeleteView):
+    model = Material
+    login_url = reverse_lazy('login')
+    success_url = reverse_lazy('warehouse:material-list')
 
 
 class InstrumentDetail(DetailView):
