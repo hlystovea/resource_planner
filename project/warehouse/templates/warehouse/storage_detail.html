@@ -68,14 +68,19 @@
       <tbody>
         {% for m in storage.materials.all %}
           <tr>
-            <td><a href="{% url 'warehouse:material-detail' m.material.id %}">{{ m.material.name }}</a></td>
+            <td><a href="{% url 'warehouse:material-detail' m.material.pk %}">{{ m.material.name }}</a></td>
             <td>{{ m.material.article_number|default:"-" }}</td>
             <td>{{ m.invetory_number|default:"-" }}</td>
             <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
             <td>
               {% if user.is_authenticated %}
-                <a href="{% url 'warehouse:material-storage-update' m.storage.id m.material.id %}">&#xF4CA;</a> 
-                <a href="{% url 'warehouse:material-storage-delete' m.storage.id m.material.id %}">&#xF180;</a>
+                <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-storage-update' m.storage.pk m.material.pk %}" role="button">
+                  Редактировать
+                </a>
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="{{ '#deleteModal' + m.storage.pk + '-' + m.material.pk }}">
+                  Удалить
+                </button>
+                {% include 'warehouse/materialstorage_confirm_delete.html' with id=m.storage.pk + '-' + m.material.pk %}
               {% endif %}
             </td>
           </tr>

@@ -14,7 +14,7 @@ from warehouse.forms import DeptForm, MaterialForm, MaterialStorageForm
 
 def get_url(request, storage: Storage) -> str:
     return request.build_absolute_uri(
-        reverse('warehouse:storage-detail', kwargs={'pk': storage.id})
+        reverse('warehouse:storage-detail', kwargs={'pk': storage.pk})
     )
 
 
@@ -154,7 +154,7 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse(
             'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_id']}
+            kwargs={'pk': self.kwargs['storage_pk']}
         )
 
 
@@ -167,17 +167,17 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
         if queryset is None:
             queryset = self.get_queryset()
 
-        storage_id = self.kwargs.get('storage_id')
-        material_id = self.kwargs.get('material_id')
+        storage_pk = self.kwargs.get('storage_pk')
+        material_pk = self.kwargs.get('material_pk')
 
-        if storage_id is None and material_id is None:
+        if storage_pk is None and material_pk is None:
             raise AttributeError(
                 "Generic detail view %s must be called with either an object "
-                "storage_id and material_id in the URLconf."
+                "storage_pk and material_pk in the URLconf."
                 % self.__class__.__name__
             )
 
-        queryset = queryset.filter(storage=storage_id, material=material_id)
+        queryset = queryset.filter(storage=storage_pk, material=material_pk)
 
         try:
             obj = queryset.get()
@@ -191,7 +191,7 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse(
             'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_id']}
+            kwargs={'pk': self.kwargs['storage_pk']}
         )
 
 
@@ -203,17 +203,17 @@ class MaterialStorageDelete(LoginRequiredMixin, DeleteView):
         if queryset is None:
             queryset = self.get_queryset()
 
-        storage_id = self.kwargs.get('storage_id')
-        material_id = self.kwargs.get('material_id')
+        storage_pk = self.kwargs.get('storage_pk')
+        material_pk = self.kwargs.get('material_pk')
 
-        if storage_id is None and material_id is None:
+        if storage_pk is None and material_pk is None:
             raise AttributeError(
                 "Generic detail view %s must be called with either an object "
-                "storage_id and material_id in the URLconf."
+                "storage_pk and material_pk in the URLconf."
                 % self.__class__.__name__
             )
 
-        queryset = queryset.filter(storage=storage_id, material=material_id)
+        queryset = queryset.filter(storage=storage_pk, material=material_pk)
 
         try:
             obj = queryset.get()
@@ -227,5 +227,5 @@ class MaterialStorageDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse(
             'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_id']}
+            kwargs={'pk': self.kwargs['storage_pk']}
         )

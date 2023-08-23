@@ -1,4 +1,4 @@
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="{{ 'deleteModal' + id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -10,9 +10,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Отмена</button>
-        <form id="material_del" method="post" action="{% url 'warehouse:material-storage-delete' storage.id material.id %}">
+        <form id="{{ 'storageMaterialDelete' + id }}" method="post" action="{% url 'warehouse:material-storage-delete' m.storage.pk m.material.pk %}">
           {% csrf_token %}
-          <input type="submit" class="btn btn-sm btn-danger me-1" form="material_del" value="Удалить">
+          <input type="submit" class="btn btn-sm btn-danger me-1" form="{{ 'storageMaterialDelete' id }}" value="Удалить">
         </form>
       </div>
     </div>
