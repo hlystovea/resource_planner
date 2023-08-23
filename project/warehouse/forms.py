@@ -23,4 +23,4 @@ class MaterialForm(ModelForm):
 class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
-        exclude = ['storage', 'owner']
+        exclude = ('storage', 'owner')

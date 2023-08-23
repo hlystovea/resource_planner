@@ -84,6 +84,16 @@
           </td>
         </tr>
       {% endfor %}
+      <tr>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <td>{{ form.material|addclass:"form-control" }}</td>
+          <td></td>
+          <td>{{ form.inventory_number|addclass:"form-control" }}</td>
+          <td>{{ form.amount|addclass:"form-control" }}</td>
+          <td><button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button></td>
+        </form>
+      </tr>
     </tbody>
   </table>
 {% endblock %}
