@@ -74,10 +74,10 @@
           <td>
             {% if user.is_authenticated %}
               <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-storage-update' m.storage.pk m.material.pk %}" role="button">
-                <img src="{% static 'assets/icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
               </a>
               <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ m.storage.pk|add:'-'|add:m.material.pk }}">
-                <img src="{% static 'assets/icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
               </button>
               {% include 'warehouse/materialstorage_confirm_delete.html' with id=m.storage.pk|add:'-'|add:m.material.pk %}
             {% endif %}
