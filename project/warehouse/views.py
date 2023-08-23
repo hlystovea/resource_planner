@@ -153,6 +153,12 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
         context['is_new'] = True
         return context
 
+    def form_valid(self, form):
+        if form.instance.storage is None:
+            storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+            form.instance.storage = storage
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse(
             'warehouse:storage-detail',
