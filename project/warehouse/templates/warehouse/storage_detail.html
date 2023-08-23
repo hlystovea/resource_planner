@@ -77,10 +77,10 @@
                 <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-storage-update' m.storage.pk m.material.pk %}" role="button">
                   Редактировать
                 </a>
-                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="{{ '#deleteModal' + m.storage.pk + '-' + m.material.pk }}">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ m.storage.pk|add:'-'|add:m.material.pk }}">
                   Удалить
                 </button>
-                {% include 'warehouse/materialstorage_confirm_delete.html' with id=m.storage.pk + '-' + m.material.pk %}
+                {% include 'warehouse/materialstorage_confirm_delete.html' with id=m.storage.pk|add:'-'|add:m.material.pk %}
               {% endif %}
             </td>
           </tr>
