@@ -148,7 +148,8 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
+        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+        context['storage'] = storage
         context['is_new'] = True
         return context
 
@@ -188,6 +189,12 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
                 % {"verbose_name": queryset.model._meta.verbose_name}
             )
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+        context['storage'] = storage
+        return context
 
     def get_success_url(self):
         return reverse(
