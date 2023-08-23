@@ -22,7 +22,7 @@
     <tbody>
       {% for m in material_list %}
         <tr>
-          <td><a href={% url 'warehouse:material-detail' m.id %}>{{ m.name }}</a></td>
+          <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
           <td>{{ m.article_number|default:"-" }}</td>
           <td>{{ m.total|floatformat }} {{ m.measurement_unit}}</td>
         </tr>

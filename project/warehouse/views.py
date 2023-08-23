@@ -157,6 +157,10 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
         if not hasattr(form.instance, 'storage'):
             storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
             form.instance.storage = storage
+
+        if not hasattr(form.instance, 'owner'):
+            form.instance.owner = self.request.user.dept
+
         return super().form_valid(form)
 
     def get_success_url(self):
