@@ -87,6 +87,7 @@
       <tr>
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
+          {% load user_filters %}
           <td>{{ form.material|addclass:"form-control" }}</td>
           <td></td>
           <td>{{ form.inventory_number|addclass:"form-control" }}</td>
