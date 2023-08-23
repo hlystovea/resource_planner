@@ -6,7 +6,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
       <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-detail' materialstorage.storage.pk %}"></a>{{ materialstorage.storage.name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-detail' material_storage.storage.pk %}"></a>{{ material_storage.storage.name }}</a></li>
       <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} материал</li>
     </ol>
   </nav>
