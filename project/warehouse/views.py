@@ -50,6 +50,11 @@ class StorageDetail(DetailView):
             Prefetch('materials', queryset=materials),
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = MaterialStorageForm()
+        return context
+
 
 class StorageList(ListView):
     paginate_by = 20

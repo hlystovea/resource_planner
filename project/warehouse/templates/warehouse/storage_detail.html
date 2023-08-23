@@ -85,7 +85,7 @@
         </tr>
       {% endfor %}
       <tr>
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:material-storage-create'%}">
           {% csrf_token %}
           {% load user_filters %}
           <td>{{ form.material|addclass:"form-control" }}</td>
