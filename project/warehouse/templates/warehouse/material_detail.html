@@ -26,7 +26,7 @@
               <span class="text-muted">Артикул:</span> {{ material.article_number|default:"" }}
             </p>
             <p class="mb-1">
-              <span class="text-muted">Общее кол-во:</span> {{ material.total|floatformat }} {{ material.measurement_unit }}
+              <span class="text-muted">Общее кол-во:</span> {{ material.total|floatformat|default_if_none:"0" }} {{ material.measurement_unit }}
             </p>
           </p>
         </div>

@@ -29,7 +29,7 @@
         <tr>
           <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
           <td>{{ m.article_number|default:"-" }}</td>
-          <td>{{ m.total|floatformat }} {{ m.measurement_unit}}</td>
+          <td>{{ m.total|floatformat|default_if_none:"0" }} {{ m.measurement_unit}}</td>
         </tr>
       {% endfor %}
     </tbody>
