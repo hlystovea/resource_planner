@@ -23,7 +23,7 @@ urlpatterns = [
     path('storage/<int:pk>/update', StorageUpdate.as_view(), name='storage-update'),  # noqa (E501)
     path('storage/<int:pk>/delete', StorageDelete.as_view(), name='storage-delete'),  # noqa (E501)
     path('storage/create', StorageCreate.as_view(), name='storage-create'),
-    path('storage/<int:storage_pk>/material/<int:material_pk>/update', MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
-    path('storage/<int:storage_pk>/material/<int:material_pk>/delete', MaterialStorageDelete.as_view(), name='material-storage-delete'),  # noqa (E501)
+    path('storage/<int:storage_pk>/material/<int:pk>/update', MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
+    path('storage/<int:storage_pk>/material/<int:pk>/delete', MaterialStorageDelete.as_view(), name='material-storage-delete'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/create', MaterialStorageCreate.as_view(), name='material-storage-create'),  # noqa (E501)
 ]

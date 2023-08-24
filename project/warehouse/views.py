@@ -204,31 +204,6 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
     form_class = MaterialStorageForm
     login_url = reverse_lazy('login')
 
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        storage_pk = self.kwargs.get('storage_pk')
-        material_pk = self.kwargs.get('material_pk')
-
-        if storage_pk is None and material_pk is None:
-            raise AttributeError(
-                "Generic detail view %s must be called with either an object "
-                "storage_pk and material_pk in the URLconf."
-                % self.__class__.__name__
-            )
-
-        queryset = queryset.filter(storage=storage_pk, material=material_pk)
-
-        try:
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(
-                _("No %(verbose_name)s found matching the query")
-                % {"verbose_name": queryset.model._meta.verbose_name}
-            )
-        return obj
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
@@ -245,31 +220,6 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
 class MaterialStorageDelete(LoginRequiredMixin, DeleteView):
     model = MaterialStorage
     login_url = reverse_lazy('login')
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        storage_pk = self.kwargs.get('storage_pk')
-        material_pk = self.kwargs.get('material_pk')
-
-        if storage_pk is None and material_pk is None:
-            raise AttributeError(
-                "Generic detail view %s must be called with either an object "
-                "storage_pk and material_pk in the URLconf."
-                % self.__class__.__name__
-            )
-
-        queryset = queryset.filter(storage=storage_pk, material=material_pk)
-
-        try:
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(
-                _("No %(verbose_name)s found matching the query")
-                % {"verbose_name": queryset.model._meta.verbose_name}
-            )
-        return obj
 
     def get_success_url(self):
         return reverse(
