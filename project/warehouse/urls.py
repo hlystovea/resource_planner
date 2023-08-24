@@ -1,6 +1,7 @@
 from django.urls import path
 
-from warehouse.views import (InstrumentDetail, InstrumentList, MaterialCreate,
+from warehouse.views import (InstrumentCreate, InstrumentDelete, InstrumentDetail,  # noqa (E501)
+                             InstrumentList, InstrumentUpdate, MaterialCreate,
                              MaterialDelete, MaterialDetail, MaterialList,
                              MaterialUpdate, MaterialStorageCreate,
                              MaterialStorageDelete, MaterialStorageUpdate,
@@ -12,6 +13,9 @@ app_name = 'warehouse'
 urlpatterns = [
     path('instrument/', InstrumentList.as_view(), name='instrument-list'),
     path('instrument/<int:pk>/', InstrumentDetail.as_view(), name='instrument-detail'),  # noqa (E501)
+    path('instrument/<int:pk>/update', InstrumentUpdate.as_view(), name='instrument-update'),  # noqa (E501)
+    path('instrument/<int:pk>/delete', InstrumentDelete.as_view(), name='instrument-delete'),  # noqa (E501)
+    path('instrument/create', InstrumentCreate.as_view(), name='instrument-create'),  # noqa (E501)
     path('material/', MaterialList.as_view(), name='material-list'),
     path('material/<int:pk>/', MaterialDetail.as_view(), name='material-detail'),  # noqa (E501)
     path('material/<int:pk>/update', MaterialUpdate.as_view(), name='material-update'),  # noqa (E501)

@@ -1,7 +1,7 @@
 from django.forms import ChoiceField, Form, ModelForm
 
 from staff.models import Dept
-from warehouse.models import Material, MaterialStorage, Storage
+from warehouse.models import Instrument, Material, MaterialStorage, Storage
 
 
 class DeptForm(Form):
@@ -12,6 +12,12 @@ class DeptForm(Form):
         self.fields['dept'].choices = [
             (d.id, d.abbreviation) for d in Dept.objects.all()
         ]
+
+
+class InstrumentForm(ModelForm):
+    class Meta:
+        model = Instrument
+        exclude = ('owner', )
 
 
 class MaterialForm(ModelForm):

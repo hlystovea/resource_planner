@@ -1,15 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Sum, Prefetch
-from django.http import Http404
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext as _
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
-from warehouse.forms import (DeptForm, MaterialForm,
+from warehouse.forms import (DeptForm, InstrumentForm, MaterialForm,
                              MaterialStorageForm, StorageForm)
 
 
@@ -168,6 +166,35 @@ class InstrumentList(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = DeptForm(self.request.GET or None)
         return context
+
+
+class InstrumentCreate(LoginRequiredMixin, CreateView):
+    model = Instrument
+    form_class = InstrumentForm
+    login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_new'] = True
+        return context
+
+    def form_valid(self, form):
+        if not hasattr(form.instance, 'owner'):
+            form.instance.owner = self.request.user.dept
+
+        return super().form_valid(form)
+
+
+class InstrumentUpdate(LoginRequiredMixin, UpdateView):
+    model = Instrument
+    form_class = InstrumentForm
+    login_url = reverse_lazy('login')
+
+
+class InstrumentDelete(LoginRequiredMixin, DeleteView):
+    model = Instrument
+    login_url = reverse_lazy('login')
+    success_url = reverse_lazy('warehouse:instrument-list')
 
 
 class MaterialStorageCreate(LoginRequiredMixin, CreateView):

@@ -6,13 +6,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
       <div class="modal-body">
-        Вы действительно хотите удалить материал?
+        Вы действительно хотите удалить инструмент?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Отмена</button>
-        <form id="material_del" method="post" action="{% url 'warehouse:material-delete' material.id %}">
+        <form id="instrument_del" method="post" action="{% url 'warehouse:instrument-delete' instrument.pk %}">
           {% csrf_token %}
-          <input type="submit" class="btn btn-sm btn-danger me-1" form="material_del" value="Удалить">
+          <input type="submit" class="btn btn-sm btn-danger me-1" form="instrument_del" value="Удалить">
         </form>
       </div>
     </div>

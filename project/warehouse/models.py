@@ -146,5 +146,8 @@ class Instrument(models.Model):
         verbose_name = _('Инструмент/прибор')
         verbose_name_plural = _('Инструмент/приборы')
 
+    def get_absolute_url(self):
+        return reverse('warehouse:instrument-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f'{self.name} ({self.inventory_number})'
