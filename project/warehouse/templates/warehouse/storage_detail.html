@@ -104,10 +104,10 @@
           <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:material-storage-create' storage.pk %}">
             {% csrf_token %}
             {% load user_filters %}
-            <td>{{ form.material|addclass:"form-control-sm" }}</td>
+            <td>{{ form.material|addclass:"form-control form-control-sm" }}</td>
             <td></td>
-            <td>{{ form.inventory_number|addclass:"form-control-sm" }}</td>
-            <td>{{ form.amount|addclass:"form-control-sm" }}</td>
+            <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
+            <td>{{ form.amount|addclass:"form-control form-control-sm" }}</td>
             <td><button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button></td>
           </form>
         </tr>
