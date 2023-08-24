@@ -1,8 +1,8 @@
-<div class="modal fade" id="deleteMaterialModal_{{ m.storage.pk }}_{{ m.material.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel_{{ m.storage.pk }}_{{ m.material.pk }}" aria-hidden="true">
+<div class="modal fade" id="deleteMaterialModal_{{ m.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel_{{ m.pk }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel_{{ m.storage.pk }}_{{ m.material.pk }}">Удаление</h5>
+        <h5 class="modal-title" id="deleteModalLabel_{{ m.pk }}">Удаление</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
       <div class="modal-body">
@@ -10,9 +10,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Отмена</button>
-        <form id="storageMaterialDelete_{{ m.storage.pk }}_{{ m.material.pk }}" method="post" action="{% url 'warehouse:material-storage-delete' m.storage.pk m.material.pk %}">
+        <form id="storageMaterialDelete_{{ m.pk }}" method="post" action="{% url 'warehouse:material-storage-delete' m.storage.pk m.pk %}">
           {% csrf_token %}
-          <input type="submit" class="btn btn-sm btn-danger me-1" form="storageMaterialDelete_{{ m.storage.pk }}_{{ m.material.pk }}" value="Удалить">
+          <input type="submit" class="btn btn-sm btn-danger me-1" form="storageMaterialDelete_{{ m.pk }}" value="Удалить">
         </form>
       </div>
     </div>
