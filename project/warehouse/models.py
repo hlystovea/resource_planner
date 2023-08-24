@@ -24,6 +24,9 @@ class Storage(models.Model):
         verbose_name = _('Место хранения')
         verbose_name_plural = _('Места хранения')
 
+    def get_absolute_url(self):
+        return reverse('warehouse:storage-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f'{self.name}'
 
