@@ -18,14 +18,14 @@
           <p class="h6">
             <p class="mb-1"><span class="text-muted">Расположение: </span>
               {% if storage.parent_storage %}
-                <a href="{% url 'warehouse:storage-detail' storage.parent_storage.id %}">
+                <a href="{% url 'warehouse:storage-detail' storage.parent_storage.pk %}">
                   {{ storage.parent_storage }}
                 </a>
               {% endif %}
             </p>
             <p class="mb-1"><span class="text-muted">Кол-во мест хранения: </span>{{ storage.storage.count }}</p>
             <p class="mb-1"><span class="text-muted">Кол-во материалов: </span>{{ storage.materials.count }}</p>
-            <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_id=storage.id %}</p>
+            <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_pk=storage.pk %}</p>
           </p>
         </div>
       </div>
@@ -37,7 +37,7 @@
       <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:storage-update' storage.pk %}" role="button">
         Редактировать
       </a>
-      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStorageModal">
         Удалить
       </button>
     </div>
@@ -58,9 +58,9 @@
       <tbody>
         {% for s in storage.storage.all %}
           <tr>
-            <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
+            <td><a href="{% url 'warehouse:storage-detail' s.pk %}">{{ s.name }}</a></td>
             <td>{{ s.materials_count }} поз.</td>
-            <td>{% include "includes/new_window_link.html" with storage_id=s.id %}</td>
+            <td>{% include "includes/new_window_link.html" with storage_pk=s.pk %}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -91,10 +91,10 @@
               <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:material-storage-update' m.storage.pk m.material.pk %}" role="button">
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
               </a>
-              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteModal{{ m.storage.pk|add:'-'|add:m.material.pk }}">
+              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteMaterialModal_{{ m.storage.pk }}_{{ m.material.pk }}">
                 <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
               </button>
-              {% include 'warehouse/materialstorage_confirm_delete.html' with id=m.storage.pk|add:'-'|add:m.material.pk %}
+              {% include 'warehouse/materialstorage_confirm_delete.html' %}
             {% endif %}
           </td>
         </tr>
