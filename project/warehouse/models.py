@@ -70,7 +70,7 @@ class MaterialStorage(models.Model):
     material = models.ForeignKey(
         to=Material,
         verbose_name=_('Материал'),
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='amount',
     )
     inventory_number = models.CharField(
@@ -88,7 +88,7 @@ class MaterialStorage(models.Model):
     owner = models.ForeignKey(
         to='staff.Dept',
         verbose_name=_('Подразделение'),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='materials',
         blank=True,
         null=True,
