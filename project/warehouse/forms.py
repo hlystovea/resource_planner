@@ -1,7 +1,7 @@
 from django.forms import ChoiceField, Form, ModelForm
 
 from staff.models import Dept
-from warehouse.models import Material, MaterialStorage
+from warehouse.models import Material, MaterialStorage, Storage
 
 
 class DeptForm(Form):
@@ -24,3 +24,9 @@ class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
         exclude = ('storage', 'owner')
+
+
+class StorageForm(ModelForm):
+    class Meta:
+        model = Storage
+        fields = '__all__'

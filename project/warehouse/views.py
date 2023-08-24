@@ -9,7 +9,8 @@ from django.utils.translation import gettext as _
 from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
-from warehouse.forms import DeptForm, MaterialForm, MaterialStorageForm
+from warehouse.forms import (DeptForm, MaterialForm,
+                             MaterialStorageForm, StorageForm)
 
 
 def get_url(request, storage: Storage) -> str:
@@ -67,6 +68,17 @@ class StorageList(ListView):
         ).annotate(
             materials_count=Count('materials')
         ).order_by('name')
+
+
+class StorageCreate(LoginRequiredMixin, CreateView):
+    model = Storage
+    form_class = StorageForm
+    login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_new'] = True
+        return context
 
 
 class MaterialDetail(DetailView):

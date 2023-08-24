@@ -4,7 +4,8 @@ from warehouse.views import (InstrumentDetail, InstrumentList, MaterialCreate,
                              MaterialDelete, MaterialDetail, MaterialList,
                              MaterialUpdate, MaterialStorageCreate,
                              MaterialStorageDelete, MaterialStorageUpdate,
-                             StorageDetail, StorageList, qrcode_view)
+                             StorageCreate, StorageDetail, StorageList,
+                             qrcode_view)
 
 app_name = 'warehouse'
 
@@ -19,6 +20,7 @@ urlpatterns = [
     path('storage/', StorageList.as_view(), name='storage-list'),
     path('storage/<int:pk>/', StorageDetail.as_view(), name='storage-detail'),
     path('storage/<int:pk>/qrcode/', qrcode_view, name='storage-qrcode'),
+    path('storage/create', StorageCreate.as_view(), name='storage-create'),
     path('storage/<int:storage_pk>/material/<int:material_pk>/update', MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:material_pk>/delete', MaterialStorageDelete.as_view(), name='material-storage-delete'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/create', MaterialStorageCreate.as_view(), name='material-storage-create'),  # noqa (E501)
