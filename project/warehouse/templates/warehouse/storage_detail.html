@@ -87,7 +87,7 @@
           <td>{{ m.inventory_number|default:"-" }}</td>
           <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
           <td>
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and (user.is_superuser or user.dept == m.owner) %}
               <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:material-storage-update' m.storage.pk m.pk %}" role="button">
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
               </a>

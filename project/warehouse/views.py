@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Sum, Prefetch
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
@@ -226,10 +226,16 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
         )
 
 
-class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
+class MaterialStorageUpdate(LoginRequiredMixin,
+                            UserPassesTestMixin,
+                            UpdateView):
     model = MaterialStorage
     form_class = MaterialStorageForm
     login_url = reverse_lazy('login')
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.dept == self.get_object().owner
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -244,9 +250,15 @@ class MaterialStorageUpdate(LoginRequiredMixin, UpdateView):
         )
 
 
-class MaterialStorageDelete(LoginRequiredMixin, DeleteView):
+class MaterialStorageDelete(LoginRequiredMixin,
+                            UserPassesTestMixin,
+                            DeleteView):
     model = MaterialStorage
     login_url = reverse_lazy('login')
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.dept == self.get_object().owner
 
     def get_success_url(self):
         return reverse(
