@@ -8,7 +8,7 @@ from qr_code.qrcode.utils import QRCodeOptions
 
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
 from warehouse.forms import (DeptForm, InstrumentForm, MaterialForm,
-                             MaterialStorageForm, StorageForm)
+                             MaterialStorageForm, StorageAddForm, StorageForm)
 
 
 def get_url(request, storage: Storage) -> str:
@@ -89,6 +89,15 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
     model = Storage
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:storage-list')
+
+
+class StorageAdd(StorageCreate):
+    form_class = StorageAddForm
+
+    def form_valid(self, form):
+        parent_storage = get_object_or_404(Storage, pk=self.kwargs['pk'])
+        form.instance.parent_storage = parent_storage
+        return super().form_valid(form)
 
 
 class MaterialDetail(DetailView):

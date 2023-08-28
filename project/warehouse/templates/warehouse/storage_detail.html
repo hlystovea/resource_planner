@@ -53,6 +53,7 @@
           <th scope="col">Наименование</th>
           <th scope="col">Материалы</th>
           <th scope="col">QR-код</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -61,8 +62,28 @@
             <td><a href="{% url 'warehouse:storage-detail' s.pk %}">{{ s.name }}</a></td>
             <td>{{ s.materials_count }} поз.</td>
             <td>{% include "includes/new_window_link.html" with storage_pk=s.pk %}</td>
+            <td>
+              {% if user.is_authenticated %}
+                <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:storage-update' s.pk %}" role="button">
+                  <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+                </a>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
+        {% if user.is_authenticated %}
+          <tr>
+            <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:storage-add' storage.pk %}">
+              {% csrf_token %}
+              {% load user_filters %}
+              <td>{{ form.material|addclass:"form-control form-control-sm" }}</td>
+              <td></td>
+              <td></td>
+              <td>{{ form.amount|addclass:"form-control form-control-sm" }}</td>
+              <td><button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button></td>
+            </form>
+          </tr>
+        {% endif %}
       </tbody>
     </table>
     <br>

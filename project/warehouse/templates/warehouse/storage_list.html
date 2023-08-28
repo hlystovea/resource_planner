@@ -22,6 +22,7 @@
         <th scope="col">Расположение</th>
         <th scope="col">Материалы</th>
         <th scope="col">QR-код</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +32,17 @@
           <td>{% if s.parent_storage %}<a href="{% url 'warehouse:storage-detail' s.parent_storage.id %}">{{ s.parent_storage }}</a>{% else %}-{% endif %}</td>
           <td>{{ s.materials_count }} поз.</td>
           <td><a href="{% url 'warehouse:storage-qrcode' s.id %}" target="_blank">открыть</a></td>
+          <td>
+            {% if user.is_authenticated %}
+              <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:storage-update' s.pk %}" role="button">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+              </a>
+              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteStorageModal_{{ s.pk }}">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+              </button>
+              {% include 'warehouse/storage_confirm_delete.html' %}
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>
