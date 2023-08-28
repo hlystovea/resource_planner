@@ -73,7 +73,7 @@
         {% endfor %}
         {% if user.is_authenticated %}
           <tr>
-            <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:storage-add' storage.pk %}">
+            <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:storage-add-storage' storage.pk %}">
               {% csrf_token %}
               {% load user_filters %}
               <td>{{ form.material|addclass:"form-control form-control-sm" }}</td>
