@@ -76,7 +76,7 @@
             <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:storage-add-storage' storage.pk %}">
               {% csrf_token %}
               {% load user_filters %}
-              <td>{{ storage_add_form.material|addclass:"form-control form-control-sm" }}</td>
+              <td>{{ storage_add_form.name|addclass:"form-control form-control-sm" }}</td>
               <td></td>
               <td></td>
               <td></td>
