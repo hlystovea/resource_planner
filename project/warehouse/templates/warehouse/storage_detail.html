@@ -42,7 +42,7 @@
       </button>
     </div>
     <!-- Delete modal -->
-    {% include 'warehouse/storage_confirm_delete.html' %}
+    {% include 'warehouse/storage_confirm_delete.html' with s=storage %}
   {% endif %}
 
   {% if storage.storage %}
