@@ -37,7 +37,7 @@
       <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:storage-update' storage.pk %}" role="button">
         Редактировать
       </a>
-      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStorageModal">
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStorageModal_{{ storage.pk }}">
         Удалить
       </button>
     </div>
