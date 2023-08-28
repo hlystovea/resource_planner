@@ -76,7 +76,7 @@
             <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:storage-add-storage' storage.pk %}">
               {% csrf_token %}
               {% load user_filters %}
-              <td>{{ form.material|addclass:"form-control form-control-sm" }}</td>
+              <td>{{ storage_add_form.material|addclass:"form-control form-control-sm" }}</td>
               <td></td>
               <td></td>
               <td></td>
@@ -125,10 +125,10 @@
           <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:material-storage-create' storage.pk %}">
             {% csrf_token %}
             {% load user_filters %}
-            <td>{{ form.material|addclass:"form-control form-control-sm" }}</td>
+            <td>{{ material_add_form.material|addclass:"form-control form-control-sm" }}</td>
             <td></td>
-            <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
-            <td>{{ form.amount|addclass:"form-control form-control-sm" }}</td>
+            <td>{{ material_add_form.inventory_number|addclass:"form-control form-control-sm" }}</td>
+            <td>{{ material_add_form.amount|addclass:"form-control form-control-sm" }}</td>
             <td><button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button></td>
           </form>
         </tr>
