@@ -11,19 +11,11 @@ from warehouse.forms import (DeptForm, InstrumentForm, MaterialForm,
                              MaterialStorageForm, StorageAddForm, StorageForm)
 
 
-def get_url(request, storage: Storage) -> str:
-    return request.build_absolute_uri(
-        reverse('warehouse:storage-detail', kwargs={'pk': storage.pk})
-    )
-
-
 def qrcode_view(request, pk):
     storage = get_object_or_404(Storage, pk=pk)
-    storage_url = get_url(request, storage)
+    storage_url = storage.get_absolute_url()
     internal_storage_urls = [
-        (s.name, get_url(request, s))
-        for s in storage.storage.all()
-        if s.materials.count()
+        (s.name, s.get_absolute_url()) for s in storage.storage.all()
     ]
     qr_options = QRCodeOptions(size='t', border=6, error_correction='L')
     context = {
