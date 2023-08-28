@@ -100,6 +100,12 @@ class StorageAdd(StorageCreate):
         form.instance.parent_storage = parent_storage
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+
 
 class MaterialDetail(DetailView):
     model = Material
