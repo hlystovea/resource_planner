@@ -5,7 +5,7 @@ from django.urls import reverse
 from django_resized import ResizedImageField
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.forms import DeptForm
+from warehouse.forms import DeptForm, StorageAddForm, StorageForm
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
 from staff.models import Dept
 
@@ -163,7 +163,7 @@ class TestStorage:
             'Проверьте, что передали поле типа Storage в контекст страницы'
 
     @pytest.mark.django_db
-    def test_storage_view_create(self, auto_login_user, employee_1):
+    def test_storage_view_create(self, auto_login_user):
         client, user = auto_login_user()
         url = reverse('warehouse:storage-create')
 
@@ -175,8 +175,12 @@ class TestStorage:
 
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], StorageForm), \
+            'Проверьте, что поле `form` содержит объект класса `StorageForm`'
         assert 'is_new' in response.context, \
             'Проверьте, что передали поле `is_new` в контекст страницы'
+        assert response.context['is_new'], \
+            'Проверьте, что значение поля `is_new` в контексте страницы равно `True`'
 
         data = {
             'name': 'some-storage-name',
@@ -191,6 +195,89 @@ class TestStorage:
             'Проверьте, что передали поле `storage` в контекст страницы'
         assert data['name'] == response.context['storage'].name, \
             'Проверьте, что сохраненный экземпляр `storage` содержит соответствующее поле `name`'
+
+    @pytest.mark.django_db
+    def test_storage_view_update(self, auto_login_user, storage_1):
+        client, user = auto_login_user()
+        url = reverse('warehouse:storage-update', kwargs={'pk': storage_1.pk})
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], StorageForm), \
+            'Проверьте, что поле `form` содержит объект класса `StorageForm`'
+
+        data = {
+            'name': 'some-storage-name',
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'storage' in response.context, \
+            'Проверьте, что передали поле `storage` в контекст страницы'
+        assert data['name'] == response.context['storage'].name, \
+            'Проверьте, что измененный экземпляр `storage` содержит соответствующее поле `name`'
+
+    @pytest.mark.django_db
+    def test_storage_view_delete(self, auto_login_user):
+        client, user = auto_login_user()
+        storage = Storage.objects.create(name='storage-name')
+
+        assert Storage.objects.filter(name='storage-name').exists(), \
+            'Тест работает неправильно, экземпляр `storage` отсутствует в БД'
+
+        url = reverse('warehouse:storage-delete', kwargs={'pk': storage.pk})
+
+        try:
+            response = client.delete(url, follow=True)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert not Storage.objects.filter(name='storage-name').exists(), \
+            'Проверьте, что эксземпляр `storage` удаляется из БД'
+
+    @pytest.mark.django_db
+    def test_storage_view_add_storage(self, auto_login_user, storage_1):
+        client, user = auto_login_user()
+        url = reverse(
+            'warehouse:storage-add-storage', kwargs={'pk': storage_1.pk}
+        )
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], StorageAddForm), \
+            'Проверьте, что поле `form` содержит объект класса `StorageAddForm`'
+
+        data = {
+            'name': 'some-storage-name',
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'storage' in response.context, \
+            'Проверьте, что передали поле `storage` в контекст страницы'
+
+        parent_storage = response.context['storage']
+        assert parent_storage.storage.filter(name='some-storage-name').exists(), \
+            'Проверьте, что сохраненный экземпляр `storage` имеет родителя'
 
 
 class TestMaterial:
