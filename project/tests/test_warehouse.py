@@ -165,26 +165,32 @@ class TestStorage:
     @pytest.mark.django_db
     def test_storage_view_create(self, auto_login_user, employee_1):
         client, user = auto_login_user()
+        url = reverse('warehouse:storage-create')
 
         try:
-            url = reverse('warehouse:storage-create')
-            response = client.get(url, follow=True)
+            response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
         assert 'is_new' in response.context, \
             'Проверьте, что передали поле `is_new` в контекст страницы'
 
+        data = {
+            'name': 'some-storage-name',
+        }
         try:
-            url = reverse('warehouse:storage-create')
-            data = {
-                'name': 'some-storage-name',
-            }
             response = client.post(url, follow=True, data=data)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
+        assert 'storage' in response.context, \
+            'Проверьте, что передали поле `storage` в контекст страницы'
+        assert data['name'] == response.context['storage'].name, \
+            'Проверьте, что сохраненный экземпляр `storage` содержит соответствующее поле `name`'
 
 
 class TestMaterial:
