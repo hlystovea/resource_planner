@@ -5,7 +5,7 @@ from django.urls import reverse
 from django_resized import ResizedImageField
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.forms import DeptForm, StorageAddForm, StorageForm
+from warehouse.forms import DeptForm, MaterialForm, StorageAddForm, StorageForm
 from warehouse.models import Instrument, Material, MaterialStorage, Storage
 from staff.models import Dept
 
@@ -24,7 +24,6 @@ def get_field_context(context, field_type):
 
 
 class TestInstrument:
-
     def test_instrument_model(self):
         model_fields = Instrument._meta.fields
 
@@ -97,7 +96,6 @@ class TestInstrument:
 
 
 class TestStorage:
-
     def test_storage_model(self):
         model_fields = Storage._meta.fields
 
@@ -163,7 +161,8 @@ class TestStorage:
             'Проверьте, что передали поле типа Storage в контекст страницы'
 
     @pytest.mark.django_db
-    def test_storage_view_create(self, auto_login_user):
+    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    def test_storage_view_create(self, name, auto_login_user):
         client, user = auto_login_user()
         url = reverse('warehouse:storage-create')
 
@@ -183,7 +182,7 @@ class TestStorage:
             'Проверьте, что значение поля `is_new` в контексте страницы равно `True`'
 
         data = {
-            'name': 'some-storage-name',
+            'name': name,
         }
         try:
             response = client.post(url, follow=True, data=data)
@@ -197,7 +196,8 @@ class TestStorage:
             'Проверьте, что сохраненный экземпляр `storage` содержит соответствующее поле `name`'
 
     @pytest.mark.django_db
-    def test_storage_view_update(self, auto_login_user, storage_1):
+    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    def test_storage_view_update(self, name, auto_login_user, storage_1):
         client, user = auto_login_user()
         url = reverse('warehouse:storage-update', kwargs={'pk': storage_1.pk})
 
@@ -213,7 +213,7 @@ class TestStorage:
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
 
         data = {
-            'name': 'some-storage-name',
+            'name': name,
         }
         try:
             response = client.post(url, follow=True, data=data)
@@ -227,11 +227,13 @@ class TestStorage:
             'Проверьте, что измененный экземпляр `storage` содержит соответствующее поле `name`'
 
     @pytest.mark.django_db
-    def test_storage_view_delete(self, auto_login_user):
+    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    def test_storage_view_delete(self, name, auto_login_user):
         client, user = auto_login_user()
-        storage = Storage.objects.create(name='storage-name')
+        storage = Storage.objects.create(name=name)
+        queryset = Storage.objects.filter(name=name)
 
-        assert Storage.objects.filter(name='storage-name').exists(), \
+        assert queryset.exists(), \
             'Тест работает неправильно, экземпляр `storage` отсутствует в БД'
 
         url = reverse('warehouse:storage-delete', kwargs={'pk': storage.pk})
@@ -242,7 +244,7 @@ class TestStorage:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
-        assert not Storage.objects.filter(name='storage-name').exists(), \
+        assert not queryset.exists(), \
             'Проверьте, что эксземпляр `storage` удаляется из БД'
 
     @pytest.mark.django_db
@@ -281,7 +283,6 @@ class TestStorage:
 
 
 class TestMaterial:
-
     def test_material_model(self):
         model_fields = Material._meta.fields
 
@@ -316,6 +317,146 @@ class TestMaterial:
         assert image_field.blank, \
             'Поле image модели Material не должно быть обязательным'
 
+    @pytest.mark.django_db
+    def test_material_view_get_list(self, client):
+        try:
+            url = reverse('warehouse:material-list')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+        assert 'material_list' in response.context, \
+            'Проверьте, что передали поле "material_list" в контекст страницы'
+        assert type(response.context.get('form')) == DeptForm, \
+            'Проверьте, что передали поле типа DeptForm в контекст страницы'
+
+    @pytest.mark.django_db
+    def test_material_view_get_detail(
+        self, client, material, material_in_storage_1, material_in_storage_2
+    ):
+        try:
+            url = reverse(
+                'warehouse:material-detail', kwargs={'pk': material.id}
+            )
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200, \
+            'Статус код страницы должен быть 200'
+
+        material_from_context = get_field_context(response.context, Material)
+
+        assert material_from_context is not None, \
+            'Проверьте, что передали поле типа Material в контекст страницы'
+        assert type(material_from_context.amount.first()) == MaterialStorage, \
+            'Проверьте, что вместе с объектом Material передали поле типа MaterialStorage в контекст страницы'
+        assert material_from_context.total == material_in_storage_1.amount + material_in_storage_2.amount, \
+            'Проверьте, что объект Material содержит поле total с общим количеством материала'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize(
+        'name, unit',
+        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
+    )
+    def test_material_view_create(self, name, unit, auto_login_user):
+        client, user = auto_login_user()
+        url = reverse('warehouse:material-create')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], MaterialForm), \
+            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+        assert 'is_new' in response.context, \
+            'Проверьте, что передали поле `is_new` в контекст страницы'
+        assert response.context['is_new'], \
+            'Проверьте, что значение поля `is_new` в контексте страницы равно `True`'
+
+        data = {
+            'name': name,
+            'measurement_unit': unit,
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'material' in response.context, \
+            'Проверьте, что передали поле `material` в контекст страницы'
+        assert data['name'] == response.context['material'].name, \
+            'Проверьте, что сохраненный экземпляр `material` содержит соответствующее поле `name`'
+        assert data['measurement_unit'] == response.context['material'].measurement_unit, \
+            'Проверьте, что измененный экземпляр `material` содержит соответствующее поле `measurement_unit`'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize(
+        'name, unit',
+        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
+    )
+    def test_material_view_update(self, name, unit, auto_login_user, material):
+        client, user = auto_login_user()
+        url = reverse('warehouse:material-update', kwargs={'pk': material.pk})
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], MaterialForm), \
+            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+
+        data = {
+            'name': name,
+            'measurement_unit': unit,
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'material' in response.context, \
+            'Проверьте, что передали поле `material` в контекст страницы'
+        assert data['name'] == response.context['material'].name, \
+            'Проверьте, что измененный экземпляр `material` содержит соответствующее поле `name`'
+        assert data['measurement_unit'] == response.context['material'].measurement_unit, \
+            'Проверьте, что измененный экземпляр `material` содержит соответствующее поле `measurement_unit`'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize(
+        'name, unit',
+        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
+    )
+    def test_material_view_delete(self, name, unit, auto_login_user):
+        client, user = auto_login_user()
+        material = Material.objects.create(name=name, measurement_unit=unit)
+        queryset = Material.objects.filter(name=name, measurement_unit=unit)
+
+        assert queryset.exists(), \
+            'Тест работает неправильно, экземпляр `material` отсутствует в БД'
+
+        url = reverse('warehouse:material-delete', kwargs={'pk': material.pk})
+
+        try:
+            response = client.delete(url, follow=True)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert not queryset.exists(), \
+            'Проверьте, что эксземпляр `material` удаляется из БД'
+
+
+class TestMaterialStorage:
     def test_material_storage_model(self):
         model_fields = MaterialStorage._meta.fields
 
@@ -364,37 +505,3 @@ class TestMaterial:
             'Поле storage модели MaterialStorage должно быть ссылкой на модель Storage'
         assert not storage_field.blank, \
             'Поле storage модели MaterialStorage должно быть обязательным'
-
-    @pytest.mark.django_db
-    def test_material_view_get_list(self, client):
-        try:
-            url = reverse('warehouse:material-list')
-            response = client.get(url)
-        except Exception as e:
-            assert False, f'Страница работает не правильно. Ошибка: {e}'
-        assert response.status_code == 200
-        assert 'material_list' in response.context, \
-            'Проверьте, что передали поле "material_list" в контекст страницы'
-        assert type(response.context.get('form')) == DeptForm, \
-            'Проверьте, что передали поле типа DeptForm в контекст страницы'
-
-    @pytest.mark.django_db
-    def test_material_view_get_detail(self, client, material, material_in_storage_1, material_in_storage_2):
-        try:
-            url = reverse(
-                'warehouse:material-detail', kwargs={'pk': material.id}
-            )
-            response = client.get(url)
-        except Exception as e:
-            assert False, f'Страница работает не правильно. Ошибка: {e}'
-        assert response.status_code == 200, \
-            'Статус код страницы должен быть 200'
-
-        material_from_context = get_field_context(response.context, Material)
-
-        assert material_from_context is not None, \
-            'Проверьте, что передали поле типа Material в контекст страницы'
-        assert type(material_from_context.amount.first()) == MaterialStorage, \
-            'Проверьте, что вместе с объектом Material передали поле типа MaterialStorage в контекст страницы'
-        assert material_from_context.total == material_in_storage_1.amount + material_in_storage_2.amount, \
-            'Проверьте, что объект Material содержит поле total с общим количеством материала'
