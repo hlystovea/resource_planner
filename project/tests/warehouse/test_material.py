@@ -11,6 +11,8 @@ from warehouse.models import Material, MaterialStorage
 
 
 class TestMaterial:
+    test_args = [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
+
     def test_material_model(self):
         model_fields = Material._meta.fields
 
@@ -54,6 +56,7 @@ class TestMaterial:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
         assert 'material_list' in response.context, \
             'Проверьте, что передали поле "material_list" в контекст страницы'
         assert type(response.context.get('form')) == DeptForm, \
@@ -86,10 +89,7 @@ class TestMaterial:
             'с общим количеством материала'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize(
-        'name, unit',
-        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
-    )
+    @pytest.mark.parametrize('name, unit', test_args)
     def test_material_view_create(self, name, unit, auto_login_user):
         client, user = auto_login_user()
         url = reverse('warehouse:material-create')
@@ -131,10 +131,7 @@ class TestMaterial:
             'соответствующее поле `measurement_unit`'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize(
-        'name, unit',
-        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
-    )
+    @pytest.mark.parametrize('name, unit', test_args)
     def test_material_view_update(self, name, unit, auto_login_user, material):
         client, user = auto_login_user()
         url = reverse('warehouse:material-update', kwargs={'pk': material.pk})
@@ -172,10 +169,7 @@ class TestMaterial:
             'соответствующее поле `measurement_unit`'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize(
-        'name, unit',
-        [('some-name', 'unit'), ('foo', 'bar'), ('12', '11')]
-    )
+    @pytest.mark.parametrize('name, unit', test_args)
     def test_material_view_delete(self, name, unit, auto_login_user):
         client, user = auto_login_user()
         material = Material.objects.create(name=name, measurement_unit=unit)

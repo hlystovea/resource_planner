@@ -10,6 +10,8 @@ from warehouse.models import Storage
 
 
 class TestStorage:
+    test_args = ['some-name', 'foo', '12']
+
     def test_storage_model(self):
         model_fields = Storage._meta.fields
 
@@ -76,7 +78,7 @@ class TestStorage:
             'Проверьте, что передали поле типа Storage в контекст страницы'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    @pytest.mark.parametrize('name', test_args)
     def test_storage_view_create(self, name, auto_login_user):
         client, user = auto_login_user()
         url = reverse('warehouse:storage-create')
@@ -112,7 +114,7 @@ class TestStorage:
             'соответствующее поле `name`'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    @pytest.mark.parametrize('name', test_args)
     def test_storage_view_update(self, name, auto_login_user, storage_1):
         client, user = auto_login_user()
         url = reverse('warehouse:storage-update', kwargs={'pk': storage_1.pk})
@@ -144,7 +146,7 @@ class TestStorage:
             'соответствующее поле `name`'
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize('name', ['some-name', 'foo', '12'])
+    @pytest.mark.parametrize('name', test_args)
     def test_storage_view_delete(self, name, auto_login_user):
         client, user = auto_login_user()
         storage = Storage.objects.create(name=name)
@@ -191,9 +193,8 @@ class TestStorage:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
-        assert 'storage' in response.context, \
-            'Проверьте, что передали поле `storage` в контекст страницы'
-
-        parent = response.context['storage']
-        assert parent.storage.filter(name='some-storage-name').exists(), \
+        storage = get_field_context(response.context, Storage)
+        assert storage, \
+            'Проверьте, что передали поле типа `Storage` в контекст страницы'
+        assert storage.storage.filter(name='some-storage-name').exists(), \
             'Проверьте, что сохраненный экземпляр `storage` имеет родителя'

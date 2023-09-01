@@ -7,7 +7,7 @@ from django_resized import ResizedImageField
 from warehouse.forms import DeptForm
 from warehouse.models import Instrument
 from staff.models import Dept
-from common import search_field
+from common import get_field_context, search_field
 
 
 class TestInstrument:
@@ -64,6 +64,7 @@ class TestInstrument:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
         assert 'instrument_list' in response.context, \
             'Проверьте, что передали поле "instrument_list" в контекст стр.'
         assert type(response.context.get('form')) == DeptForm, \
@@ -79,5 +80,7 @@ class TestInstrument:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
-        assert type(response.context.get('instrument')) == Instrument, \
+
+        instrument = get_field_context(response.context, Instrument)
+        assert instrument, \
             'Проверьте, что передали поле типа Instrument в контекст страницы'
