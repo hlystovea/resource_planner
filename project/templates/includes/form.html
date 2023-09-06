@@ -17,7 +17,6 @@
 {% endif %}
 
 <div class="card my-2">
-  <div class="card-header">{% if card_header %}{{ card_header }}{% endif %}</div>
   <div class="card-body">
     {% for field in form %}
     <div class="form-group row my-1" aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}>
@@ -39,9 +38,5 @@
         </div>
     </div>
     {% endfor %}
-    <!-- Кнопка -->
-    <div class="d-flex justify-content-end mt-3">          
-      <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
-    </div>
   </div>
 </div>

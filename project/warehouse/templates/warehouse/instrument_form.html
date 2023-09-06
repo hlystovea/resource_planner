@@ -12,9 +12,17 @@
 
   <div class="row justify-content-center">
     <div class="col-md-8 p-5 pt-2">
-      <form method="post" enctype="multipart/form-data">
-        {% include 'includes/form.html' with card_header='Описание инструмента' %}
-      </form>
+      <div class="card">
+        <div class="card-header">Инструмент</div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% include 'includes/form.html' %}
+            <div class="col-md-6 offset-md-4 px-2">              
+              <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
