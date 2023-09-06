@@ -261,7 +261,6 @@ class Component(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True,
     )
     function = models.ForeignKey(
         to='hardware.ComponentFunction',
@@ -305,6 +304,12 @@ class Component(models.Model):
         ordering = ('name', )
         verbose_name = _('Компонент / запчасть')
         verbose_name_plural = _('Компоненты / запчасти')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'manufacturer', 'type'),
+                name='name_manufacturer_type_uniquetogether'
+            )
+        ]
 
     def __str__(self):
         return f'{self.name} {self.type if self.type else ""}'
