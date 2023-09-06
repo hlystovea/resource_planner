@@ -24,6 +24,7 @@
               {% endif %}
             </p>
             <p class="mb-1"><span class="text-muted">Кол-во мест хранения: </span>{{ storage.storage.count }}</p>
+            <p class="mb-1"><span class="text-muted">Кол-во запчастей: </span>{{ storage.components.count }}</p>
             <p class="mb-1"><span class="text-muted">Кол-во материалов: </span>{{ storage.materials.count }}</p>
             <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_pk=storage.pk %}</p>
           </p>
@@ -93,6 +94,7 @@
     <thead class="table">
       <tr>
         <th scope="col">Наименование</th>
+        <th scope="col">Производитель</th>
         <th scope="col">Тип</th>
         <th scope="col">Инв. номер</th>
         <th scope="col">Количество</th>
@@ -103,6 +105,7 @@
       {% for c in storage.components.all %}
         <tr>
           <td><a href="{% url 'hardware:component-detail' c.component.pk %}">{{ c.component.name }}</a></td>
+          <td>{{ c.component.manufacturer|default:"-" }}</td>
           <td>{{ c.component.type|default:"-" }}</td>
           <td>{{ c.inventory_number|default:"-" }}</td>
           <td>{{ c.amount }} шт.</td>
