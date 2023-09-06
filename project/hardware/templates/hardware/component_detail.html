@@ -15,17 +15,13 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ component.name }}</p>
           <p class="h6">
-            <p class="mb-1">
-              <span class="text-muted">Производитель:</span> {{ component.manufacturer|default:"" }}
-              <span class="text-muted">Серия:</span> {{ component.series|default:"" }}
-              <span class="text-muted">Тип:</span> {{ component.type|default:"" }}
-              <span class="text-muted">Назначение:</span> {{ component.function }}
-              <span class="text-muted">Исполнение:</span> {{ component.design }}
-              <span class="text-muted">Метод устранения дефекта:</span> {{ component.repair_method }}
-            </p>
-            <p class="mb-1">
-              <span class="text-muted">Общее кол-во:</span> {% if component.total %}{{ component.total }}{% else %}0{% endif %} шт.
-            </p>
+              <p class="mb-1"><span class="text-muted">Производитель:</span> {{ component.manufacturer|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Серия:</span> {{ component.series|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Тип:</span> {{ component.type|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Назначение:</span> {{ component.function }}</p>
+              <p class="mb-1"><span class="text-muted">Исполнение:</span> {{ component.design }}</p>
+              <p class="mb-1"><span class="text-muted">Метод устранения дефекта:</span> {{ component.repair_method }}</p>
+              <p class="mb-1"><span class="text-muted">Общее кол-во:</span> {% if component.total %}{{ component.total }}{% else %}0{% endif %} шт.</p>
           </p>
         </div>
       </div>

@@ -102,7 +102,7 @@
     <tbody>
       {% for c in storage.components.all %}
         <tr>
-          <td><a href="{% url 'warehouse:component-detail' c.component.pk %}">{{ c.component.name }}</a></td>
+          <td><a href="{% url 'hardware:component-detail' c.component.pk %}">{{ c.component.name }}</a></td>
           <td>{{ c.component.type|default:"-" }}</td>
           <td>{{ c.inventory_number|default:"-" }}</td>
           <td>{{ c.amount }} шт.</td>
