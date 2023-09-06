@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -306,7 +307,10 @@ class Component(models.Model):
         verbose_name_plural = _('Компоненты / запчасти')
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.type}'
+
+    def get_absolute_url(self):
+        return reverse('hardware:component-detail', kwargs={'pk': self.pk})
 
 
 class ComponentRepairMethod(models.Model):
