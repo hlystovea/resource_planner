@@ -6,9 +6,11 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.models import Instrument, Material, MaterialStorage, Storage
-from warehouse.forms import (DeptForm, InstrumentForm, MaterialForm,
-                             MaterialStorageForm, StorageAddForm, StorageForm)
+from warehouse.forms import (ComponentStorageForm, DeptForm, InstrumentForm,
+                             MaterialForm, MaterialStorageForm, StorageAddForm,
+                             StorageForm)
+from warehouse.models import (ComponentStorage, Instrument, Material,
+                              MaterialStorage, Storage)
 
 
 def get_url(request, storage: Storage) -> str:
@@ -38,19 +40,23 @@ class StorageDetail(DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        materials = MaterialStorage.objects.select_related('material')
         storage = Storage.objects.annotate(materials_count=Count('materials'))
+        materials = MaterialStorage.objects.select_related('material')
+        components = ComponentStorage.objects.select_related('component')
+
         return queryset.select_related(
             'parent_storage'
         ).prefetch_related(
             Prefetch('storage', queryset=storage),
             Prefetch('materials', queryset=materials),
+            Prefetch('components', queryset=components),
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['storage_add_form'] = StorageAddForm()
         context['material_add_form'] = MaterialStorageForm()
+        context['component_add_form'] = ComponentStorageForm()
         return context
 
 
@@ -272,6 +278,79 @@ class MaterialStorageDelete(LoginRequiredMixin,
     def test_func(self):
         user = self.request.user
         return user.is_superuser or user.dept == self.get_object().owner
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_pk']}
+        )
+
+
+class ComponentStorageCreate(LoginRequiredMixin, CreateView):
+    model = ComponentStorage
+    form_class = ComponentStorageForm
+    login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+
+        context['storage'] = storage
+        context['is_new'] = True
+
+        return context
+
+    def form_valid(self, form):
+        if not hasattr(form.instance, 'storage'):
+            storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+            form.instance.storage = storage
+
+        form.instance.owner = self.request.user.dept
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_pk']}
+        )
+
+
+class ComponentStorageUpdate(LoginRequiredMixin,
+                             UserPassesTestMixin,
+                             UpdateView):
+    model = ComponentStorage
+    form_class = ComponentStorageForm
+    login_url = reverse_lazy('login')
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.dept == self.get_object().owner
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
+        context['storage'] = storage
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'warehouse:storage-detail',
+            kwargs={'pk': self.kwargs['storage_pk']}
+        )
+
+
+class ComponentStorageDelete(LoginRequiredMixin,
+                             UserPassesTestMixin,
+                             DeleteView):
+    model = ComponentStorage
+    login_url = reverse_lazy('login')
+
+    def test_func(self):
+        user = self.request.user
+        return (user.is_superuser
+                or user.dept == self.get_object().owner
+                or self.get_object().owner is None)
 
     def get_success_url(self):
         return reverse(

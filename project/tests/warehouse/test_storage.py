@@ -1,11 +1,11 @@
 import pytest
-
 from django.db.models import fields
 from django.urls import reverse
 from qr_code.qrcode.utils import QRCodeOptions
 
-from common import get_field_context, search_field
-from warehouse.forms import StorageAddForm, StorageForm
+from tests.common import get_field_context, search_field
+from warehouse.forms import (ComponentStorageForm, MaterialStorageForm,
+                             StorageAddForm, StorageForm)
 from warehouse.models import Storage
 
 
@@ -60,6 +60,7 @@ class TestStorage:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
         assert 'storage_list' in response.context, \
             'Проверьте, что передали поле "storage_list" в контекст страницы'
 
@@ -73,9 +74,22 @@ class TestStorage:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
         storage_from_context = get_field_context(response.context, Storage)
         assert storage_from_context is not None, \
             'Проверьте, что передали поле типа Storage в контекст страницы'
+
+        material_add_form = get_field_context(
+            response.context, MaterialStorageForm)
+        assert material_add_form is not None, \
+            'Проверьте, что передали поле типа MaterialStorageForm ' \
+            'в контекст страницы'
+
+        component_add_form = get_field_context(
+            response.context, ComponentStorageForm)
+        assert component_add_form is not None, \
+            'Проверьте, что передали поле типа ComponentStorageForm ' \
+            'в контекст страницы'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)

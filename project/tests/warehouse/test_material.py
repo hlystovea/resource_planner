@@ -1,11 +1,11 @@
 import math
-import pytest
 
+import pytest
 from django.db.models import fields
 from django_resized import ResizedImageField
 from django.urls import reverse
 
-from common import get_field_context, search_field
+from tests.common import get_field_context, search_field
 from warehouse.forms import DeptForm, MaterialForm
 from warehouse.models import Material, MaterialStorage
 

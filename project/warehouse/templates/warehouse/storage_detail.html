@@ -88,7 +88,53 @@
     <br>
     <br>
   {% endif %}
-  <h4>Материалы</h4>
+  <h4>Запасные части</h4>
+  <table class="table table-hover">
+    <thead class="table">
+      <tr>
+        <th scope="col">Наименование</th>
+        <th scope="col">Тип</th>
+        <th scope="col">Инв. номер</th>
+        <th scope="col">Количество</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in storage.components.all %}
+        <tr>
+          <td><a href="{% url 'warehouse:component-detail' c.component.pk %}">{{ c.component.name }}</a></td>
+          <td>{{ c.component.type|default:"-" }}</td>
+          <td>{{ c.inventory_number|default:"-" }}</td>
+          <td>{{ c.amount }} шт.</td>
+          <td>
+            {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == c.owner %}
+              <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:component-storage-update' c.storage.pk c.pk %}" role="button">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+              </a>
+              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteComponentModal_{{ c.pk }}">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+              </button>
+              {% include 'warehouse/componentstorage_confirm_delete.html' %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      {% if user.is_authenticated %}
+        <tr>
+          <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:component-storage-create' storage.pk %}">
+            {% csrf_token %}
+            {% load user_filters %}
+            <td>{{ component_add_form.component|addclass:"form-control form-control-sm" }}</td>
+            <td></td>
+            <td>{{ component_add_form.inventory_number|addclass:"form-control form-control-sm" }}</td>
+            <td>{{ component_add_form.amount|addclass:"form-control form-control-sm" }}</td>
+            <td><button type="submit" class="btn btn-sm btn-secondary me-1">Добавить</button></td>
+          </form>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <h4>Расходные материалы</h4>
   <table class="table table-hover">
     <thead class="table">
       <tr>

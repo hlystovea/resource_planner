@@ -1,13 +1,12 @@
 import pytest
-
 from django.db.models import fields
 from django.urls import reverse
 from django_resized import ResizedImageField
 
+from staff.models import Dept
+from tests.common import get_field_context, search_field
 from warehouse.forms import DeptForm
 from warehouse.models import Instrument
-from staff.models import Dept
-from common import get_field_context, search_field
 
 
 class TestInstrument:

@@ -6,7 +6,7 @@ from warehouse import views
 app_name = 'warehouse'
 
 urlpatterns = [
-    path('instrument/', views.InstrumentList.as_view(), name='instrument-list'),
+    path('instrument/', views.InstrumentList.as_view(), name='instrument-list'),  # noqa (E501)
     path('instrument/<int:pk>/', views.InstrumentDetail.as_view(), name='instrument-detail'),  # noqa (E501)
     path('instrument/<int:pk>/update/', views.InstrumentUpdate.as_view(), name='instrument-update'),  # noqa (E501)
     path('instrument/<int:pk>/delete/', views.InstrumentDelete.as_view(), name='instrument-delete'),  # noqa (E501)
@@ -26,4 +26,7 @@ urlpatterns = [
     path('storage/<int:storage_pk>/material/<int:pk>/update/', views.MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/delete/', views.MaterialStorageDelete.as_view(), name='material-storage-delete'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/create/', views.MaterialStorageCreate.as_view(), name='material-storage-create'),  # noqa (E501)
+    path('storage/<int:storage_pk>/component/<int:pk>/update/', views.ComponentStorageUpdate.as_view(), name='component-storage-update'),  # noqa (E501)
+    path('storage/<int:storage_pk>/component/<int:pk>/delete/', views.ComponentStorageDelete.as_view(), name='component-storage-delete'),  # noqa (E501)
+    path('storage/<int:storage_pk>/component/create/', views.ComponentStorageCreate.as_view(), name='component-storage-create'),  # noqa (E501)
 ]

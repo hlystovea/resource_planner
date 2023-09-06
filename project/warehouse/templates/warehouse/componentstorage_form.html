@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Запчасти{% endblock %}
+{% load user_filters %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-detail' storage.pk %}">{{ storage.name }}</a></li>
+      <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} материал</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5 pt-2">
+      <form method="post" enctype="multipart/form-data">
+        {% include 'includes/form.html' with card_header='Количество запчастей' %}
+        <div class="col-md-6 offset-md-4">              
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

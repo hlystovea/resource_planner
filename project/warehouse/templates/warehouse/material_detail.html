@@ -36,7 +36,7 @@
 
   {% if user.is_authenticated %}
     <div class="d-flex justify-content-end">
-      <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-update' material.id %}" role="button">
+      <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-update' material.pk %}" role="button">
         Редактировать
       </a>
       <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -60,7 +60,7 @@
       <tbody>
         {% for m in material.amount.all %}
           <tr>
-            <td><a href="{% url 'warehouse:storage-detail' m.storage.id %}">{{ m.storage.name }}</a></td>
+            <td><a href="{% url 'warehouse:storage-detail' m.storage.pk %}">{{ m.storage.name }}</a></td>
             <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit }}</td>
             <td>{{ m.owner|default:"-" }}</td>
           </tr>

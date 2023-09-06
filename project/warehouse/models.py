@@ -151,3 +151,43 @@ class Instrument(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.inventory_number})'
+
+
+class ComponentStorage(models.Model):
+    component = models.ForeignKey(
+        to='hardware.Component',
+        verbose_name=_('Запчасть'),
+        on_delete=models.CASCADE,
+        related_name='amount',
+    )
+    inventory_number = models.CharField(
+        verbose_name=_('Инв. номер'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name=_('Количество'),
+    )
+    owner = models.ForeignKey(
+        to='staff.Dept',
+        verbose_name=_('Подразделение'),
+        on_delete=models.SET_NULL,
+        related_name='components',
+        blank=True,
+        null=True,
+    )
+    storage = models.ForeignKey(
+        to=Storage,
+        verbose_name=_('Место хранения'),
+        on_delete=models.CASCADE,
+        related_name='components',
+    )
+
+    class Meta:
+        ordering = ('component', )
+        verbose_name = _('Запчасти на хранении')
+        verbose_name_plural = _('Запчасти на хранении')
+
+    def __str__(self):
+        return f'{self.component.name}, {self.component.type}'

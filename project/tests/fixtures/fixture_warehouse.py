@@ -35,3 +35,15 @@ def material_in_storage_1(material, storage_1, dept_1):
 def material_in_storage_2(material, storage_2, dept_2):
     from warehouse.models import MaterialStorage
     return MaterialStorage.objects.create(material=material, storage=storage_2, amount=4, owner=dept_2)  # noqa (E501)
+
+
+@pytest.fixture
+def component_in_storage_1(component, storage_1, dept_1):
+    from warehouse.models import ComponentStorage
+    return ComponentStorage.objects.create(component=component, storage=storage_1, amount=2, owner=dept_1)  # noqa (E501)
+
+
+@pytest.fixture
+def component_in_storage_2(component, storage_2, dept_2):
+    from warehouse.models import ComponentStorage
+    return ComponentStorage.objects.create(component=component, storage=storage_2, amount=4, owner=dept_2)  # noqa (E501)

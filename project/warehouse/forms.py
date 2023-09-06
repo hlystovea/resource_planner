@@ -1,7 +1,8 @@
 from django.forms import ChoiceField, Form, ModelForm
 
 from staff.models import Dept
-from warehouse.models import Instrument, Material, MaterialStorage, Storage
+from warehouse.models import (ComponentStorage, Instrument, Material,
+                              MaterialStorage, Storage)
 
 
 class DeptForm(Form):
@@ -29,6 +30,12 @@ class MaterialForm(ModelForm):
 class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
+        exclude = ('storage', 'owner')
+
+
+class ComponentStorageForm(ModelForm):
+    class Meta:
+        model = ComponentStorage
         exclude = ('storage', 'owner')
 
 
