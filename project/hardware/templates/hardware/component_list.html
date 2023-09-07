@@ -19,18 +19,18 @@
   <table class="table table-hover">
     <thead class="table">
       <tr>
+        <th scope="col">Производитель</th>
         <th scope="col">Наименование</th>
         <th scope="col">Тип</th>
-        <th scope="col">Производитель</th>
         <th scope="col">Количество</th>
       </tr>
     </thead>
     <tbody>
       {% for c in component_list %}
         <tr>
+          <td>{{ c.manufacturer|default:"-" }}</td>
           <td><a href="{% url 'hardware:component-detail' c.pk %}">{{ c.name }}</a></td>
           <td>{{ c.type|default:"-" }}</td>
-          <td>{{ c.manufactory|default:"-" }}</td>
           <td>{% if c.total %}{{ c.total }}{% else %}0{% endif %} шт.</td>
         </tr>
       {% endfor %}
