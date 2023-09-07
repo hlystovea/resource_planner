@@ -22,7 +22,6 @@
         <th scope="col">Наименование</th>
         <th scope="col">Расположение</th>
         <th scope="col">Запчасти</th>
-        <th scope="col">Материалы</th>
         <th scope="col">Маркировка</th>
         <th scope="col"></th>
       </tr>
@@ -33,7 +32,6 @@
           <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
           <td>{% if s.parent_storage %}<a href="{% url 'warehouse:storage-detail' s.parent_storage.id %}">{{ s.parent_storage }}</a>{% else %}-{% endif %}</td>
           <td>{{ s.components_count }} поз.</td>
-          <td>{{ s.materials_count }} поз.</td>
           <td><a href="{% url 'warehouse:storage-qrcode' s.id %}" target="_blank">открыть</a></td>
           <td>
             {% if user.is_authenticated %}

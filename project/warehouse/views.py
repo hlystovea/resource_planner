@@ -70,8 +70,6 @@ class StorageList(ListView):
             'parent_storage'
         ).annotate(
             components_count=Count('components')
-        ).annotate(
-            materials_count=Count('materials')
         ).order_by('name')
 
 
