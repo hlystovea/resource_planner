@@ -312,7 +312,7 @@ class Component(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.name} {self.manufacturer} ' \
+        return f'{self.manufacturer} {self.name} ' \
                f'{self.type if self.type else ""}'
 
     def get_absolute_url(self):
