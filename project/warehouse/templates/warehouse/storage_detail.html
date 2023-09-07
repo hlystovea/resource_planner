@@ -109,15 +109,13 @@
           <td>{{ c.amount }} шт.</td>
           <td>
             {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == c.owner %}
-              <div class="row m-0 p-0">
-                <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:component-storage-update' c.storage.pk c.pk %}" role="button">
-                  <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-                </a>
-                <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteComponentModal_{{ c.pk }}">
-                  <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-                </button>
-                {% include 'warehouse/componentstorage_confirm_delete.html' %}
-              </div>
+              <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:component-storage-update' c.storage.pk c.pk %}" role="button">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+              </a>
+              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteComponentModal_{{ c.pk }}">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+              </button>
+              {% include 'warehouse/componentstorage_confirm_delete.html' %}
             {% endif %}
           </td>
         </tr>
@@ -127,7 +125,7 @@
           <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:component-storage-create' storage.pk %}">
             {% csrf_token %}
             {% load user_filters %}
-            <td>{{ component_add_form.component|addclass:"form-control form-control-sm" }}</td>
+            <td colspan="2">{{ component_add_form.component|addclass:"form-control form-control-sm" }}</td>
             <td></td>
             <td>{{ component_add_form.inventory_number|addclass:"form-control form-control-sm" }}</td>
             <td>{{ component_add_form.amount|addclass:"form-control form-control-sm" }}</td>
@@ -159,15 +157,13 @@
           <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
           <td>
             {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == m.owner %}
-              <div class="row m-0 p-0">
-                <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:material-storage-update' m.storage.pk m.pk %}" role="button">
-                  <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-                </a>
-                <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteMaterialModal_{{ m.pk }}">
-                  <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-                </button>
-                {% include 'warehouse/materialstorage_confirm_delete.html' %}
-              </div>
+              <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:material-storage-update' m.storage.pk m.pk %}" role="button">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+              </a>
+              <button type="button" class="btn btn-sm btn-danger my-0" data-bs-toggle="modal" data-bs-target="#deleteMaterialModal_{{ m.pk }}">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+              </button>
+              {% include 'warehouse/materialstorage_confirm_delete.html' %}
             {% endif %}
           </td>
         </tr>
