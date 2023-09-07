@@ -69,8 +69,9 @@ class StorageList(ListView):
         return queryset.select_related(
             'parent_storage'
         ).annotate(
-            components_count=Count('components'),
-            materials_count=Count('materials'),
+            components_count=Count('components')
+        ).annotate(
+            materials_count=Count('materials')
         ).order_by('name')
 
 
