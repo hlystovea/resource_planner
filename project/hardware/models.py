@@ -301,7 +301,7 @@ class Component(models.Model):
     )
 
     class Meta:
-        ordering = ('name', )
+        ordering = ('manufacturer', 'name')
         verbose_name = _('Компонент / запчасть')
         verbose_name_plural = _('Компоненты / запчасти')
         constraints = [
