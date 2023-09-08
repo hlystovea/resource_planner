@@ -207,7 +207,20 @@
                 {% endif %}
               </div>
             </div>
-          
+
+            <!-- Метод устранения -->
+            <div class="form-group row my-1" aria-required={% if form.repair_method.required %}"true"{% else %}"false"{% endif %}>
+              <label for="{{ form.repair_method.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                {{ form.repair_method.label }}
+              </label>
+              <div class="col-md-8">
+                {{ form.repair_method }}
+                {% if form.repair_method.help_text %}
+                  <small id="{{ form.repair_method.id_for_label }}-help" class="form-text text-muted">{{ form.repair_method.help_text|safe }}</small>
+                {% endif %}
+              </div>
+            </div>
+
             <!-- Выполненные мероприятия -->
             <div class="form-group row my-1" aria-required={% if form.repair.required %}"true"{% else %}"false"{% endif %}>
               <label for="{{ form.repair.id_for_label }}" class="col-md-4 col-form-label text-md-right">
