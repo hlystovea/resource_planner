@@ -14,7 +14,7 @@
       <div class="card my-2">
         <div class="card-header {% if defect.repair_date %}bg-success{% else %}bg-danger{% endif %}">
           <div class="d-flex justify-content-end">
-            <span class="text me-auto">Дефект #{{ defect.id }}</span>
+            <span class="text me-auto">Дефект {{ defect.part.cabinet.hardware.name }} от {{ defect.date|date:"d.m.Y" }}</span>
             {% if defect.repair_date %}Устранено{% else %}Не устранено{% endif %}
           </div>
         </div>
