@@ -55,12 +55,16 @@
               <dd class="col-sm-8"><ul class="list-unstyled">{% for t in defect.technical_reasons.all %}<li>{{ t }}</li>{% endfor %}</ul></dd>
               <dt class="col-sm-4">Организационные причины</dt>
               <dd class="col-sm-8"><ul class="list-unstyled">{% for o in defect.organizational_reasons.all %}<li>{{ o }}</li>{% endfor %}</ul></dd>
+              {% if defect.repair_method %}
+                <dt class="col-sm-4">Метод устранения</dt>
+                <dd class="col-sm-8">{{ defect.repair_method }}</dd>
+              {% endif %}
               <dt class="col-sm-4">Выполненные мероприятия</dt>
               <dd class="col-sm-8">{{ defect.repair }}</dd>
               {% if defect.attachment %}
-              <dt class="col-sm-4">Приложение</dt>
-              <dd class="col-sm-8"><a href="{{ defect.attachment.url }}">Открыть</a></dd>
-            {% endif %}
+                <dt class="col-sm-4">Приложение</dt>
+                <dd class="col-sm-8"><a href="{{ defect.attachment.url }}">Открыть</a></dd>
+              {% endif %}
             </dl>
           </div>
         {% endif %}

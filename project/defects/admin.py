@@ -82,7 +82,7 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     actions = ('export_as_csv',)
     list_csv_export = ('facility_name', 'connection_name', 'hardware_name',
                        'cabinet_name', 'component_name', 'date', 'description',
-                       'repair_date', 'repair_date', 'repair', 'employee',
+                       'repair_date', 'repair_method', 'repair', 'employee',
                        'effects', 'features', 'condition', 'technical_reasons',
                        'organizational_reasons')
 
