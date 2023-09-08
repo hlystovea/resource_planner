@@ -313,22 +313,6 @@ class Component(models.Model):
         return reverse('hardware:component-detail', kwargs={'pk': self.pk})
 
 
-class ComponentRepairMethod(models.Model):
-    name = models.CharField(
-        verbose_name=_('Метод устранения дефекта'),
-        max_length=200,
-        unique=True,
-    )
-
-    class Meta:
-        ordering = ('name', )
-        verbose_name = _('Метод устранения дефекта')
-        verbose_name_plural = _('Методы устранения дефектов')
-
-    def __str__(self):
-        return self.name
-
-
 class ComponentDesign(models.Model):
     name = models.CharField(
         verbose_name=_('Исполнение'),

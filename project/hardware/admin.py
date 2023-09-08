@@ -8,8 +8,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
 from .models import (Cabinet, Component, ComponentDesign,
-                     ComponentFunction, ComponentRepairMethod,
-                     Connection, Facility, Group, Hardware, Manufacturer, Part)
+                     ComponentFunction, Connection, Facility,
+                     Group, Hardware, Manufacturer, Part)
 from defects.models import Defect
 
 
@@ -265,11 +265,6 @@ class GroupAdmin(MixinAdmin):
 
 @admin.register(ComponentDesign)
 class ComponentDesignAdmin(MixinAdmin):
-    pass
-
-
-@admin.register(ComponentRepairMethod)
-class ComponentRepairMethodAdmin(MixinAdmin):
     pass
 
 

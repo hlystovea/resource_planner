@@ -1,8 +1,7 @@
 import pytest
 
 from hardware.models import (Component, ComponentDesign,
-                             ComponentFunction, ComponentRepairMethod,
-                             Manufacturer)
+                             ComponentFunction, Manufacturer)
 
 
 @pytest.fixture
