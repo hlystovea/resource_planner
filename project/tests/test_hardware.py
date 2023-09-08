@@ -74,8 +74,9 @@ class TestComponent:
 
     @pytest.mark.django_db
     def test_component_view_get_list(self, client):
+        url = reverse('hardware:component-list')
+
         try:
-            url = reverse('hardware:component-list')
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
@@ -220,3 +221,22 @@ class TestComponent:
 
         assert not queryset.exists(), \
             'Проверьте, что эксземпляр `component` удаляется из БД'
+
+    @pytest.mark.django_db
+    def test_component_filters(
+        self, client, component_in_storage_1, component_in_storage_2
+    ):
+        url = reverse('hardware:component-list')
+        components = Component.objects.all()
+
+        response = client.get(url)
+        component_list = response.context['component_list']
+        assert len(component_list) == len(components), \
+            'Проверьте, что без фильтрации передаются все объекты'
+
+        response = client.get(f'{url}?owner={component_in_storage_1.owner.pk}')
+        component_list = response.context['component_list']
+        assert component_in_storage_1.component in component_list, \
+            'Фильтр по подразделению работает не правильно'
+        assert component_in_storage_2.component not in component_list, \
+            'Фильтр по подразделению работает не правильно'
