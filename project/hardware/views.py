@@ -28,10 +28,14 @@ class ComponentList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related('amount')
+
         owner = self.request.GET.get('owner')
         if owner and owner.isdigit():
             queryset = queryset.filter(amount__owner=owner)
-        return queryset.annotate(total=Sum('amount__amount')).order_by('name')
+
+        queryset = queryset.annotate(total=Sum('amount__amount'))
+
+        return queryset.order_by('manufacturer', 'name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
