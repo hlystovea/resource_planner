@@ -239,7 +239,7 @@ class GroupAdmin(MixinAdmin):
         url = (
             reverse('admin:hardware_hardware_changelist')
             + '?'
-            + urlencode({'group__id': f'{obj.id}'})
+            + urlencode({'group__id': obj.id})
         )
         return format_html(
             '<a href="{}">{}</a>', url, obj.hardware.count()
@@ -269,7 +269,12 @@ class ComponentDesignAdmin(MixinAdmin):
 
 
 @admin.register(ComponentFunction)
-class ComponentFunctiondmin(MixinAdmin):
+class ComponentFunctionAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(MixinAdmin):
     pass
 
 
