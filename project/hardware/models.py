@@ -293,12 +293,6 @@ class Component(models.Model):
         blank=True,
         null=True,
     )
-    repair_method = models.ForeignKey(
-        to='hardware.ComponentRepairMethod',
-        verbose_name=_('Метод устранения дефекта'),
-        on_delete=models.PROTECT,
-        related_name='components',
-    )
 
     class Meta:
         ordering = ('manufacturer', 'name')
@@ -348,12 +342,12 @@ class ComponentDesign(models.Model):
     )
 
     class Meta:
-        ordering = ('id', )
+        ordering = ('abbreviation', )
         verbose_name = _('Вариант исполнения')
         verbose_name_plural = _('Варианты исполнения')
 
     def __str__(self):
-        return self.abbreviation
+        return f'{self.abbreviation} - {self.name}'
 
 
 class ComponentFunction(models.Model):

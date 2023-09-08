@@ -64,29 +64,22 @@ def design():
 
 
 @pytest.fixture
-def repair_method():
-    return ComponentRepairMethod.objects.create(name='repair_method')
-
-
-@pytest.fixture
-def component_1(function, design, manufacturer_1, repair_method):
+def component_1(function, design, manufacturer_1):
     return Component.objects.create(
         name='component_1',
         function=function,
         design=design,
-        manufacturer=manufacturer_1,
-        repair_method=repair_method
+        manufacturer=manufacturer_1
     )
 
 
 @pytest.fixture
-def component_2(function, design, manufacturer_2, repair_method):
+def component_2(function, design, manufacturer_2):
     return Component.objects.create(
         name='component_2',
         function=function,
         design=design,
-        manufacturer=manufacturer_2,
-        repair_method=repair_method
+        manufacturer=manufacturer_2
     )
 
 

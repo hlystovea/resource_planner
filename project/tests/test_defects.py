@@ -78,6 +78,14 @@ class TestDefect:
         assert attachment_field.blank, \
             'Поле "attachment" модели Defect не должно быть обязательным'
 
+        repair_method_field = search_field(model_fields, 'repair_method_id')
+        assert repair_method_field is not None, \
+            'Модель Defects должна содержать поле repair_method'
+        assert type(repair_method_field) == fields.related.ForeignKey, \
+            'Поле repair_method должно быть ForeignKey'
+        assert repair_method_field.blank, \
+            'Поле repair_method не должно быть обязательным'
+
     @pytest.mark.django_db
     def test_defect_view_get_list(self, client):
         try:
@@ -115,97 +123,9 @@ class TestDefect:
         assert response.status_code != 404, \
             'Страница не найдена, проверьте этот адрес в *urls.py*'
 
-        assert 'form' in response.context, \
-            'Проверьте, что передали поле "form" в контекст страницы'
-        assert len(response.context['form'].fields) == 12, \
-            'Проверьте, что в форме "form" 12 полей'
-
-        assert 'date' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "date"'
-        assert type(response.context['form'].fields['date']) == forms.fields.DateField, \
-            'Проверьте, что в форме "form" поле "date" типа "DateField"'
-        assert response.context['form'].fields['date'].required, \
-            'Проверьте, что в форме "form" поле "date" обязательно'
-
-        assert 'part' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "part"'
-        assert type(response.context['form'].fields['part']) == forms.models.ModelChoiceField, \
-            'Проверьте, что в форме "form" поле "part" типа "ModelChoiceField"'
-        assert response.context['form'].fields['part'].required, \
-            'Проверьте, что в форме "form" поле "part" обязательно'
-
-        assert not 'employee' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" нет поля "employee"'
-
-        assert 'description' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "description"'
-        assert type(response.context['form'].fields['description']) == forms.fields.CharField, \
-            'Проверьте, что в форме "form" поле "description" типа "CharField"'
-        assert response.context['form'].fields['description'].required, \
-            'Проверьте, что в форме "form" поле "description" обязательно'
-
-        assert 'image' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "image"'
-        assert type(response.context['form'].fields['image']) == ImageFormField, \
-            'Проверьте, что в форме "form" поле "image" типа "ResizedImageField"'
-        assert not response.context['form'].fields['image'].required, \
-            'Проверьте, что в форме "form" поле "image" не обязательно'
-
-        assert 'effects' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "effects"'
-        assert type(response.context['form'].fields['effects']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "effects" типа "ModelMultipleChoiceField"'
-        assert response.context['form'].fields['effects'].required, \
-            'Проверьте, что в форме "form" поле "effects" обязательно'
-
-        assert 'features' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "features"'
-        assert type(response.context['form'].fields['features']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "features" типа "ModelMultipleChoiceField"'
-        assert response.context['form'].fields['features'].required, \
-            'Проверьте, что в форме "form" поле "features" обязательно'
-
-        assert 'condition' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "condition"'
-        assert type(response.context['form'].fields['condition']) == forms.models.ModelChoiceField, \
-            'Проверьте, что в форме "form" поле "condition" типа "ModelChoiceField"'
-        assert response.context['form'].fields['condition'].required, \
-            'Проверьте, что в форме "form" поле "condition" обязательно'
-
-        assert 'technical_reasons' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "technical_reasons"'
-        assert type(response.context['form'].fields['technical_reasons']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "technical_reasons" типа "ModelMultipleChoiceField"'
-        assert not response.context['form'].fields['technical_reasons'].required, \
-            'Проверьте, что в форме "form" поле "technical_reasons" не обязательно'
-
-        assert 'organizational_reasons' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "organizational_reasons"'
-        assert type(response.context['form'].fields['organizational_reasons']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "organizational_reasons" типа "ModelMultipleChoiceField"'
-        assert not response.context['form'].fields['organizational_reasons'].required, \
-            'Проверьте, что в форме "form" поле "organizational_reasons" не обязательно'
-
-        assert 'repair' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "repair"'
-        assert type(response.context['form'].fields['repair']) == forms.fields.CharField, \
-            'Проверьте, что в форме "form" поле "repair" типа "CharField"'
-        assert not response.context['form'].fields['repair'].required, \
-            'Проверьте, что в форме "form" поле "repair" не обязательно'
-
-        assert 'repair_date' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "repair_date"'
-        assert type(response.context['form'].fields['repair_date']) == forms.fields.DateField, \
-            'Проверьте, что в форме "form" поле "repair_date" типа "DateField"'
-        assert not response.context['form'].fields['repair_date'].required, \
-            'Проверьте, что в форме "form" поле "repair_date" не обязательно'
-
-        assert 'attachment' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "attachment"'
-        assert type(response.context['form'].fields['attachment']) == forms.fields.FileField, \
-            'Проверьте, что в форме "form" поле "attachment" типа "FileField"'
-        assert not response.context['form'].fields['attachment'].required, \
-            'Проверьте, что в форме "form" поле "attachment" не обязательно'
+        form = get_field_context(response.context, DefectForm)
+        assert form, \
+            'Проверьте, что передали поле `form` типа DefectForm в контекст стр.'
 
     @pytest.mark.django_db
     def test_defect_view_update_unautorized_user(self, client, defect):

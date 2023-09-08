@@ -63,8 +63,7 @@ class PartInline(autocomplete_all.TabularInline):
 class PartAdmin(MixinAdmin):
     list_display = ('id', 'name', 'component', 'get_cabinet',
                     'get_part', 'release_year', 'launch_year')
-    list_filter = ('component__design', 'component__repair_method',
-                   'launch_year')
+    list_filter = ('component__design', 'launch_year')
     autocomplete_fields = ('component', )
     readonly_fields = ('cabinet', )
     inlines = (PartInline, )
@@ -115,7 +114,7 @@ class PartAdmin(MixinAdmin):
 class ComponentAdmin(MixinAdmin):
     list_display = ('id', 'name', 'manufacturer', 'design',
                     'series', 'type', 'defect_count')
-    list_filter = ('design', 'function', 'repair_method')
+    list_filter = ('design', 'function')
     autocomplete_fields = ('manufacturer', )
 
     @admin.display(description=_('Кол-во дефектов'))

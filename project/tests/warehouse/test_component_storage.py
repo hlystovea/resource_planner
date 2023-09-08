@@ -66,7 +66,7 @@ class TestComponentStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('number, amount', test_args)
     def test_component_storage_view_create(
-        self, number, amount, component, storage_1, auto_login_user
+        self, number, amount, component_1, storage_1, auto_login_user
     ):
         client, user = auto_login_user()
         url = reverse(
@@ -90,7 +90,7 @@ class TestComponentStorage:
             'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
-            'component': component,
+            'component': component_1,
             'inventory_number': number,
             'amount': amount,
         }
@@ -152,17 +152,17 @@ class TestComponentStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('number, amount', test_args)
     def test_component_view_delete(
-        self, number, amount, component, storage_1, auto_login_user
+        self, number, amount, component_1, storage_1, auto_login_user
     ):
         client, user = auto_login_user()
         component_storage = ComponentStorage.objects.create(
-            component=component,
+            component=component_1,
             storage=storage_1,
             inventory_number=number,
             amount=amount
         )
         queryset = ComponentStorage.objects.filter(
-            component=component,
+            component=component_1,
             storage=storage_1,
             inventory_number=number,
             amount=amount

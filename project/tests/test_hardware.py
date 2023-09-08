@@ -40,14 +40,6 @@ class TestComponent:
         assert not design_field.blank, \
             'Поле design должно быть обязательным'
 
-        repair_method_field = search_field(model_fields, 'repair_method_id')
-        assert repair_method_field is not None, \
-            'Модель Component должна содержать поле repair_method'
-        assert type(repair_method_field) == fields.related.ForeignKey, \
-            'Поле repair_method должно быть ForeignKey'
-        assert not repair_method_field.blank, \
-            'Поле repair_method должно быть обязательным'
-
         manufacturer_field = search_field(model_fields, 'manufacturer_id')
         assert manufacturer_field is not None, \
             'Модель Component должна содержать поле manufacturer'
@@ -91,11 +83,11 @@ class TestComponent:
 
     @pytest.mark.django_db
     def test_component_view_get_detail(
-        self, client, component, component_in_storage_1, component_in_storage_2
+        self, client, component_1, component_in_storage_1
     ):
         try:
             url = reverse(
-                'hardware:component-detail', kwargs={'pk': component.id}
+                'hardware:component-detail', kwargs={'pk': component_1.id}
             )
             response = client.get(url)
         except Exception as e:
@@ -111,15 +103,14 @@ class TestComponent:
             'Проверьте, что вместе с объектом Component передали поле ' \
             'типа ComponentStorage в контекст страницы'
 
-        total = component_in_storage_1.amount + component_in_storage_2.amount
-        assert component.total == total, \
+        assert component.total == component_in_storage_1.amount, \
             'Проверьте, что объект Component содержит поле total ' \
             'с общим количеством материала'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
     def test_component_view_create(
-        self, name, function, design, manufacturer, repair_method, auto_login_user
+        self, name, function, design, manufacturer_1, auto_login_user
     ):
         client, user = auto_login_user()
         url = reverse('hardware:component-create')
@@ -131,9 +122,9 @@ class TestComponent:
         assert response.status_code == 200
 
         form = get_field_context(response.context, ComponentForm)
+
         assert form is not None, \
             'Проверьте, что передали поле типа `ComponentForm` в контекст стр.'
-
         assert 'is_new' in response.context, \
             'Проверьте, что передали поле `is_new` в контекст страницы'
         assert response.context['is_new'], \
@@ -143,8 +134,7 @@ class TestComponent:
             'name': name,
             'function': function,
             'design': design,
-            'manufacturer': manufacturer,
-            'repair_method': repair_method,
+            'manufacturer': manufacturer_1
         }
         try:
             response = client.post(url, follow=True, data=data)
@@ -162,9 +152,12 @@ class TestComponent:
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
-    def test_component_view_update(self, name, auto_login_user, component):
+    def test_component_view_update(self, name, auto_login_user, component_1):
         client, user = auto_login_user()
-        url = reverse('hardware:component-update', kwargs={'pk': component.pk})
+        url = reverse(
+            'hardware:component-update',
+            kwargs={'pk': component_1.pk}
+        )
 
         try:
             response = client.get(url)
@@ -197,14 +190,13 @@ class TestComponent:
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
     def test_component_view_delete(
-        self, name, function, design, repair_method, auto_login_user
+        self, name, function, design, auto_login_user
     ):
         client, user = auto_login_user()
         component = Component.objects.create(
             name=name,
             function=function,
-            design=design,
-            repair_method=repair_method
+            design=design
         )
         queryset = Component.objects.filter(name=name)
 

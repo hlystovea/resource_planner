@@ -71,6 +71,14 @@ class Defect(models.Model):
         blank=True,
         null=True,
     )
+    repair_method = models.ForeignKey(
+        to='defects.RepairMethod',
+        verbose_name=_('Метод устранения'),
+        on_delete=models.PROTECT,
+        related_name='defects',
+        blank=True,
+        null=True,
+    )
     attachment = models.FileField(
         verbose_name=_('Приложение'),
         upload_to='defects/attachments/%Y/%m/%d/',
@@ -184,6 +192,22 @@ class OrganizationalReason(models.Model):
         ordering = ('name', )
         verbose_name = _('Организационная причина')
         verbose_name_plural = _('Организационные причины')
+
+    def __str__(self):
+        return self.name
+
+
+class RepairMethod(models.Model):
+    name = models.CharField(
+        verbose_name=_('Метод устранения'),
+        max_length=200,
+        unique=True,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Метод устранения')
+        verbose_name_plural = _('Методы устранения')
 
     def __str__(self):
         return self.name
