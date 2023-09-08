@@ -7,7 +7,8 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from .models import (Condition, Defect, Effect, Feature,
-                     OrganizationalReason, TechnicalReason)
+                     OrganizationalReason, RepairMethod,
+                     TechnicalReason)
 
 
 class ExportCsvMixin(admin.ModelAdmin):
@@ -71,7 +72,8 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('date', 'technical_reasons', 'organizational_reasons',
+    list_filter = ('date', 'technical_reasons',
+                   'organizational_reasons', 'repair_method',
                    'part__cabinet__hardware__group',
                    'part__cabinet__hardware__connection')
     autocomplete_fields = ('part', )
@@ -80,8 +82,8 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
     actions = ('export_as_csv',)
     list_csv_export = ('facility_name', 'connection_name', 'hardware_name',
                        'cabinet_name', 'component_name', 'date', 'description',
-                       'repair_date', 'repair', 'employee', 'effects',
-                       'features', 'condition', 'technical_reasons',
+                       'repair_date', 'repair_date', 'repair', 'employee',
+                       'effects', 'features', 'condition', 'technical_reasons',
                        'organizational_reasons')
 
     @admin.display(description=_('Объект диспетч.'))
@@ -169,4 +171,9 @@ class TechnicalReasonAdmin(MixinAdmin):
 
 @admin.register(OrganizationalReason)
 class OrganizationalReasonAdmin(MixinAdmin):
+    pass
+
+
+@admin.register(RepairMethod)
+class RepairMethodAdmin(MixinAdmin):
     pass
