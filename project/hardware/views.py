@@ -27,7 +27,12 @@ class ComponentList(ListView):
     model = Component
 
     def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related('amount')
+        queryset = super().get_queryset()
+        queryset = queryset.prefetch_related(
+            'amount'
+        ).annotate(
+            total=Sum('amount__amount')
+        )
         queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('manufacturer', 'name')
 
