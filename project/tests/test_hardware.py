@@ -3,10 +3,9 @@ import pytest
 from django.db.models import fields
 from django.urls import reverse
 
-from hardware.forms import ComponentForm
+from hardware.forms import ComponentForm, ComponentFilterForm
 from hardware.models import Component
 from tests.common import get_field_context, search_field
-from warehouse.forms import DeptForm
 from warehouse.models import ComponentStorage
 
 
@@ -77,9 +76,9 @@ class TestComponent:
         assert 'component_list' in response.context, \
             'Проверьте, что передали поле "component_list" в контекст страницы'
 
-        dept_form = get_field_context(response.context, DeptForm)
+        dept_form = get_field_context(response.context, ComponentFilterForm)
         assert dept_form is not None, \
-            'Проверьте, что передали поле типа DeptForm в контекст страницы'
+            'Проверьте, что передали поле ComponentFilterForm в контекст стр.'
 
     @pytest.mark.django_db
     def test_component_view_get_detail(
@@ -223,11 +222,22 @@ class TestComponent:
 
         response = client.get(url)
         component_list = response.context['component_list']
+
         assert len(component_list) == len(components), \
             'Проверьте, что без фильтрации передаются все объекты'
 
         response = client.get(f'{url}?owner={component_in_storage_1.owner.pk}')
         component_list = response.context['component_list']
+
+        assert component_in_storage_1.component in component_list, \
+            'Фильтр по подразделению работает не правильно'
+        assert component_in_storage_2.component not in component_list, \
+            'Фильтр по подразделению работает не правильно'
+
+        manufacturer_1 = component_in_storage_1.component.manufacturer
+        response = client.get(f'{url}?manufacturer={manufacturer_1.pk}')
+        component_list = response.context['component_list']
+
         assert component_in_storage_1.component in component_list, \
             'Фильтр по подразделению работает не правильно'
         assert component_in_storage_2.component not in component_list, \

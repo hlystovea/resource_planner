@@ -4,9 +4,9 @@ from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
 
-from hardware.forms import ComponentForm
+from hardware.filters import ComponentFilter
+from hardware.forms import ComponentForm, ComponentFilterForm
 from hardware.models import Component
-from warehouse.forms import DeptForm
 from warehouse.models import ComponentStorage
 
 
@@ -28,18 +28,12 @@ class ComponentList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related('amount')
-
-        owner = self.request.GET.get('owner')
-        if owner and owner.isdigit():
-            queryset = queryset.filter(amount__owner=owner)
-
-        queryset = queryset.annotate(total=Sum('amount__amount'))
-
+        queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('manufacturer', 'name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = DeptForm(self.request.GET or None)
+        context['form'] = ComponentFilterForm(self.request.GET or None)
         return context
 
 
