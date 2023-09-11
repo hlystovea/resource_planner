@@ -28,8 +28,8 @@ class ComponentList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.annotate(total=Sum('amount__amount'))
         queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
+        queryset = queryset.annotate(total=Sum('amount__amount'))
         return queryset.order_by('manufacturer', 'name')
 
     def get_context_data(self, **kwargs):
