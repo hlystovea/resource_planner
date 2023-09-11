@@ -3,7 +3,7 @@
     <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer">
       <option value="" selected>Производитель...</option>
       {% for id, name in form.fields.manufacturer.choices %}
-        <option value="{{ id }}" {% if request.GET.dict.owner == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+        <option value="{{ id }}" {% if request.GET.dict.manufacturer == id|urlencode  %}selected{% endif %}>{{ name }}</option>
       {% endfor %}
     </select>
   </div>
@@ -16,7 +16,7 @@
     </select>
   </div>
   <div class="col-auto">
-    <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="redirectPage()">Показать</button>
+    <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="updatePage()">Показать</button>
   </div>
 </div>
 
@@ -25,14 +25,14 @@
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  function redirectPage() {
+  function updatePage() {
     let url = "{% url 'hardware:component-list' %}?";
 
     let manufacturer = document.getElementById("selectManufacturer").value;
     let owner = document.getElementById("selectOwner").value;
 
-    if (manufacturer !== '') url += "&manufacturer=" + facility;
-    if (owner !== '') url += "&owner=" + connection;
+    if (manufacturer !== '') url += "&manufacturer=" + manufacturer;
+    if (owner !== '') url += "&owner=" + owner;
 
     window.location.replace(url);
   };
