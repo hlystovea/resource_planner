@@ -73,12 +73,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
-# Database
-DATABASES = {
-    'default': env.db(),
-}
-
-
 AUTH_USER_MODEL = 'staff.Employee'
 
 # Password validation
