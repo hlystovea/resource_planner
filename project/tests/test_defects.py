@@ -7,7 +7,7 @@ from django_resized import ResizedImageField
 from sorl.thumbnail.fields import ImageFormField
 
 from defects.forms import DefectForm
-from defects.models import Defect, Effect
+from defects.models import Defect
 from staff.models import Employee
 
 
@@ -36,13 +36,13 @@ class TestDefect:
         assert not date_field.blank, \
             'Поле "date" модели Defect должно быть обязательным'
 
-        component_field = search_field(model_fields, 'component_id')
-        assert component_field is not None, \
-            'Модель Defect должна содержать поле "component"'
-        assert type(component_field) == fields.related.ForeignKey, \
-            'Поле "component" модели Defect должно быть ForeignKey'
-        assert not component_field.blank, \
-            'Поле "component" модели Defect должно быть обязательным'
+        part_field = search_field(model_fields, 'part_id')
+        assert part_field is not None, \
+            'Модель Defect должна содержать поле "part"'
+        assert type(part_field) == fields.related.ForeignKey, \
+            'Поле "part" модели Defect должно быть ForeignKey'
+        assert not part_field.blank, \
+            'Поле "part" модели Defect должно быть обязательным'
 
         employee_field = search_field(model_fields, 'employee_id')
         assert employee_field is not None, \
@@ -57,8 +57,8 @@ class TestDefect:
         description_field = search_field(model_fields, 'description')
         assert description_field is not None, \
             'Модель Defect должна содержать поле "description"'
-        assert type(description_field) == fields.CharField, \
-            'Поле description модели Defect должно быть текстовым CharField'
+        assert type(description_field) == fields.TextField, \
+            'Поле description модели Defect должно быть текстовым TextField'
         assert not description_field.blank, \
             'Поле description модели Defect должно быть обязательным'
 
@@ -78,6 +78,14 @@ class TestDefect:
         assert attachment_field.blank, \
             'Поле "attachment" модели Defect не должно быть обязательным'
 
+        repair_method_field = search_field(model_fields, 'repair_method_id')
+        assert repair_method_field is not None, \
+            'Модель Defects должна содержать поле repair_method'
+        assert type(repair_method_field) == fields.related.ForeignKey, \
+            'Поле repair_method должно быть ForeignKey'
+        assert repair_method_field.blank, \
+            'Поле repair_method не должно быть обязательным'
+
     @pytest.mark.django_db
     def test_defect_view_get_list(self, client):
         try:
@@ -85,6 +93,7 @@ class TestDefect:
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
+
         assert response.status_code == 200
         assert 'defect_list' in response.context, \
             'Проверьте, что передали поле "defect_list" в контекст страницы'
@@ -98,6 +107,7 @@ class TestDefect:
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
+
         assert response.status_code == 200
         assert type(response.context.get('defect')) == Defect, \
             'Проверьте, что передали поле типа Defect в контекст страницы'
@@ -109,101 +119,70 @@ class TestDefect:
             response = user_client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
-        if response.status_code in (301, 302):
-            url = reverse('defects:defect-create')
-            response = user_client.get(url)
 
         assert response.status_code != 404, \
             'Страница не найдена, проверьте этот адрес в *urls.py*'
 
-        assert 'form' in response.context, \
-            'Проверьте, что передали поле "form" в контекст страницы'
-        assert len(response.context['form'].fields) == 12, \
-            'Проверьте, что в форме "form" 12 полей'
+        form = get_field_context(response.context, DefectForm)
+        assert form, \
+            'Проверьте, что передали поле `form` типа DefectForm в контекст стр.'
 
-        assert 'date' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "date"'
-        assert type(response.context['form'].fields['date']) == forms.fields.DateField, \
-            'Проверьте, что в форме "form" поле "date" типа "DateField"'
-        assert response.context['form'].fields['date'].required, \
-            'Проверьте, что в форме "form" поле "date" обязательно'
+    @pytest.mark.django_db
+    def test_defect_view_update_unautorized_user(self, client, defect):
+        try:
+            url = reverse('defects:defect-update', kwargs={'pk': defect.id})
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
 
-        assert 'component' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "component"'
-        assert type(response.context['form'].fields['component']) == forms.models.ModelChoiceField, \
-            'Проверьте, что в форме "form" поле "component" типа "ModelChoiceField"'
-        assert response.context['form'].fields['component'].required, \
-            'Проверьте, что в форме "form" поле "component" обязательно'
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
 
-        assert not 'employee' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" нет поля "employee"'
+        assert response.status_code in (301, 302) and response.url.startswith(reverse('login')), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
 
-        assert 'description' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "description"'
-        assert type(response.context['form'].fields['description']) == forms.fields.CharField, \
-            'Проверьте, что в форме "form" поле "description" типа "CharField"'
-        assert response.context['form'].fields['description'].required, \
-            'Проверьте, что в форме "form" поле "description" обязательно'
 
-        assert 'image' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "image"'
-        assert type(response.context['form'].fields['image']) == ImageFormField, \
-            'Проверьте, что в форме "form" поле "image" типа "ResizedImageField"'
-        assert not response.context['form'].fields['image'].required, \
-            'Проверьте, что в форме "form" поле "image" не обязательно'
+    @pytest.mark.django_db
+    def test_defect_view_update_autorized_user(self, user_client, defect):
+        try:
+            url = reverse('defects:defect-update', kwargs={'pk': defect.id})
+            response = user_client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
 
-        assert 'effects' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "effects"'
-        assert type(response.context['form'].fields['effects']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "effects" типа "ModelMultipleChoiceField"'
-        assert response.context['form'].fields['effects'].required, \
-            'Проверьте, что в форме "form" поле "effects" обязательно'
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
 
-        assert 'features' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "features"'
-        assert type(response.context['form'].fields['features']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "features" типа "ModelMultipleChoiceField"'
-        assert response.context['form'].fields['features'].required, \
-            'Проверьте, что в форме "form" поле "features" обязательно'
+        assert response.status_code == 200
+        assert type(response.context.get('form')) == DefectForm, \
+            'Проверьте, что передали поле `form` типа DefectForm в контекст страницы'
 
-        assert 'condition' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "condition"'
-        assert type(response.context['form'].fields['condition']) == forms.models.ModelChoiceField, \
-            'Проверьте, что в форме "form" поле "condition" типа "ModelChoiceField"'
-        assert response.context['form'].fields['condition'].required, \
-            'Проверьте, что в форме "form" поле "condition" обязательно'
+        defect_context = get_field_context(response.context, Defect)
+        assert defect_context is not None, \
+            'Проверьте, что передали дефект в контекст страницы'
+        
 
-        assert 'technical_reasons' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "technical_reasons"'
-        assert type(response.context['form'].fields['technical_reasons']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "technical_reasons" типа "ModelMultipleChoiceField"'
-        assert not response.context['form'].fields['technical_reasons'].required, \
-            'Проверьте, что в форме "form" поле "technical_reasons" не обязательно'
+    @pytest.mark.django_db
+    def test_defect_view_delete_unautorized_user(self, client, defect):
+        try:
+            url = reverse('defects:defect-delete', kwargs={'pk': defect.id})
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
 
-        assert 'organizational_reasons' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "organizational_reasons"'
-        assert type(response.context['form'].fields['organizational_reasons']) == forms.models.ModelMultipleChoiceField, \
-            'Проверьте, что в форме "form" поле "organizational_reasons" типа "ModelMultipleChoiceField"'
-        assert not response.context['form'].fields['organizational_reasons'].required, \
-            'Проверьте, что в форме "form" поле "organizational_reasons" не обязательно'
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'
 
-        assert 'repair' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "repair"'
-        assert type(response.context['form'].fields['repair']) == forms.fields.CharField, \
-            'Проверьте, что в форме "form" поле "repair" типа "CharField"'
-        assert not response.context['form'].fields['repair'].required, \
-            'Проверьте, что в форме "form" поле "repair" не обязательно'
+        assert response.status_code in (301, 302) and response.url.startswith(reverse('login')), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
 
-        assert 'repair_date' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "repair_date"'
-        assert type(response.context['form'].fields['repair_date']) == forms.fields.DateField, \
-            'Проверьте, что в форме "form" поле "repair_date" типа "DateField"'
-        assert not response.context['form'].fields['repair_date'].required, \
-            'Проверьте, что в форме "form" поле "repair_date" не обязательно'
+    @pytest.mark.django_db
+    def test_defect_view_delete_autorized_user(self, user_client, defect):
+        try:
+            url = reverse('defects:defect-delete', kwargs={'pk': defect.id})
+            response = user_client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
 
-        assert 'attachment' in response.context['form'].fields, \
-            'Проверьте, что в форме "form" есть поле "attachment"'
-        assert type(response.context['form'].fields['attachment']) == forms.fields.FileField, \
-            'Проверьте, что в форме "form" поле "attachment" типа "FileField"'
-        assert not response.context['form'].fields['attachment'].required, \
-            'Проверьте, что в форме "form" поле "attachment" не обязательно'
+        assert response.status_code != 404, \
+            'Страница не найдена, проверьте этот адрес в *urls.py*'

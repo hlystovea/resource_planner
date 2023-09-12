@@ -1,0 +1,20 @@
+<div class="modal fade" id="deleteStorageModal_{{ s.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel_{{ s.pk }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel_{{ s.pk }}">Удаление</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        Вы действительно хотите удалить место хранения?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <form id="storageDelete_{{ s.pk }}" method="post" action="{% url 'warehouse:storage-delete' s.pk %}">
+          {% csrf_token %}
+          <input type="submit" class="btn btn-sm btn-danger me-1" form="storageDelete_{{ s.pk }}" value="Удалить">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

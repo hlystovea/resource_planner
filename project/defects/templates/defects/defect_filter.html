@@ -54,7 +54,7 @@
     let facility = document.getElementById("selectFacility").value;
     let connection = document.getElementById("selectConnection").value;
     let group = document.getElementById("selectGroup").value;
-    // hardware = document.getElementById("selectHardware").value;
+    // let hardware = document.getElementById("selectHardware").value;
     // cabinet = document.getElementById("selectCabinet").value;
     let status = document.getElementById("selectStatus").value;
 
@@ -117,7 +117,7 @@
     if (facility) url = "{% url 'api:facility-list' %}" + facility + "/connections";
     let selectedValue = params.connection
     let firstOption = "Присоединение..."
-    updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
+    updateSelectOptions(id, url, selectedValue, firstOption, "facility_with_abbreviation");
   };
 
   function updateSelectHardware() {

@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -8,12 +9,12 @@ class Facility(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True
+        unique=True,
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
         max_length=30,
-        unique=True
+        unique=True,
     )
 
     class Meta:
@@ -28,17 +29,17 @@ class Facility(models.Model):
 class Connection(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200
+        max_length=200,
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
-        max_length=30
+        max_length=30,
     )
     facility = models.ForeignKey(
         to='hardware.Facility',
         verbose_name=_('Объект диспетчеризации'),
         on_delete=models.CASCADE,
-        related_name='connections'
+        related_name='connections',
     )
 
     class Meta:
@@ -48,11 +49,11 @@ class Connection(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('name', 'facility'),
-                name='name_facility_uniquetogether'
+                name='name_facility_uniquetogether',
             ),
             models.UniqueConstraint(
                 fields=('abbreviation', 'facility'),
-                name='abbreviation_facility_uniquetogether'
+                name='abbreviation_facility_uniquetogether',
             )
         ]
 
@@ -64,7 +65,7 @@ class Group(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True
+        unique=True,
     )
 
     class Meta:
@@ -83,21 +84,21 @@ class Hardware(models.Model):
     )
     inventory_number = models.CharField(
         verbose_name=_('Инв. номер'),
-        max_length=50
+        max_length=50,
     )
     connection = models.ForeignKey(
         to='hardware.Connection',
         verbose_name=_('Присоединение'),
         on_delete=models.SET_NULL,
         related_name='hardware',
-        null=True
+        null=True,
     )
     group = models.ForeignKey(
         to='hardware.Group',
         verbose_name=_('Группа оборудования'),
         on_delete=models.SET_NULL,
         related_name='hardware',
-        null=True
+        null=True,
     )
 
     class Meta:
@@ -107,7 +108,7 @@ class Hardware(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('name', 'connection'),
-                name='name_connection_uniquetogether'
+                name='name_connection_uniquetogether',
             )
         ]
 
@@ -130,36 +131,39 @@ class Cabinet(models.Model):
         to='hardware.Hardware',
         verbose_name=_('Оборудование'),
         on_delete=models.CASCADE,
-        related_name='cabinets'
+        related_name='cabinets',
     )
-    manufacturer = models.CharField(
+    manufacturer = models.ForeignKey(
+        to='hardware.Manufacturer',
         verbose_name=_('Изготовитель'),
-        max_length=200,
+        on_delete=models.SET_NULL,
+        related_name='cabinets',
+        null=True,
     )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
         max_length=100,
         blank=True,
-        null=True
+        null=True,
     )
     type = models.CharField(
         verbose_name=_('Тип изделия'),
         max_length=100,
         blank=True,
-        null=True
+        null=True,
     )
     release_year = models.IntegerField(
         verbose_name=_('Год выпуска'),
         validators=[
             MinValueValidator(1972),
-            MaxValueValidator(2050)
+            MaxValueValidator(2050),
         ]
     )
     launch_year = models.IntegerField(
         verbose_name=_('Год ввода в эксплуатацию'),
         validators=[
             MinValueValidator(1972),
-            MaxValueValidator(2050)
+            MaxValueValidator(2050),
         ]
     )
 
@@ -185,41 +189,19 @@ class Cabinet(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return f'{self.abbreviation}'
+        return self.abbreviation
 
 
-class Component(models.Model):
+class Part(models.Model):
     name = models.CharField(
-        verbose_name=_('Наименование'),
+        verbose_name=_('Условное обозначение'),
         max_length=200,
     )
-    function = models.ForeignKey(
-        to='hardware.ComponentFunction',
-        verbose_name=_('Назначение'),
+    component = models.ForeignKey(
+        'hardware.Component',
+        verbose_name=_('Компонент'),
         on_delete=models.PROTECT,
-        related_name='components'
-    )
-    design = models.ForeignKey(
-        to='hardware.ComponentDesign',
-        verbose_name=_('Исполнение'),
-        on_delete=models.PROTECT,
-        related_name='components'
-    )
-    manufacturer = models.CharField(
-        verbose_name=_('Изготовитель'),
-        max_length=200,
-    )
-    series = models.CharField(
-        verbose_name=_('Серия изделия'),
-        max_length=100,
-        blank=True,
-        null=True
-    )
-    type = models.CharField(
-        verbose_name=_('Тип изделия'),
-        max_length=100,
-        blank=True,
-        null=True
+        related_name='parts',
     )
     release_year = models.IntegerField(
         verbose_name=_('Год выпуска'),
@@ -235,31 +217,31 @@ class Component(models.Model):
             MaxValueValidator(2050)
         ]
     )
-    repair_method = models.ForeignKey(
-        to='hardware.ComponentRepairMethod',
-        verbose_name=_('Метод устранения дефекта'),
-        on_delete=models.PROTECT,
-        related_name='components'
-    )
     cabinet = models.ForeignKey(
         to='hardware.Cabinet',
         verbose_name=_('Шкаф/Панель'),
         on_delete=models.CASCADE,
-        related_name='components'
+        related_name='parts',
     )
-    component = models.ForeignKey(
-        to='hardware.Component',
+    part = models.ForeignKey(
+        to='hardware.Part',
         verbose_name=_('Комплектующее'),
         on_delete=models.SET_NULL,
-        related_name='components',
+        related_name='parts',
         blank=True,
-        null=True
+        null=True,
     )
 
     class Meta:
         ordering = ('name', )
-        verbose_name = _('Комплектующее изделие')
-        verbose_name_plural = _('Комплектующие изделия')
+        verbose_name = _('Комплектующее / Деталь')
+        verbose_name_plural = _('Комплектующие / Детали')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'cabinet'),
+                name='name_cabinet_uniquetogether',
+            )
+        ]
 
     def clean(self):
         errors = {}
@@ -272,57 +254,113 @@ class Component(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.component.name}'
 
 
-class ComponentRepairMethod(models.Model):
+class Component(models.Model):
     name = models.CharField(
-        verbose_name=_('Метод устранения дефекта'),
+        verbose_name=_('Наименование'),
         max_length=200,
-        unique=True
+    )
+    function = models.ForeignKey(
+        to='hardware.ComponentFunction',
+        verbose_name=_('Назначение'),
+        on_delete=models.PROTECT,
+        related_name='components',
+    )
+    design = models.ForeignKey(
+        to='hardware.ComponentDesign',
+        verbose_name=_('Исполнение'),
+        on_delete=models.PROTECT,
+        related_name='components',
+    )
+    manufacturer = models.ForeignKey(
+        to='hardware.Manufacturer',
+        verbose_name=_('Изготовитель'),
+        on_delete=models.SET_NULL,
+        related_name='components',
+        null=True,
+    )
+    series = models.CharField(
+        verbose_name=_('Серия изделия'),
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    type = models.CharField(
+        verbose_name=_('Тип изделия'),
+        max_length=100,
+        blank=True,
+        null=True,
     )
 
     class Meta:
-        ordering = ('name', )
-        verbose_name = _('Метод устранения дефекта')
-        verbose_name_plural = _('Методы устранения дефектов')
+        ordering = ('manufacturer', 'name')
+        verbose_name = _('Компонент / запчасть')
+        verbose_name_plural = _('Компоненты / запчасти')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'manufacturer', 'type'),
+                name='name_manufacturer_type_uniquetogether'
+            )
+        ]
 
     def __str__(self):
-        return self.name
+        return f'{self.manufacturer} {self.name} ' \
+               f'{self.type if self.type else ""}'
+
+    def get_absolute_url(self):
+        return reverse('hardware:component-detail', kwargs={'pk': self.pk})
 
 
 class ComponentDesign(models.Model):
     name = models.CharField(
         verbose_name=_('Исполнение'),
         max_length=200,
-        unique=True
+        unique=True,
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
         max_length=3,
-        unique=True
+        unique=True,
     )
 
     class Meta:
-        ordering = ('id', )
+        ordering = ('abbreviation', )
         verbose_name = _('Вариант исполнения')
         verbose_name_plural = _('Варианты исполнения')
 
     def __str__(self):
-        return self.abbreviation
+        return f'{self.abbreviation} - {self.name}'
 
 
 class ComponentFunction(models.Model):
     name = models.CharField(
         verbose_name=_('Назначение комплектующего'),
         max_length=50,
-        unique=True
+        unique=True,
     )
 
     class Meta:
         ordering = ('name', )
         verbose_name = _('Назначение комплектующего')
         verbose_name_plural = _('Назначения комплектующих')
+
+    def __str__(self):
+        return self.name
+
+
+class Manufacturer(models.Model):
+    name = models.CharField(
+        verbose_name=_('Наименование'),
+        max_length=200,
+        unique=True,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Изготовитель оборудования')
+        verbose_name_plural = _('Изготовители оборудования')
 
     def __str__(self):
         return self.name

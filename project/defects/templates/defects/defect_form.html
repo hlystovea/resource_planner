@@ -71,7 +71,7 @@
             <div class="form-group row my-1" aria-required="false">
               <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
               <div class="col-md-8">
-                <select class="form-select" id="selectCabinet" name="cabinet" onchange="updateSelectComponent()">
+                <select class="form-select" id="selectCabinet" name="cabinet" onchange="updateSelectPart()">
                   <option value="" selected></option>
                 </select>
               </div>
@@ -79,12 +79,12 @@
           
             <!-- Комплектующее -->
             <div class="form-group row my-1" aria-required="true">
-              <label for="id_component" class="col-md-4 col-form-label text-md-right">
+              <label for="id_part" class="col-md-4 col-form-label text-md-right">
                 Комплектующее
                 <span class="required">*</span>
               </label>
               <div class="col-md-8">
-                <select class="form-select" id="id_component" name="component" required>
+                <select class="form-select" id="id_part" name="part" required>
                   <option value=""></option>
                 </select>
               </div>
@@ -207,7 +207,20 @@
                 {% endif %}
               </div>
             </div>
-          
+
+            <!-- Метод устранения -->
+            <div class="form-group row my-1" aria-required={% if form.repair_method.required %}"true"{% else %}"false"{% endif %}>
+              <label for="{{ form.repair_method.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                {{ form.repair_method.label }}
+              </label>
+              <div class="col-md-8">
+                {{ form.repair_method }}
+                {% if form.repair_method.help_text %}
+                  <small id="{{ form.repair_method.id_for_label }}-help" class="form-text text-muted">{{ form.repair_method.help_text|safe }}</small>
+                {% endif %}
+              </div>
+            </div>
+
             <!-- Выполненные мероприятия -->
             <div class="form-group row my-1" aria-required={% if form.repair.required %}"true"{% else %}"false"{% endif %}>
               <label for="{{ form.repair.id_for_label }}" class="col-md-4 col-form-label text-md-right">
@@ -277,9 +290,9 @@
     function updateSelectConnection() {
       let id = "selectConnection"
       let url = "{% url 'api:connection-list' %}"
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.hardware.connection.id }}{% endif %}"
+      let selectedValue = "{% if defect %}{{ defect.part.cabinet.hardware.connection.id }}{% endif %}"
       let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
+      updateSelectOptions(id, url, selectedValue, firstOption, "facility_with_abbreviation");
     };
 
     function updateSelectHardware() {
@@ -287,7 +300,7 @@
       let url = "{% url 'api:hardware-list' %}"
       let connection = document.getElementById("selectConnection").value;
       if (connection) url = "{% url 'api:connection-list' %}" + connection + "/hardware";
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.hardware.id }}{% endif %}"
+      let selectedValue = "{% if defect %}{{ defect.part.cabinet.hardware.id }}{% endif %}"
       let firstOption = "---------"
       updateSelectOptions(id, url, selectedValue, firstOption, "name");
     };
@@ -297,25 +310,25 @@
       let url = "{% url 'api:cabinet-list' %}"
       let hardware = document.getElementById("selectHardware").value;
       if (hardware) url = "{% url 'api:hardware-list' %}" + hardware + "/cabinets";
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.id }}{% endif %}"
+      let selectedValue = "{% if defect %}{{ defect.part.cabinet.id }}{% endif %}"
       let firstOption = "---------"
       updateSelectOptions(id, url, selectedValue, firstOption);
     };
 
-    function updateSelectComponent() {
-      let id = "id_component"
-      let url = "{% url 'api:component-list' %}"
+    function updateSelectPart() {
+      let id = "id_part"
+      let url = "{% url 'api:part-list' %}"
       let cabinet = document.getElementById("selectCabinet").value;
-      if (cabinet) url = "{% url 'api:cabinet-list' %}" + cabinet + "/components";
-      let selectedValue = "{% if form.component.value %}{{ form.component.value }}{% endif %}"
+      if (cabinet) url = "{% url 'api:cabinet-list' %}" + cabinet + "/parts";
+      let selectedValue = "{% if form.part.value %}{{ form.part.value }}{% endif %}"
       console.log(selectedValue)
       let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "name");
+      updateSelectOptions(id, url, selectedValue, firstOption, "name_with_component");
     };
 
     updateSelectConnection();
     updateSelectHardware();
     updateSelectCabinet();
-    updateSelectComponent();
+    updateSelectPart();
   </script>
 {% endblock %}

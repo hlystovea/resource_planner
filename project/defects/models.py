@@ -8,23 +8,23 @@ from django_resized import ResizedImageField
 
 class Defect(models.Model):
     date = models.DateField(
-        verbose_name=_('Дата обнаружения')
+        verbose_name=_('Дата обнаружения'),
     )
-    component = models.ForeignKey(
-        to='hardware.Component',
+    part = models.ForeignKey(
+        to='hardware.Part',
         verbose_name=_('Комплектующее'),
         on_delete=models.CASCADE,
-        related_name='defects'
+        related_name='defects',
+        null=True,
     )
     employee = models.ForeignKey(
         to='staff.Employee',
         verbose_name=_('Сотрудник обнаруживший дефект'),
         on_delete=models.PROTECT,
-        related_name='defects'
+        related_name='defects',
     )
-    description = models.CharField(
+    description = models.TextField(
         verbose_name=_('Описание дефекта'),
-        max_length=1500,
     )
     image = ResizedImageField(
         verbose_name=_('Фото'),
@@ -36,39 +36,46 @@ class Defect(models.Model):
     effects = models.ManyToManyField(
         to='defects.Effect',
         verbose_name=_('Последствия дефекта'),
-        related_name='defects'
+        related_name='defects',
     )
     features = models.ManyToManyField(
         to='defects.Feature',
         verbose_name=_('Признаки дефекта'),
-        related_name='defects'
+        related_name='defects',
     )
     condition = models.ForeignKey(
         to='defects.Condition',
         verbose_name=_('Условие обнаружения'),
         on_delete=models.PROTECT,
-        related_name='defects'
+        related_name='defects',
     )
     technical_reasons = models.ManyToManyField(
         to='defects.TechnicalReason',
         verbose_name=_('Технические причины дефекта'),
         related_name='defects',
-        blank=True
+        blank=True,
     )
     organizational_reasons = models.ManyToManyField(
         to='defects.OrganizationalReason',
         verbose_name=_('Организационные причины'),
         related_name='defects',
-        blank=True
+        blank=True,
     )
     repair = models.TextField(
         verbose_name=_('Выполненные мероприятия'),
-        max_length=500,
         blank=True,
         null=True,
     )
     repair_date = models.DateField(
         verbose_name=_('Дата устранения'),
+        blank=True,
+        null=True,
+    )
+    repair_method = models.ForeignKey(
+        to='defects.RepairMethod',
+        verbose_name=_('Метод устранения'),
+        on_delete=models.PROTECT,
+        related_name='defects',
         blank=True,
         null=True,
     )
@@ -185,6 +192,22 @@ class OrganizationalReason(models.Model):
         ordering = ('name', )
         verbose_name = _('Организационная причина')
         verbose_name_plural = _('Организационные причины')
+
+    def __str__(self):
+        return self.name
+
+
+class RepairMethod(models.Model):
+    name = models.CharField(
+        verbose_name=_('Метод устранения'),
+        max_length=200,
+        unique=True,
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Метод устранения')
+        verbose_name_plural = _('Методы устранения')
 
     def __str__(self):
         return self.name

@@ -7,11 +7,16 @@
       <li class="breadcrumb-item">Материалы</li>
     </ol>
   </nav>
+  {% if user.is_authenticated %}
+  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:material-create' %}" role="button">
+    Добавить
+  </a>
+  {% endif %}
   {% include "includes/select_owner.html" %}
   <figure class="text-center">
     <h3>Материалы</h3>
   </figure>
-  <table class="table table-hover">
+  <table class="table table-sm table-hover">
     <thead class="table">
       <tr>
         <th scope="col">Наименование</th>
@@ -22,9 +27,9 @@
     <tbody>
       {% for m in material_list %}
         <tr>
-          <td><a href={% url 'warehouse:material-detail' m.id %}>{{ m.name }}</a></td>
+          <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
           <td>{{ m.article_number|default:"-" }}</td>
-          <td>{{ m.total|floatformat }} {{ m.measurement_unit}}</td>
+          <td>{% if m.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ m.measurement_unit}}</td>
         </tr>
       {% endfor %}
     </tbody>

@@ -16,7 +16,7 @@
     <h3>Дефекты</h3>
   </figure>
   {% include './defect_filter.html' %}
-  <table class="table table-hover">
+  <table class="table table-sm table-hover">
     <thead class="table">
       <tr>
         <th scope="col">Дата обнаружения</th>
@@ -32,10 +32,10 @@
       {% for d in defect_list %}
           <tr>
             <td><a href="{% url 'defects:defect-detail' d.id %}">{{ d.date|date:'d.m.Y' }}</a></td>
-            <td>{{ d.component.cabinet.hardware.connection.facility }}</td>
-            <td>{{ d.component.cabinet.hardware.connection.abbreviation }}</td>
-            <td>{{ d.component.cabinet.hardware.name }}</td>
-            <td>{{ d.component.cabinet.abbreviation }}</td>
+            <td>{{ d.part.cabinet.hardware.connection.facility }}</td>
+            <td>{{ d.part.cabinet.hardware.connection.abbreviation }}</td>
+            <td>{{ d.part.cabinet.hardware.name }}</td>
+            <td>{{ d.part.cabinet.abbreviation }}</td>
             <td>{{ d.description|truncatechars:30 }}</td>
             <td>{{ d.repair_date|date:'d.m.Y' }}</td>
           </tr>

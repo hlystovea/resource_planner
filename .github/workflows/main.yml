@@ -1,4 +1,4 @@
-name: Deploy resource_planner
+name: Test Resource planner
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DATABASE_URL: "psql://postgres:postgres@localhost:5432/github_actions"
+      DJANGO_SETTINGS_MODULE: "project.settings.test"
       EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
       EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
       EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
@@ -46,57 +46,9 @@ jobs:
         cd project
         pytest
 
-  copy_files:
-    runs-on: ubuntu-latest
-    needs: tests
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-      - name: copy start files via ssh password
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          source: "*,!.git,!.github,!.venv,!.env"
-          target: "~/resource_planner"
-          overwrite: true
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: copy_files
-    steps:
-      - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          script: |
-            cd resource_planner
-            sudo docker-compose stop
-            sudo docker-compose rm planner_backend
-            touch .env
-            echo SECRET_KEY=${{ secrets.SECRET_KEY }} > .env
-            echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
-            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-            echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
-            echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
-            echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
-            sudo docker-compose up -d --build
-
   send_message:
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: tests
     steps:
     - name: send telegram message
       uses: appleboy/telegram-action@master

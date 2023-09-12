@@ -19,4 +19,5 @@ class DefectForm(ModelForm):
             ),
             'features': CheckboxSelectMultiple,
             'condition': RadioSelect,
+            'repair_method': RadioSelect,
         }

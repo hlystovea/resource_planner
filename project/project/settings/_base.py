@@ -6,7 +6,7 @@ import environ
 
 env = environ.Env(DEBUG=(bool, False))
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -74,17 +74,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': env.db(),
-    }
+DATABASES = {
+    'default': env.db(),
+}
 
 
 AUTH_USER_MODEL = 'staff.Employee'
@@ -124,6 +116,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'assets'), )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

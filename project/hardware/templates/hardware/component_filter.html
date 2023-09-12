@@ -1,0 +1,39 @@
+<div class="row justify-content-end">
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer">
+      <option value="" selected>Производитель...</option>
+      {% for id, name in form.fields.manufacturer.choices %}
+        <option value="{{ id }}" {% if request.GET.dict.manufacturer == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-sm-2">
+    <select class="form-select form-select-sm" id="selectOwner" name="owner">
+      <option value="" selected>Подразделение...</option>
+      {% for id, name in form.fields.dept.choices %}
+        <option value="{{ id }}" {% if request.GET.dict.owner == id|urlencode  %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="updatePage()">Показать</button>
+  </div>
+</div>
+
+<script>
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+
+  function updatePage() {
+    let url = "{% url 'hardware:component-list' %}?";
+
+    let manufacturer = document.getElementById("selectManufacturer").value;
+    let owner = document.getElementById("selectOwner").value;
+
+    if (manufacturer !== '') url += "&manufacturer=" + manufacturer;
+    if (owner !== '') url += "&owner=" + owner;
+
+    window.location.replace(url);
+  };
+</script>
