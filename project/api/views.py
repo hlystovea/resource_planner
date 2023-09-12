@@ -38,10 +38,10 @@ class FacilityViewSet(ReadOnlyModelViewSet):
     def connections(self, request, *args, **kwargs):
         facility = get_object_or_404(Facility, pk=kwargs['pk'])
         queryset = facility.connections.annotate(
-        facility_with_abbreviation=Concat(
-            'facility__abbreviation', Value(' '), 'abbreviation'
+            facility_with_abbreviation=Concat(
+                'facility__abbreviation', Value(' '), 'abbreviation'
+            )
         )
-    )
         serializer = ConnectionSerializer(queryset, many=True)
         return Response(serializer.data)
 
