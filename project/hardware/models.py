@@ -306,8 +306,8 @@ class Component(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.manufacturer} {self.name} ' \
-               f'{self.type if self.type else ""}'
+        return (f'{self.manufacturer} {self.name} '
+                f'{self.type if self.type else ""}')
 
     def get_absolute_url(self):
         return reverse('hardware:component-detail', kwargs={'pk': self.pk})
