@@ -15,14 +15,17 @@ class ComponentDetail(DetailView):
     model = Component
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
+        count = defects.values('part__component').annotate(count=Count('pk'))
         amount = ComponentStorage.objects.select_related('storage', 'owner')
-        return Component.objects.annotate(
-            defect_count=Count(Subquery(defects.only('pk'))),
+
+        queryset = queryset.annotate(
+            defect_count=Subquery(count.values('count')),
             total=Sum('amount__amount')
-        ).prefetch_related(
-            Prefetch('amount', queryset=amount)
         )
+        return queryset.prefetch_related(Prefetch('amount', queryset=amount))
 
 
 class ComponentList(ListView):
@@ -34,12 +37,12 @@ class ComponentList(ListView):
         queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
 
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
+        count = defects.values('part__component').annotate(count=Count('pk'))
 
         queryset = queryset.annotate(
-            defect_count=Count(Subquery(defects.only('pk')))
+            defect_count=Subquery(count.values('count')),
+            total=Sum('amount__amount')
         )
-        queryset = queryset.annotate(total=Sum('amount__amount'))
-
         return queryset.order_by('manufacturer', 'name')
 
     def get_context_data(self, **kwargs):

@@ -243,3 +243,33 @@ class TestComponent:
             'Фильтр по подразделению работает не правильно'
         assert component_in_storage_2.component not in component_list, \
             'Фильтр по подразделению работает не правильно'
+
+    @pytest.mark.django_db
+    def test_defect_count_in_component_list(
+        self, client, part, component_1, defect
+    ):
+        part_2 = part
+        part_2.pk = None
+        part_2.name = 'another'
+        part_2.save()
+
+        defect.pk = None
+        defect.part = part_2
+        defect.save()
+
+        url = reverse(
+            'hardware:component-detail',
+            kwargs={'pk': component_1.pk}
+        )
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        component = get_field_context(response.context, Component)
+
+        assert component.defect_count == 2, \
+            'Проверьте, что объект Component содержит поле defect_count ' \
+            'с количеством дефектов'
