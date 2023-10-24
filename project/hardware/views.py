@@ -18,7 +18,7 @@ class ComponentDetail(DetailView):
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
         amount = ComponentStorage.objects.select_related('storage', 'owner')
         return Component.objects.annotate(
-            defect_count=Count(Subquery(defects.values('pk'))),
+            defect_count=Count(Subquery(defects.only('pk'))),
             total=Sum('amount__amount')
         ).prefetch_related(
             Prefetch('amount', queryset=amount)
@@ -36,7 +36,7 @@ class ComponentList(ListView):
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
 
         queryset = queryset.annotate(
-            defect_count=Count(Subquery(defects.values('pk')))
+            defect_count=Count(Subquery(defects.only('pk')))
         )
         queryset = queryset.annotate(total=Sum('amount__amount'))
 
