@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView,
-                                  ListView, UpdateView)
+                                  ListView, UpdateView, TemplateView)
 
 from defects.filters import DefectFilter
 from defects.forms import DefectForm
@@ -62,3 +62,7 @@ class DefectDeleteView(LoginRequiredMixin, DeleteView):
     model = Defect
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('defects:defect-list')
+
+
+class DefectStatisticsView(TemplateView):
+    template_name = 'defects/defect_statistics.html'

@@ -220,3 +220,13 @@ class TestStatistics:
 
         assert len(response.data) == 2, \
             'Проверьте, что эндпоинт возвращает правильное количество экз.'
+
+    @pytest.mark.django_db
+    def test_defect_statistics_view(self, client):
+        try:
+            url = reverse('defects:defect-statistics')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
