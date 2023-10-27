@@ -4,7 +4,8 @@
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Статистика дефектов</li>
+      <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+      <li class="breadcrumb-item">Статистика</li>
     </ol>
   </nav>
   <div class="row">
