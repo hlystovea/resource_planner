@@ -7,4 +7,104 @@
       <li class="breadcrumb-item">Статистика дефектов</li>
     </ol>
   </nav>
+  <div class="row">
+    <div class="col-lg-9 mt-3">
+      <div class="row justify-content-center">
+        <div class="row p-0">
+          <canvas id="statisticsByYearChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% block jquery %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    function updateContent() {
+      updateStatisticsByYear();
+    };
+
+    // formatting year summary data
+    function formatStatisticsByYearToArray(data) {
+      let years = [];
+      let defect_counts = [];
+    
+      data.forEach((item, index, array) => {
+        years.push(item.year);
+        defect_counts.push(item.defect_count);
+      });
+
+      return {
+        years: years,
+        defect_counts: defect_counts
+      };
+    }
+
+    // gets statistics
+    function updateStatisticsByYear() {
+      $.ajax({
+        method: "GET",
+        url: "{% url 'api:defect-statistics-by-year' %}",
+        success: function(data) {
+          data = formatStatisticsByYearToArray(data);
+          setStatisticsByYearChart(statisticsByYearChart, data);
+        },
+        error: function(error_data) {
+          console.log(error_data);
+        }
+      });
+    };
+
+    var statisticsByYearConfig = {
+      type: "bar",
+      data: {
+      labels: [],
+      datasets: [{
+        label: "Количество дефектов в год, шт.",
+        data: [],
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+        fill: true,
+        yAxisID: 'y'
+      }]
+    },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+          }
+        },
+        elements: {
+          point: {
+            radius: 0
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+            labels: {
+                boxHeight: 0
+            }
+          }
+        }
+      }
+    }
+
+    function setStatisticsByYearChart(chart, data) {
+      chart.data.labels = data.years;
+      chart.data.datasets[0].data = data.defect_counts;
+      chart.update();
+    }
+
+    const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
+    const statisticsByYearChart = new Chart(statisticsByYearCtx, statisticsByYearConfig);
+
+    updateContent()
+  </script>
+{% endblock %}
 {% endblock %}
