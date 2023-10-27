@@ -1,11 +1,10 @@
 import pytest
 
-from django import forms
 from django.db.models import fields
 from django.urls import reverse
 from django_resized import ResizedImageField
-from sorl.thumbnail.fields import ImageFormField
 
+from api.serializers import YearSerializer
 from defects.forms import DefectForm
 from defects.models import Defect
 from staff.models import Employee
@@ -161,7 +160,6 @@ class TestDefect:
         assert defect_context is not None, \
             'Проверьте, что передали дефект в контекст страницы'
         
-
     @pytest.mark.django_db
     def test_defect_view_delete_unautorized_user(self, client, defect):
         try:
@@ -186,3 +184,39 @@ class TestDefect:
 
         assert response.status_code != 404, \
             'Страница не найдена, проверьте этот адрес в *urls.py*'
+
+
+class TestStatistics:
+
+    @pytest.mark.django_db
+    def test_defect_years_view(self, client, defect):
+        try:
+            url = reverse('api:defect-years')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
+
+        assert 'years' in response.data, \
+            'Проверьте, что передали поле `years`.'
+
+    @pytest.mark.django_db
+    def test_defect_statistics_by_year_view(self, client, defect):
+        defect.pk = None
+        defect.save()
+
+        defect.pk = None
+        defect.date = '2001-01-01'
+        defect.save()
+
+        try:
+            url = reverse('api:defect-statistics-by-year')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
+
+        assert len(response.data) == 2, \
+            'Проверьте, что эндпоинт возвращает правильное количество экз.'
