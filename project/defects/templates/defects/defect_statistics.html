@@ -17,16 +17,24 @@
       </div>
     </div>
   </div>
-
-  {% block jquery %}
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     function updateContent() {
       updateStatisticsByYear();
     };
 
-    // formatting year summary data
+    function updateStatisticsByYear() {
+      fetch("{% url 'api:defect-statistics-by-year' %}")
+        .then(function(response) {
+          return response.json()
+        }).then(function(data) {
+          data = formatStatisticsByYearToArray(data);
+          setStatisticsByYearChart(statisticsByYearChart, data);
+        }).catch(function(ex) {
+          console.log('Error: ', ex)
+        });
+    }
+
     function formatStatisticsByYearToArray(data) {
       let years = [];
       let defect_counts = [];
@@ -41,21 +49,6 @@
         defect_counts: defect_counts
       };
     }
-
-    // gets statistics
-    function updateStatisticsByYear() {
-      $.ajax({
-        method: "GET",
-        url: "{% url 'api:defect-statistics-by-year' %}",
-        success: function(data) {
-          data = formatStatisticsByYearToArray(data);
-          setStatisticsByYearChart(statisticsByYearChart, data);
-        },
-        error: function(error_data) {
-          console.log(error_data);
-        }
-      });
-    };
 
     var statisticsByYearConfig = {
       type: "bar",
