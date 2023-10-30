@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, Prefetch
+from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
 
+from defects.models import Defect
 from hardware.filters import ComponentFilter
 from hardware.forms import ComponentForm, ComponentFilterForm
 from hardware.models import Component
@@ -14,12 +15,17 @@ class ComponentDetail(DetailView):
     model = Component
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+
+        defects = Defect.objects.filter(part__component=OuterRef('pk'))
+        count = defects.values('part__component').annotate(count=Count('pk'))
         amount = ComponentStorage.objects.select_related('storage', 'owner')
-        return Component.objects.annotate(
+
+        queryset = queryset.annotate(
+            defect_count=Subquery(count.values('count')),
             total=Sum('amount__amount')
-        ).prefetch_related(
-            Prefetch('amount', queryset=amount)
         )
+        return queryset.prefetch_related(Prefetch('amount', queryset=amount))
 
 
 class ComponentList(ListView):
@@ -29,7 +35,14 @@ class ComponentList(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
-        queryset = queryset.annotate(total=Sum('amount__amount'))
+
+        defects = Defect.objects.filter(part__component=OuterRef('pk'))
+        count = defects.values('part__component').annotate(count=Count('pk'))
+
+        queryset = queryset.annotate(
+            defect_count=Subquery(count.values('count')),
+            total=Sum('amount__amount')
+        )
         return queryset.order_by('manufacturer', 'name')
 
     def get_context_data(self, **kwargs):

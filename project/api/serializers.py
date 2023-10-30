@@ -1,4 +1,4 @@
-from rest_framework.serializers import (CharField, ListField,
+from rest_framework.serializers import (CharField, IntegerField, ListField,
                                         ModelSerializer, Serializer)
 
 from defects.models import Defect
@@ -14,6 +14,11 @@ class DefectSerializer(ModelSerializer):
 
 class YearSerializer(Serializer):
     years = ListField()
+
+
+class StatisticsByYearSerializer(Serializer):
+    year = IntegerField()
+    defect_count = IntegerField()
 
 
 class FacilitySerializer(ModelSerializer):

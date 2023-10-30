@@ -22,6 +22,7 @@
               <p class="mb-1"><span class="text-muted">Исполнение:</span> {{ component.design }}</p>
               <p class="mb-1"><span class="text-muted">Метод устранения дефекта:</span> {{ component.repair_method }}</p>
               <p class="mb-1"><span class="text-muted">Общее кол-во:</span> {% if component.total %}{{ component.total }}{% else %}0{% endif %} шт.</p>
+              <p class="mb-1"><span class="text-muted">Кол-во дефектов:</span> {% if component.defect_count %}<a href="{% url 'defects:defect-list' %}?component={{ component.pk }}">{{ component.defect_count }}</a>{% else %}0{% endif %} шт.</p>
           </p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-from django.db.models import Value
+from django.db.models import Count, Value
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
@@ -11,7 +11,8 @@ from hardware.models import (Cabinet, Component, Connection,
 from .serializers import (CabinetSerializer, ComponentSerializer,
                           ConnectionSerializer, DefectSerializer,
                           FacilitySerializer, GroupSerializer,
-                          HardwareSerializer, PartSerializer, YearSerializer)
+                          HardwareSerializer, PartSerializer,
+                          StatisticsByYearSerializer, YearSerializer)
 
 
 class DefectViewSet(ReadOnlyModelViewSet):
@@ -27,6 +28,20 @@ class DefectViewSet(ReadOnlyModelViewSet):
             flat=True
         )
         serializer = YearSerializer(instance={'years': years})
+        return Response(serializer.data)
+
+    @action(methods=['get'], url_name='statistics-by-year', detail=False)
+    def statistics_by_year(self, request, *args, **kwargs):
+        queryset = self.get_queryset().annotate(
+            year=ExtractYear('date')
+        ).values(
+            'year'
+        ).annotate(
+            defect_count=Count('pk'),
+        ).order_by(
+            'year'
+        )
+        serializer = StatisticsByYearSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

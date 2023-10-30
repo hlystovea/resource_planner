@@ -321,7 +321,6 @@
       let cabinet = document.getElementById("selectCabinet").value;
       if (cabinet) url = "{% url 'api:cabinet-list' %}" + cabinet + "/parts";
       let selectedValue = "{% if form.part.value %}{{ form.part.value }}{% endif %}"
-      console.log(selectedValue)
       let firstOption = "---------"
       updateSelectOptions(id, url, selectedValue, firstOption, "name_with_component");
     };

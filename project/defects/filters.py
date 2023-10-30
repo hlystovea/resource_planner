@@ -12,6 +12,7 @@ class DefectFilter(FilterSet):
     group = NumberFilter(field_name='part', lookup_expr='cabinet__hardware__group')
     hardware = NumberFilter(field_name='part', lookup_expr='cabinet__hardware')
     cabinet = NumberFilter(field_name='part', lookup_expr='cabinet')
+    component = NumberFilter(field_name='part', lookup_expr='component')
 
     class Meta:
         model = Defect
