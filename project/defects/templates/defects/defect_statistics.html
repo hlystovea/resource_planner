@@ -16,12 +16,16 @@
       <div class="row p-0">
         <canvas id="statisticsByYearChart"></canvas>
       </div>
+      <div class="row p-0">
+        <canvas id="statisticsByGroupChart"></canvas>
+      </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     function updateContent() {
       updateStatisticsByYear();
+      updateStatisticsByGroup();
     };
 
     function updateStatisticsByYear() {
@@ -29,75 +33,117 @@
         .then(function(response) {
           return response.json()
         }).then(function(data) {
-          data = formatStatisticsByYearToArray(data);
+          data = formatStatisticsToArray(data);
           setStatisticsByYearChart(statisticsByYearChart, data);
         }).catch(function(ex) {
           console.log('Error: ', ex)
         });
     }
 
-    function formatStatisticsByYearToArray(data) {
-      let years = [];
-      let defect_counts = [];
-    
-      data.forEach((item, index, array) => {
-        years.push(item.year);
-        defect_counts.push(item.defect_count);
-      });
-
-      return {
-        years: years,
-        defect_counts: defect_counts
-      };
+    function updateStatisticsByGroup() {
+      fetch("{% url 'api:defect-statistics-by-group' %}")
+        .then(function(response) {
+          return response.json()
+        }).then(function(data) {
+          data = formatStatisticsToArray(data);
+          setStatisticsByGroupChart(statisticsByGroupChart, data);
+        }).catch(function(ex) {
+          console.log('Error: ', ex)
+        });
     }
 
-    var statisticsByYearConfig = {
-      type: "bar",
+    function formatStatisticsToArray(data) {
+      let result = {};
+
+      data.forEach(item => {
+        Object.keys(data[0]).forEach(key => {
+          if (result.key != null && typeof(result.key == 'object')) {
+            result[key].push(item[key]);
+          } else {
+            result[key] = [];
+          }
+        });
+      });
+
+      return result
+    }
+
+    const statisticsByYearConfig = {
+      type: 'bar',
       data: {
-      labels: [],
-      datasets: [{
-        label: "Количество дефектов в год, шт.",
-        data: [],
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-        fill: true,
-        yAxisID: 'y'
-      }]
-    },
+        labels: [],
+        datasets: [{
+          label: 'Количество дефектов в год, шт.',
+          data: [],
+          borderColor: Utils.CHART_COLORS.red,
+          backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5)
+        }]
+      },
       options: {
-        scales: {
-          y: {
-            type: 'linear',
-            display: true,
-            position: 'left',
-          }
-        },
         elements: {
-          point: {
-            radius: 0
+          bar: {
+            borderWidth: 1,
           }
         },
+        responsive: true,
         plugins: {
           legend: {
-            display: true,
-            position: "bottom",
+            position: 'bottom',
             labels: {
-                boxHeight: 0
+                boxHeight: 0,
             }
           }
         }
       }
     }
 
+    const statisticsByGroupConfig = {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+            label: 'Количество дефектов по группам оборудования, шт.',
+            data: [],
+            borderColor: Utils.CHART_COLORS.red,
+            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5)
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        elements: {
+          bar: {
+            borderWidth: 1,
+          }
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+                boxHeight: 0,
+            }
+          }
+        }
+      },
+    };
+
     function setStatisticsByYearChart(chart, data) {
-      chart.data.labels = data.years;
-      chart.data.datasets[0].data = data.defect_counts;
+      chart.data.labels = data.year;
+      chart.data.datasets[0].data = data.defect_count;
+      chart.update();
+    }
+
+    function setStatisticsByGroupChart(chart, data) {
+      chart.data.labels = data.group;
+      chart.data.datasets[0].data = data.defect_count;
       chart.update();
     }
 
     const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
     const statisticsByYearChart = new Chart(statisticsByYearCtx, statisticsByYearConfig);
+
+    const statisticsByGroupCtx = document.getElementById("statisticsByGroupChart").getContext("2d");
+    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, statisticsByGroupConfig);
 
     updateContent()
   </script>

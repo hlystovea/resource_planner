@@ -1,4 +1,4 @@
-from django.db.models import Count, Value
+from django.db.models import Count, F, Value
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
@@ -12,6 +12,7 @@ from .serializers import (CabinetSerializer, ComponentSerializer,
                           ConnectionSerializer, DefectSerializer,
                           FacilitySerializer, GroupSerializer,
                           HardwareSerializer, PartSerializer,
+                          StatisticsByGroupSerializer,
                           StatisticsByYearSerializer, YearSerializer)
 
 
@@ -37,11 +38,21 @@ class DefectViewSet(ReadOnlyModelViewSet):
         ).values(
             'year'
         ).annotate(
-            defect_count=Count('pk'),
+            defect_count=Count('pk')
         ).order_by(
             'year'
         )
         serializer = StatisticsByYearSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], url_name='statistics-by-group', detail=False)
+    def statistics_by_group(self, request, *args, **kwargs):
+        queryset = self.get_queryset().values(
+            group=F('part__cabinet__hardware__group__name')
+        ).annotate(
+            defect_count=Count('pk')
+        )
+        serializer = StatisticsByGroupSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

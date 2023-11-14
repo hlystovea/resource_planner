@@ -21,6 +21,11 @@ class StatisticsByYearSerializer(Serializer):
     defect_count = IntegerField()
 
 
+class StatisticsByGroupSerializer(Serializer):
+    group = CharField()
+    defect_count = IntegerField()
+
+
 class FacilitySerializer(ModelSerializer):
     class Meta:
         model = Facility
