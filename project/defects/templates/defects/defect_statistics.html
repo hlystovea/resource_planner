@@ -12,21 +12,40 @@
     <h3>Статистика</h3>
   </figure>
   <div class="row justify-content-center">
-    <div class="col-lg-9">
-      <div class="row p-0">
-        <canvas id="statisticsByYearChart"></canvas>
+    <div class="d-flex align-items-start">
+      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <button class="nav-link active" id="v-pills-years-tab" data-bs-toggle="pill" data-bs-target="#v-pills-years" type="button" role="tab" aria-controls="v-pills-years" aria-selected="true">По годам</button>
+        <button class="nav-link" id="v-pills-groups-tab" data-bs-toggle="pill" data-bs-target="#v-pills-groups" type="button" role="tab" aria-controls="v-pills-groups" aria-selected="false">По группам оборудования</button>
+        <button class="nav-link" id="v-pills-tech-reasons-tab" data-bs-toggle="pill" data-bs-target="#v-pills-tech-reasons" type="button" role="tab" aria-controls="v-pills-tech-reasons" aria-selected="false">По техническим причинам</button>
+        <button class="nav-link" id="v-pills-org-reasons-tab" data-bs-toggle="pill" data-bs-target="#v-pills-org-reasons" type="button" role="tab" aria-controls="v-pills-org-reasons" aria-selected="false">По организационным причинам</button>
+        <button class="nav-link" id="v-pills-methods-tab" data-bs-toggle="pill" data-bs-target="#v-pills-methods" type="button" role="tab" aria-controls="v-pills-methods" aria-selected="false">По методу устранения</button>
       </div>
-      <div class="row p-0">
-        <canvas id="statisticsByGroupChart"></canvas>
-      </div>
-      <div class="row p-0">
-        <canvas id="statisticsByTechReasonChart"></canvas>
-      </div>
-      <div class="row p-0">
-        <canvas id="statisticsByOrgReasonChart"></canvas>
-      </div>
-      <div class="row p-0">
-        <canvas id="statisticsByReapairMethodChart"></canvas>
+      <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-years" role="tabpanel" aria-labelledby="v-pills-years-tab" tabindex="0">
+          <div class="row p-0">
+            <canvas id="statisticsByYearChart"></canvas>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-groups" role="tabpanel" aria-labelledby="v-pills-groups-tab" tabindex="0">
+          <div class="row p-0">
+            <canvas id="statisticsByGroupChart"></canvas>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-tech-reasons" role="tabpanel" aria-labelledby="v-pills-tech-reasons-tab" tabindex="0">
+          <div class="row p-0">
+            <canvas id="statisticsByTechReasonChart"></canvas>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-org-reasons" role="tabpanel" aria-labelledby="v-pills-org-reasons-tab" tabindex="0">
+          <div class="row p-0">
+            <canvas id="statisticsByOrgReasonChart"></canvas>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-methods" role="tabpanel" aria-labelledby="v-pills-methods-tab" tabindex="0">
+          <div class="row p-0">
+            <canvas id="statisticsByReapairMethodChart"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
