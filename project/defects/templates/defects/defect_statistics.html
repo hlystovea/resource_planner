@@ -19,34 +19,37 @@
       <div class="row p-0">
         <canvas id="statisticsByGroupChart"></canvas>
       </div>
+      <div class="row p-0">
+        <canvas id="statisticsByTechReasonChart"></canvas>
+      </div>
+      <div class="row p-0">
+        <canvas id="statisticsByOrgReasonChart"></canvas>
+      </div>
+      <div class="row p-0">
+        <canvas id="statisticsByReapairMethodChart"></canvas>
+      </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     function updateContent() {
-      updateStatisticsByYear();
-      updateStatisticsByGroup();
+      charts = {
+        "{% url 'api:defect-statistics-by-year' %}": statisticsByYearChart,
+        "{% url 'api:defect-statistics-by-group' %}": statisticsByGroupChart,
+        "{% url 'api:defect-statistics-by-tech-reason' %}": statisticsByTechReasonChart,
+        "{% url 'api:defect-statistics-by-org-reason' %}": statisticsByOrgReasonChart,
+        "{% url 'api:defect-statistics-by-repair-method' %}": statisticsByReapairMethodChart,
+      }
+      Object.entries(charts).forEach(chart => updateStatistics(...chart));
     }
 
-    function updateStatisticsByYear() {
-      fetch("{% url 'api:defect-statistics-by-year' %}")
+    function updateStatistics(url, chart) {
+      fetch(url)
         .then(function(response) {
           return response.json()
         }).then(function(data) {
           data = formatStatisticsToArray(data);
-          setStatisticsByYearChart(statisticsByYearChart, data);
-        }).catch(function(ex) {
-          console.log('Error: ', ex)
-        });
-    }
-
-    function updateStatisticsByGroup() {
-      fetch("{% url 'api:defect-statistics-by-group' %}")
-        .then(function(response) {
-          return response.json()
-        }).then(function(data) {
-          data = formatStatisticsToArray(data);
-          setStatisticsByGroupChart(statisticsByGroupChart, data);
+          setStatistics(chart, data);
         }).catch(function(ex) {
           console.log('Error: ', ex)
         });
@@ -68,12 +71,18 @@
       return result
     }
 
-    const statisticsByYearConfig = {
+    function setStatistics(chart, data) {
+      chart.data.labels = data.label;
+      chart.data.datasets[0].data = data.value;
+      chart.update();
+    }
+
+    const lineChartConfig = {
       type: 'bar',
       data: {
         labels: [],
         datasets: [{
-          label: 'Количество дефектов в год, шт.',
+          label: 'Количество дефектов, шт.',
           data: [],
           backgroundColor: 'rgba(255, 159, 64, 0.2)',
           borderColor: 'rgba(255, 159, 64, 1)'
@@ -97,12 +106,12 @@
       }
     };
 
-    const statisticsByGroupConfig = {
+    const barChartConfig = {
       type: 'bar',
       data: {
         labels: [],
         datasets: [{
-            label: 'Количество дефектов по группам оборудования, шт.',
+            label: 'Количество дефектов, шт.',
             data: [],
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)'
@@ -127,23 +136,20 @@
       },
     };
 
-    function setStatisticsByYearChart(chart, data) {
-      chart.data.labels = data.year;
-      chart.data.datasets[0].data = data.defect_count;
-      chart.update();
-    }
-
-    function setStatisticsByGroupChart(chart, data) {
-      chart.data.labels = data.group;
-      chart.data.datasets[0].data = data.defect_count;
-      chart.update();
-    }
-
     const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
-    const statisticsByYearChart = new Chart(statisticsByYearCtx, statisticsByYearConfig);
+    const statisticsByYearChart = new Chart(statisticsByYearCtx, lineChartConfig);
 
     const statisticsByGroupCtx = document.getElementById("statisticsByGroupChart").getContext("2d");
-    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, statisticsByGroupConfig);
+    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, barChartConfig);
+
+    const statisticsByTechReasonCtx = document.getElementById("statisticsByTechReasonChart").getContext("2d");
+    const statisticsByTechReasonChart = new Chart(statisticsByTechReasonCtx, barChartConfig);
+
+    const statisticsByOrgReasonCtx = document.getElementById("statisticsByOrgReasonChart").getContext("2d");
+    const statisticsByOrgReasonChart = new Chart(statisticsByOrgReasonCtx, barChartConfig);
+
+    const statisticsByReapairMethodCtx = document.getElementById("statisticsByReapairMethodChart").getContext("2d");
+    const statisticsByReapairMethodChart = new Chart(statisticsByReapairMethodCtx, barChartConfig);
 
     updateContent()
   </script>
