@@ -26,7 +26,7 @@
     function updateContent() {
       updateStatisticsByYear();
       updateStatisticsByGroup();
-    };
+    }
 
     function updateStatisticsByYear() {
       fetch("{% url 'api:defect-statistics-by-year' %}")
@@ -57,7 +57,7 @@
 
       data.forEach(item => {
         Object.keys(data[0]).forEach(key => {
-          if (result.key != null && typeof(result.key == 'object')) {
+          if (result[key] != null && typeof(result[key] == 'object')) {
             result[key].push(item[key]);
           } else {
             result[key] = [];
@@ -95,7 +95,7 @@
           }
         }
       }
-    }
+    };
 
     const statisticsByGroupConfig = {
       type: 'bar',
