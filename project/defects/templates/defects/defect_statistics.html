@@ -54,6 +54,7 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'js/charts.js' %}"></script>
   <script>
     function updateContent() {
       charts = {
@@ -99,65 +100,6 @@
       chart.data.datasets[0].data = data.value;
       chart.update();
     }
-
-    const lineChartConfig = {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Количество дефектов, шт.',
-          data: [],
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          borderColor: 'rgba(255, 159, 64, 1)'
-        }]
-      },
-      options: {
-        elements: {
-          bar: {
-            borderWidth: 1,
-          }
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-                boxHeight: 0,
-            }
-          }
-        }
-      }
-    };
-
-    const barChartConfig = {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-            label: 'Количество дефектов, шт.',
-            data: [],
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)'
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        elements: {
-          bar: {
-            borderWidth: 1,
-          }
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-                boxHeight: 0,
-            }
-          }
-        }
-      },
-    };
 
     const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
     const statisticsByYearChart = new Chart(statisticsByYearCtx, structuredClone(lineChartConfig));
