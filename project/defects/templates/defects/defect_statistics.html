@@ -160,19 +160,19 @@
     };
 
     const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
-    const statisticsByYearChart = new Chart(statisticsByYearCtx, lineChartConfig);
+    const statisticsByYearChart = new Chart(statisticsByYearCtx, structuredClone(lineChartConfig));
 
     const statisticsByGroupCtx = document.getElementById("statisticsByGroupChart").getContext("2d");
-    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, barChartConfig);
+    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, structuredClone(barChartConfig));
 
     const statisticsByTechReasonCtx = document.getElementById("statisticsByTechReasonChart").getContext("2d");
-    const statisticsByTechReasonChart = new Chart(statisticsByTechReasonCtx, barChartConfig);
+    const statisticsByTechReasonChart = new Chart(statisticsByTechReasonCtx, structuredClone(barChartConfig));
 
     const statisticsByOrgReasonCtx = document.getElementById("statisticsByOrgReasonChart").getContext("2d");
-    const statisticsByOrgReasonChart = new Chart(statisticsByOrgReasonCtx, barChartConfig);
+    const statisticsByOrgReasonChart = new Chart(statisticsByOrgReasonCtx, structuredClone(barChartConfig));
 
     const statisticsByReapairMethodCtx = document.getElementById("statisticsByReapairMethodChart").getContext("2d");
-    const statisticsByReapairMethodChart = new Chart(statisticsByReapairMethodCtx, barChartConfig);
+    const statisticsByReapairMethodChart = new Chart(statisticsByReapairMethodCtx, structuredClone(barChartConfig));
 
     updateContent()
   </script>
