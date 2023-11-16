@@ -1,6 +1,7 @@
 from django.db.models import Count, F, Value
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -19,6 +20,7 @@ from .serializers import (CabinetSerializer, ComponentSerializer,
 class DefectViewSet(ReadOnlyModelViewSet):
     queryset = Defect.objects.all()
     serializer_class = DefectSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DefectFilter
 
     @action(methods=['get'], url_name='years', detail=False)
