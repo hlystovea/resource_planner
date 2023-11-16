@@ -36,7 +36,7 @@ class DefectViewSet(ReadOnlyModelViewSet):
 
     @action(methods=['get'], url_name='statistics-by-year', detail=False)
     def statistics_by_year(self, request, *args, **kwargs):
-        queryset = self.get_queryset().annotate(
+        queryset = self.filter_queryset(self.get_queryset()).annotate(
             year=ExtractYear('date')
         ).values(
             label=F('year')
@@ -50,7 +50,7 @@ class DefectViewSet(ReadOnlyModelViewSet):
 
     @action(methods=['get'], url_name='statistics-by-group', detail=False)
     def statistics_by_group(self, request, *args, **kwargs):
-        queryset = self.get_queryset().values(
+        queryset = self.filter_queryset(self.get_queryset()).values(
             label=F('part__cabinet__hardware__group__name')
         ).annotate(
             value=Count('pk')
@@ -64,7 +64,7 @@ class DefectViewSet(ReadOnlyModelViewSet):
         detail=False
     )
     def statistics_by_tech_reason(self, request, *args, **kwargs):
-        queryset = self.get_queryset().values(
+        queryset = self.filter_queryset(self.get_queryset()).values(
             label=F('technical_reasons__name')
         ).annotate(
             value=Count('pk')
@@ -78,7 +78,7 @@ class DefectViewSet(ReadOnlyModelViewSet):
         detail=False
     )
     def statistics_by_org_reason(self, request, *args, **kwargs):
-        queryset = self.get_queryset().values(
+        queryset = self.filter_queryset(self.get_queryset()).values(
             label=F('organizational_reasons__name')
         ).annotate(
             value=Count('pk')
@@ -92,7 +92,7 @@ class DefectViewSet(ReadOnlyModelViewSet):
         detail=False
     )
     def statistics_by_repair_method(self, request, *args, **kwargs):
-        queryset = self.get_queryset().values(
+        queryset = self.filter_queryset(self.get_queryset()).values(
             label=F('repair_method__name')
         ).annotate(
             value=Count('pk')
