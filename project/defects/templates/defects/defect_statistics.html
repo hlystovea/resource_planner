@@ -69,7 +69,7 @@
     }
 
     function updateStatistics(url, chart) {
-      fetch(url)
+      fetch(url + window.location.search)
         .then(function(response) {
           return response.json()
         }).then(function(data) {
