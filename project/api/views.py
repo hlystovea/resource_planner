@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from defects.filters import DefectFilter
 from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
                              Facility, Group, Hardware, Part)
@@ -18,6 +19,7 @@ from .serializers import (CabinetSerializer, ComponentSerializer,
 class DefectViewSet(ReadOnlyModelViewSet):
     queryset = Defect.objects.all()
     serializer_class = DefectSerializer
+    filterset_class = DefectFilter
 
     @action(methods=['get'], url_name='years', detail=False)
     def years(self, request, *args, **kwargs):
