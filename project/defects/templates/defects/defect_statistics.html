@@ -58,14 +58,6 @@
   <script src="{% static 'js/charts.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const charts = {
-        "{% url 'api:defect-statistics-by-year' %}": statisticsByYearChart,
-        "{% url 'api:defect-statistics-by-group' %}": statisticsByGroupChart,
-        "{% url 'api:defect-statistics-by-tech-reason' %}": statisticsByTechReasonChart,
-        "{% url 'api:defect-statistics-by-org-reason' %}": statisticsByOrgReasonChart,
-        "{% url 'api:defect-statistics-by-repair-method' %}": statisticsByReapairMethodChart,
-      }
-
     function updateContent() {
       Object.entries(charts).forEach(chart => updateStatistics(...chart));
     }
@@ -118,6 +110,14 @@
 
     const statisticsByReapairMethodCtx = document.getElementById("statisticsByReapairMethodChart").getContext("2d");
     const statisticsByReapairMethodChart = new Chart(statisticsByReapairMethodCtx, structuredClone(barChartConfig));
+
+    const charts = {
+      "{% url 'api:defect-statistics-by-year' %}": statisticsByYearChart,
+      "{% url 'api:defect-statistics-by-group' %}": statisticsByGroupChart,
+      "{% url 'api:defect-statistics-by-tech-reason' %}": statisticsByTechReasonChart,
+      "{% url 'api:defect-statistics-by-org-reason' %}": statisticsByOrgReasonChart,
+      "{% url 'api:defect-statistics-by-repair-method' %}": statisticsByReapairMethodChart,
+    }
 
     updateContent()
   </script>
