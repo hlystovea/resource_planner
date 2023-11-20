@@ -34,10 +34,10 @@
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  function redirectPage(year="*") {
+  function redirectPage(year='') {
     let searchParams = new URLSearchParams(window.location.search);
     let param_values = {
-      'year': year || document.getElementById("selectedYear").innerText,
+      'year': document.getElementById("selectedYear") ? document.getElementById("selectedYear").innerText : year,
       'facility': document.getElementById("selectFacility").value,
       'connection': document.getElementById("selectConnection").value,
       'group': document.getElementById("selectGroup").value,
@@ -101,26 +101,6 @@
     updateSelectOptions(id, url, selectedValue, firstOption, "facility_with_abbreviation");
   };
 
-  function updateSelectHardware() {
-    let id = "selectHardware"
-    let url = "{% url 'api:hardware-list' %}"
-    let connection = document.getElementById("selectConnection").value;
-    if (connection) url = "{% url 'api:connection-list' %}" + connection + "/hardware";
-    let selectedValue = params.hardware
-    let firstOption = "Оборудование..."
-    updateSelectOptions(id, url, selectedValue, firstOption, "name");
-  };
-
-  function updateSelectCabinet() {
-    let id = "selectCabinet"
-    let url = "{% url 'api:cabinet-list' %}"
-    let hardware = document.getElementById("selectHardware").value;
-    if (hardware) url = "{% url 'api:hardware-list' %}" + hardware + "/cabinets";
-    let selectedValue = params.cabinet
-    let firstOption = "Шкаф/панель..."
-    updateSelectOptions(id, url, selectedValue, firstOption);
-  };
-
   function createLinkElement(value, color="secondary") {
     let link = document.createElement("a");
     link.innerText = value;
@@ -130,7 +110,7 @@
       link.id = "selectedYear";
       link.className += " bg-warning";
     }
-    link.addEventListener("click", () => redirectPage((color == "dark") ? "*" : value));
+    link.addEventListener("click", () => redirectPage((color == 'dark') ? '' : value));
     return link
   };
 
