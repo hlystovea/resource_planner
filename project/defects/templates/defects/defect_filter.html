@@ -43,7 +43,7 @@
       'group': document.getElementById("selectGroup").value,
       'status': document.getElementById("selectStatus").value
     }
-    Object.entries(param_values).forEach((param, value) => {
+    Object.entries(param_values).forEach(([param, value]) => {
       if (value) searchParams.set(param, value);
     })
     window.location.search = searchParams.toString();
