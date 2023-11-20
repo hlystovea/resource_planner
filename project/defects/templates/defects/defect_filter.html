@@ -36,12 +36,13 @@
 
   function redirectPage(year='') {
     let searchParams = new URLSearchParams(window.location.search);
+    let selectedYear = document.getElementById('selectedYear')
     let param_values = {
-      'year': document.getElementById("selectedYear") ? document.getElementById("selectedYear").innerText : year,
-      'facility': document.getElementById("selectFacility").value,
-      'connection': document.getElementById("selectConnection").value,
-      'group': document.getElementById("selectGroup").value,
-      'status': document.getElementById("selectStatus").value
+      'year': year || selectedYear ? selectedYear.innerText : '',
+      'facility': document.getElementById('selectFacility').value,
+      'connection': document.getElementById('selectConnection').value,
+      'group': document.getElementById('selectGroup').value,
+      'status': document.getElementById('selectStatus').value,
     }
     Object.entries(param_values).forEach(([param, value]) => {
       value ? searchParams.set(param, value) : searchParams.delete(param);
