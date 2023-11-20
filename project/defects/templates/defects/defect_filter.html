@@ -44,7 +44,11 @@
       'status': document.getElementById("selectStatus").value
     }
     Object.entries(param_values).forEach(([param, value]) => {
-      if (value) searchParams.set(param, value);
+      if (value) {
+        searchParams.set(param, value);
+      } else {
+        delete searchParams[param];
+      }
     })
     window.location.search = searchParams.toString();
   };
