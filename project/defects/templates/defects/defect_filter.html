@@ -9,25 +9,11 @@
       <option value="" selected>Присоединение...</option>
     </select>
   </div>
-  <!--
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectHardware" name="hardware" onchange="updateSelectCabinet()">
-      <option value="" selected>Оборудование...</option>
-    </select>
-  </div>
-  -->
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectGroup" name="group">
       <option value="" selected>Группа оборудования...</option>
     </select>
   </div>
-  <!--
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectCabinet" name="cabinet" onchange="redirectPage()">
-      <option value="" selected>Шкаф/панель...</option>
-    </select>
-  </div>
-  -->
   <div class="col-sm-2">
     <select class="form-select form-select-sm" id="selectStatus" name="status">
       <option value="" selected>Статус...</option>
@@ -49,41 +35,36 @@
   });
 
   function redirectPage(year="*") {
-    let url = "{% url 'defects:defect-list' %}?";
-    year = year || document.getElementById("selectedYear").innerText;
-    let facility = document.getElementById("selectFacility").value;
-    let connection = document.getElementById("selectConnection").value;
-    let group = document.getElementById("selectGroup").value;
-    // let hardware = document.getElementById("selectHardware").value;
-    // cabinet = document.getElementById("selectCabinet").value;
-    let status = document.getElementById("selectStatus").value;
-
-    if (year !== '') url += "&year=" + year;
-    if (facility !== '') url += "&facility=" + facility;
-    if (connection !== '') url += "&connection=" + connection;
-    if (group !== '') url += "&group=" + group;
-    // if (hardware !== '') url += "&hardware=" + hardware;
-    // if (cabinet !== '') url += "&cabinet=" + cabinet;
-    if (status !== '') url += "&unrepaired=" + status;
-    window.location.replace(url);
+    let searchParams = new URLSearchParams(window.location.search);
+    param_values = {
+      'year': year || document.getElementById("selectedYear").innerText,
+      'facility': document.getElementById("selectFacility").value,
+      'connection': document.getElementById("selectConnection").value,
+      'group': document.getElementById("selectGroup").value,
+      'status': document.getElementById("selectStatus").value
+    }
+    param_values.entries.forEach((param, value) => {
+      if (value) searchParams.set(param, value);
+    })
+    window.location.search = searchParams.toString();
   };
 
   function createOptionElement(value, text, selected=false) {
-    let option = document.createElement("option");
+    let option = document.createElement('option');
     option.value = value;
     option.innerText = text;
     option.selected = (selected) ? true : false;
     return option
   };
 
-  function updateSelectOptions(id, url, selectedValue="", firstOption="Выбрать..", key="abbreviation") {
+  function updateSelectOptions(id, url, selectedValue='', firstOption='Выбрать..', key='abbreviation') {
     fetch(url)
       .then(function(response) {
         return response.json()
       }).then(function(data) {
         let parent = document.getElementById(id);
         let options = [];
-        options.push(createOptionElement("", firstOption, true))
+        options.push(createOptionElement('', firstOption, true))
         data.forEach(obj => {
           let selected = obj.id == selectedValue;
           options.push(createOptionElement(obj.id, obj[key], selected));
