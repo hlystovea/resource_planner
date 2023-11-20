@@ -34,11 +34,11 @@
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  function redirectPage(year='') {
+  function redirectPage(year=null) {
     let searchParams = new URLSearchParams(window.location.search);
     let selectedYear = document.getElementById('selectedYear')
     let param_values = {
-      'year': year || (selectedYear ? selectedYear.innerText : ''),
+      'year': year != null ? year : (selectedYear ? selectedYear.innerText : ''),
       'facility': document.getElementById('selectFacility').value,
       'connection': document.getElementById('selectConnection').value,
       'group': document.getElementById('selectGroup').value,
