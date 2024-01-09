@@ -94,9 +94,7 @@ class PartAdmin(MixinAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'part' and self._obj:
-            kwargs['queryset'] = Part.objects.filter(
-                cabinet=self._obj.cabinet
-            )
+            kwargs['queryset'] = self._obj.cabinet.parts
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def save_formset(self, request, form, formset, change) -> None:
