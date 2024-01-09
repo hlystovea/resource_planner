@@ -136,6 +136,9 @@ class CabinetAdmin(MixinAdmin):
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('parts')
+
 
 class CabinetInline(autocomplete_all.TabularInline):
     model = Cabinet
