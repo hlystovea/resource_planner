@@ -26,7 +26,7 @@
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectGroup" name="group"
-            hx-get="{% url 'hardware:group-select' %}?current_group={{ request.GET.group }}"
+            hx-get="{% url 'hardware:group-select' %}"
             hx-trigger="load"
         >
         </select>

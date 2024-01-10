@@ -1,0 +1,4 @@
+<option value="" selected>Объект...</option>
+{% for facility in facility_list %}
+   <option value="{{facility.pk}}">{{facility.abbreviation}}</option>
+{% endfor %}

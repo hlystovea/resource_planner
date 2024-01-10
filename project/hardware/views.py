@@ -84,17 +84,10 @@ def group_select_view(request):
 def connection_select_view(request):
     queryset = Connection.objects.all()
     connections = ConnectionFilter(request.GET, queryset=queryset).qs
-    output = '\n'.join(
-        [f'<option value={c.pk}>{c.facility} {c.abbreviation}</option>'
-         for c
-         in connections]
-    )
-    return HttpResponse(output)
+    context = {'connection_list': connections.select_related('facility')}
+    return render(request, 'hardware/connection_select.html', context)
 
 
 def facility_select_view(request):
-    facilities = Facility.objects.all()
-    output = '\n'.join(
-        [f'<option value={f.pk}>{f.abbreviation}</option>' for f in facilities]
-    )
-    return HttpResponse(output)
+    context = {'facility_list': Facility.objects.all()}
+    return render(request, 'hardware/facility_select.html', context)

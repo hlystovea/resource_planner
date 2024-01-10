@@ -1,0 +1,4 @@
+<option value="" selected>Присоединение...</option>
+{% for connection in connection_list %}
+   <option value="{{connection.pk}}">{{connection.facility.abbreviation}} {{connection.abbreviation}}</option>
+{% endfor %}
