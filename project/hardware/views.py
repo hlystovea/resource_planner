@@ -78,7 +78,8 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
 
 def group_select_view(request):
     groups = Group.objects.all()
-    context = {'group_list': groups, 'current_group': None}
+    current_group = request.GET.get('group', '')
+    context = {'group_list': groups, 'current_group': current_group}
     return render(request, 'hardware/group_select.html', context)
 
 
