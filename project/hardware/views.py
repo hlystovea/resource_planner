@@ -77,6 +77,6 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
 def group_select_view(request):
     groups = Group.objects.all()
     output = '\n'.join(
-        [f'<option value={g.pk}>{g.name}</option>' for q in groups]
+        [f'<option value={g.pk}>{g.name}</option>' for g in groups]
     )
     return HttpResponse(output)
