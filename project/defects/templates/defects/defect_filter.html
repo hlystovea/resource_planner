@@ -1,34 +1,20 @@
 <div class="row justify-content-end">
     <!-- Get options for the selectFacility on load -->
-    <div hx-get="{% url 'hardware:facility-select' %}"
-        hx-trigger="load"
-        hx-target="#selectFacility"
-        hx-swap="beforeend"
-        hx-params="none"
-    ></div>
+    <div hx-get="{% url 'hardware:facility-select' %}" hx-trigger="load" hx-target="#selectFacility" hx-params="none">
+    </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectFacility" name="facility"
-            hx-get="{% url 'hardware:connection-select' %}"
-            hx-target="#selectConnection"
-        >
-            <option value="" selected>Объект...</option>
+            hx-get="{% url 'hardware:connection-select' %}" hx-target="#selectConnection">
         </select>
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectConnection" name="connection"
-        hx-get="{% url 'hardware:connection-select' %}"
-        hx-trigger="load"
-        hx-swap="beforeend"
-        hx-params="none"
-    >
-            <option value="" selected>Присоединение...</option>
+            hx-get="{% url 'hardware:connection-select' %}" hx-trigger="load" hx-params="none">
         </select>
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectGroup" name="group"
-            hx-get="{% url 'hardware:group-select' %}"
-            hx-trigger="load"
-        >
+            hx-get="{% url 'hardware:group-select' %}" hx-trigger="load" hx-params="none">
         </select>
     </div>
     <div class="col-sm-2">
@@ -40,7 +26,10 @@
     </div>
     <div class="col-auto">
         <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
-            onclick="redirectPage()">Показать</button>
+            hx-get="{% url 'defects:defect-table' %}"
+            hx-target="#defectTable"
+            hx-include="[name='group'],[name='connection'],[name='status'],[name='facility']"
+        >Показать</button>
     </div>
 </div>
 <div class="row">

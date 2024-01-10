@@ -8,8 +8,9 @@ from defects.forms import DefectForm
 from defects.models import Defect
 
 
-class DefectList(ListView):
+class DefectTable(ListView):
     paginate_by = 20
+    template_name_suffix = "_table"
     model = Defect
     queryset = Defect.objects.select_related(
         'part__cabinet__hardware__connection__facility',
@@ -21,7 +22,7 @@ class DefectList(ListView):
         return queryset.order_by('-date')
 
 
-class DefectDetail(DetailView):
+class DefectDetailView(DetailView):
     model = Defect
     queryset = Defect.objects.select_related(
         'employee',
@@ -66,3 +67,7 @@ class DefectDeleteView(LoginRequiredMixin, DeleteView):
 
 class DefectStatisticsView(TemplateView):
     template_name = 'defects/defect_statistics.html'
+
+
+class DefectListView(TemplateView):
+    template_name = 'defects/defect_list.html'
