@@ -85,7 +85,7 @@ def group_select_view(request):
 
 def connection_select_view(request):
     queryset = Connection.objects.all()
-    connections = ConnectionFilter(request.GET, queryset=queryset)
+    connections = ConnectionFilter(request.GET, queryset=queryset).qs
     output = '\n'.join(
         [f'<option value={c.pk}>{c.facility} {c.name}</option>' for c in connections]
     )
