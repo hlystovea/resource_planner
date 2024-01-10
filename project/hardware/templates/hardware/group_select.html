@@ -1,4 +1,4 @@
-<option value="" selected>Группа оборудования...</option>
+<option value="" {% if not current_group %}selected="selected"{% endif %}>Группа оборудования...</option>
 {% for group in group_list %}
    <option value="{{group.pk}}"
        {% if group == current_group %}selected="selected"{% endif %}>
