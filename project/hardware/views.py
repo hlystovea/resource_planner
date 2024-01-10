@@ -87,7 +87,9 @@ def connection_select_view(request):
     queryset = Connection.objects.all()
     connections = ConnectionFilter(request.GET, queryset=queryset).qs
     output = '\n'.join(
-        [f'<option value={c.pk}>{c.facility} {c.name}</option>' for c in connections]
+        [f'<option value={c.pk}>{c.facility} {c.abbreviation}</option>'
+         for c
+         in connections]
     )
     return HttpResponse(output)
 
