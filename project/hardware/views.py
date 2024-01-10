@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from defects.models import Defect
 from hardware.filters import ComponentFilter
 from hardware.forms import ComponentForm, ComponentFilterForm
-from hardware.models import Component
+from hardware.models import Component, Group
 from warehouse.models import ComponentStorage
 
 
