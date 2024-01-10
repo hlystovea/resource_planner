@@ -1,0 +1,6 @@
+{% for group in groups %}
+   <option value="{{group.pk}}"
+       {% if group == current_group %}selected="selected"{% endif %}>
+       {{group.name|capfirst}}
+   </option>
+{% endfor %}

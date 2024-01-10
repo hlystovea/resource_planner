@@ -9,7 +9,7 @@
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectFacility" name="facility"
             hx-get="{% url 'hardware:connection-select' %}"
-            hx-target="selectConnection"
+            hx-target="#selectConnection"
         >
             <option value="" selected>Объект...</option>
         </select>
@@ -28,7 +28,6 @@
         <select class="form-select form-select-sm" id="selectGroup" name="group"
             hx-get="{% url 'hardware:group-select' %}"
             hx-trigger="load"
-            hx-swap="beforeend"
             hx-params="none"
         >
             <option value="" selected>Группа оборудования...</option>

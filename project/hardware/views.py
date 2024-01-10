@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
@@ -77,10 +78,8 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
 
 def group_select_view(request):
     groups = Group.objects.all()
-    output = '\n'.join(
-        [f'<option value={g.pk}>{g.name}</option>' for g in groups]
-    )
-    return HttpResponse(output)
+    context = {'group_list': groups, 'current_group': None}
+    return render(request, 'hardware/group_select.html', context)
 
 
 def connection_select_view(request):
