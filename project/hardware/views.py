@@ -6,9 +6,9 @@ from django.views.generic import (CreateView, DeleteView,
 from django.urls import reverse_lazy
 
 from defects.models import Defect
-from hardware.filters import ComponentFilter
+from hardware.filters import ComponentFilter, ConnectionFilter
 from hardware.forms import ComponentForm, ComponentFilterForm
-from hardware.models import Component, Group
+from hardware.models import Component, Connection, Group, Facility
 from warehouse.models import ComponentStorage
 
 
@@ -79,5 +79,22 @@ def group_select_view(request):
     groups = Group.objects.all()
     output = '\n'.join(
         [f'<option value={g.pk}>{g.name}</option>' for g in groups]
+    )
+    return HttpResponse(output)
+
+
+def connection_select_view(request):
+    queryset = Connection.objects.all()
+    connections = ConnectionFilter(request.GET, queryset=queryset)
+    output = '\n'.join(
+        [f'<option value={c.pk}>{c.facility} {c.name}</option>' for c in connections]
+    )
+    return HttpResponse(output)
+
+
+def facility_select_view(request):
+    facilities = Facility.objects.all()
+    output = '\n'.join(
+        [f'<option value={f.pk}>{f.abbreviation}</option>' for f in facilities]
     )
     return HttpResponse(output)

@@ -12,4 +12,6 @@ urlpatterns = [
     path('component/<int:pk>/delete/', views.ComponentDelete.as_view(), name='component-delete'),  # noqa (E501)
     path('component/create/', views.ComponentCreate.as_view(), name='component-create'),
     path('groups/select/', views.group_select_view, name='group-select'),
+    path('connections/select/', views.connection_select_view, name='connection-select'),
+    path('facilities/select/', views.facility_select_view, name='facility-select'),
 ]
