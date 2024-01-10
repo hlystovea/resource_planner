@@ -72,3 +72,11 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     model = Component
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('hardware:component-list')
+
+
+def group_select_view(request):
+    groups = Group.objects.all()
+    output = '\n'.join(
+        [f'<option value={g.pk}>{g.name}</option>' for q in groups]
+    )
+    return HttpResponse(output)
