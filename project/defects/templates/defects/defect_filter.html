@@ -18,7 +18,7 @@
         </select>
     </div>
     <div class="col-sm-2">
-        <select class="form-select form-select-sm" id="selectStatus" name="status">
+        <select class="form-select form-select-sm" id="selectStatus" name="unrepaired">
             <option value="" selected>Статус...</option>
             <option value="false">Устранено</option>
             <option value="true">Не устранено</option>
@@ -29,7 +29,7 @@
             hx-get="{% url 'defects:defect-list' %}"
             hx-target="#defectTable"
             hx-swap="outerHTML"
-            hx-include="[name='group'],[name='connection'],[name='status'],[name='facility']"
+            hx-include="[name='group'],[name='connection'],[name='unrepaired'],[name='facility']"
         >Показать</button>
     </div>
 </div>
@@ -40,59 +40,3 @@
     >
     </div>
 </div>
-
-<script>
-    const params = new Proxy(new URLSearchParams(window.location.search), {
-        get: (searchParams, prop) => searchParams.get(prop),
-    });
-
-    function redirectPage(year = null) {
-        let searchParams = new URLSearchParams(window.location.search);
-        let selectedYear = document.getElementById('selectedYear')
-        let param_values = {
-            'year': year != null ? year : (selectedYear ? selectedYear.innerText : ''),
-            'facility': document.getElementById('selectFacility').value,
-            'connection': document.getElementById('selectConnection').value,
-            'group': document.getElementById('selectGroup').value,
-            'unrepaired': document.getElementById('selectStatus').value,
-        }
-        Object.entries(param_values).forEach(([param, value]) => {
-            (value === false || value) ? searchParams.set(param, value) : searchParams.delete(param);
-        })
-        window.location.search = searchParams.toString();
-    };
-
-    function createLinkElement(value, color = "secondary") {
-        let link = document.createElement("a");
-        link.innerText = value;
-        link.href = "#";
-        link.className = "text-decoration-none link-" + color;
-        if (color == "dark") {
-            link.id = "selectedYear";
-            link.className += " bg-warning";
-        }
-        link.addEventListener("click", () => redirectPage((color == 'dark') ? '' : value));
-        return link
-    };
-
-    function updateYearLinks() {
-        fetch("{% url 'api:defect-years' %}")
-            .then(function (response) {
-                return response.json()
-            }).then(function (data) {
-                let parent = document.getElementById("yearLinks");
-                let links = [];
-                links.push("Год: ")
-                data.years.forEach(year => {
-                    let color = (year == params.year) ? "dark" : "secondary";
-                    links.push(createLinkElement(year, color));
-                    links.push(" ")
-                });
-                parent.replaceChildren(...links);
-            }).catch(function (ex) {
-                console.log('Error: ', ex)
-            });
-    };
-
-    updateYearLinks();
-</script>
