@@ -17,5 +17,5 @@
     <h3>Дефекты</h3>
 </figure>
 {% include './defect_filter.html' %}
-<div id="defectTable" hx-get="{% url 'defects:defect-list' %}" hx-trigger="load" hx-params="none"></div>
+{% include './defect_table.html' %}
 {% endblock %}

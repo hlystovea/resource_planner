@@ -1,3 +1,4 @@
+<div id="defectTable">
 <table class="table table-sm table-hover">
     <thead class="table">
         <tr>
@@ -24,6 +25,5 @@
         {% endfor %}
     </tbody>
 </table>
-{% if is_paginated %}
 {% include 'includes/paginator.html' with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
-{% endif %}
+</div>

@@ -28,6 +28,7 @@
         <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
             hx-get="{% url 'defects:defect-list' %}"
             hx-target="#defectTable"
+            hx-swap="outerHTML"
             hx-include="[name='group'],[name='connection'],[name='status'],[name='facility']"
         >Показать</button>
     </div>
