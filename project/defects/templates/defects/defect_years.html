@@ -1,11 +1,11 @@
 <span>Год: </span>
 {% for year in year_list %}
-    <a href="#" class="text-decoration-none link-
-        {% if year == request.GET.year %}
-            dark bg-warning"
+    <a href="#" class="text-decoration-none 
+        {% if year|stringformat:'i' == request.GET.year %}
+            link-dark bg-warning"
             hx-get="{% url 'defects:defect-list' %}"
         {% else %}
-            secondary"
+            link-secondary"
             hx-get="{% url 'defects:defect-list' %}?year={{ year }}"
         {% endif %}
         hx-target="#defectTable"
