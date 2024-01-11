@@ -1,9 +1,7 @@
 <div id="defectTable">
     <div class="row">
-        <div class="col-auto" id="yearLinks"
-            hx-get="{% url 'defects:defect-years' %}?year={{ request.GET.year }}"
-            hx-trigger="load"
-        >
+        <div class="col-auto">
+            {% include './defect_years.html' %}
         </div>
     </div>
     <table class="table table-sm table-hover">
