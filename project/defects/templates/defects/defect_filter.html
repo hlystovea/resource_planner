@@ -26,7 +26,7 @@
     </div>
     <div class="col-auto">
         <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
-            hx-get="{% url 'defects:defect-table' %}"
+            hx-get="{% url 'defects:defect-list' %}"
             hx-target="#defectTable"
             hx-include="[name='group'],[name='connection'],[name='status'],[name='facility']"
         >Показать</button>

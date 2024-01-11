@@ -1,7 +1,7 @@
 from django.urls import path
 
 from defects.views import (DefectCreateView, DefectDeleteView,
-                           DefectDetailView, DefectTable, DefectListView,
+                           DefectDetailView, DefectListView,
                            DefectUpdateView, DefectStatisticsView)
 
 
@@ -14,5 +14,4 @@ urlpatterns = [
     path('<int:pk>/delete', DefectDeleteView.as_view(), name='defect-delete'),
     path('create', DefectCreateView.as_view(), name='defect-create'),
     path('statistics/', DefectStatisticsView.as_view(), name='defect-statistics'),  # noqa(E501)
-    path('table/', DefectTable.as_view(), name='defect-table'),  # noqa(E501)
 ]

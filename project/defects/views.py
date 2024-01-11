@@ -6,9 +6,9 @@ from django.views.generic import (CreateView, DeleteView, DetailView,
 from defects.filters import DefectFilter
 from defects.forms import DefectForm
 from defects.models import Defect
+from defects.utils import is_htmx
 
-
-class DefectTable(ListView):
+class DefectListView(ListView):
     paginate_by = 20
     template_name_suffix = "_table"
     model = Defect
@@ -20,6 +20,11 @@ class DefectTable(ListView):
         queryset = super().get_queryset()
         queryset = DefectFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('-date')
+    
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['defects/defect_table.html']
+        return ['defects/defect_list.html']
 
 
 class DefectDetailView(DetailView):
@@ -67,7 +72,3 @@ class DefectDeleteView(LoginRequiredMixin, DeleteView):
 
 class DefectStatisticsView(TemplateView):
     template_name = 'defects/defect_statistics.html'
-
-
-class DefectListView(TemplateView):
-    template_name = 'defects/defect_list.html'
