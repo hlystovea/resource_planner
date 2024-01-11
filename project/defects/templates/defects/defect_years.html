@@ -1,0 +1,11 @@
+<span>Год: </span>
+{% for year in year_list %}
+    <button type="button" class="btn"
+        hx-get="{% url 'defects:defect-list' %}?year={{ year }}"
+        hx-target="#defectTable"
+        hx-swap="outerHTML"
+        hx-include="[name='group'],[name='connection'],[name='status'],[name='facility']"
+    >
+        {{ year }}
+    </span>
+{% endfor %}

@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)

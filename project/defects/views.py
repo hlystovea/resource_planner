@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.functions import ExtractYear
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView,
                                   ListView, UpdateView, TemplateView)
@@ -71,3 +73,14 @@ class DefectDeleteView(LoginRequiredMixin, DeleteView):
 
 class DefectStatisticsView(TemplateView):
     template_name = 'defects/defect_statistics.html'
+
+
+def defect_years_view(request):
+    years = Defect.objects.dates(
+            'date', 'year'
+        ).values_list(
+            ExtractYear('date'),
+            flat=True
+        )
+    context = {'year_list': years}
+    return render(request, 'defects/defect_years.html', context)
