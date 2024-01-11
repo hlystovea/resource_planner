@@ -1,29 +1,36 @@
 <div id="defectTable">
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Дата обнаружения</th>
-            <th scope="col">Объект</th>
-            <th scope="col">Присоединение</th>
-            <th scope="col">Оборудование</th>
-            <th scope="col">Шкаф/панель</th>
-            <th scope="col">Описание дефекта</th>
-            <th scope="col">Дата устранения</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for d in defect_list %}
-        <tr>
-            <td><a href="{% url 'defects:defect-detail' d.pk %}">{{ d.date|date:'d.m.Y' }}</a></td>
-            <td>{{ d.part.cabinet.hardware.connection.facility }}</td>
-            <td>{{ d.part.cabinet.hardware.connection.abbreviation }}</td>
-            <td>{{ d.part.cabinet.hardware.name }}</td>
-            <td>{{ d.part.cabinet.abbreviation }}</td>
-            <td>{{ d.description|truncatechars:30 }}</td>
-            <td>{{ d.repair_date|date:'d.m.Y' }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% include 'includes/paginator.html' %}
+    <div class="row">
+        <div class="col-auto" id="yearLinks"
+            hx-get="{% url 'defects:defect-years' %}?year={{ request.GET.year }}"
+            hx-trigger="load"
+        >
+        </div>
+    </div>
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Дата обнаружения</th>
+                <th scope="col">Объект</th>
+                <th scope="col">Присоединение</th>
+                <th scope="col">Оборудование</th>
+                <th scope="col">Шкаф/панель</th>
+                <th scope="col">Описание дефекта</th>
+                <th scope="col">Дата устранения</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in defect_list %}
+            <tr>
+                <td><a href="{% url 'defects:defect-detail' d.pk %}">{{ d.date|date:'d.m.Y' }}</a></td>
+                <td>{{ d.part.cabinet.hardware.connection.facility }}</td>
+                <td>{{ d.part.cabinet.hardware.connection.abbreviation }}</td>
+                <td>{{ d.part.cabinet.hardware.name }}</td>
+                <td>{{ d.part.cabinet.abbreviation }}</td>
+                <td>{{ d.description|truncatechars:30 }}</td>
+                <td>{{ d.repair_date|date:'d.m.Y' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'includes/paginator.html' %}
 </div>
