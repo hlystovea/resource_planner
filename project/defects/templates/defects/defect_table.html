@@ -25,5 +25,5 @@
         {% endfor %}
     </tbody>
 </table>
-{% include 'includes/paginator.html' with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
+{% include './paginator.html' with page=defect_list %}
 </div>
