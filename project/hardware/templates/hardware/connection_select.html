@@ -1,4 +1,7 @@
-<option value="" selected>Присоединение...</option>
+<option value="" {% if not request.GET.connection %}selected="selected"{% endif %}>Присоединение...</option>
 {% for connection in connection_list %}
-   <option value="{{connection.pk}}">{{connection.facility.abbreviation}} {{connection.abbreviation}}</option>
+   <option value="{{connection.pk}}"
+   {% if connection.pk == request.GET.connection %}selected="selected"{% endif %}>
+   {{connection.facility.abbreviation}} {{connection.abbreviation}}
+</option>
 {% endfor %}

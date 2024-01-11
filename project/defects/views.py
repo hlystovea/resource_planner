@@ -10,7 +10,6 @@ from defects.utils import is_htmx
 
 class DefectListView(ListView):
     paginate_by = 20
-    template_name_suffix = "_table"
     model = Defect
     queryset = Defect.objects.select_related(
         'part__cabinet__hardware__connection__facility',

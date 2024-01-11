@@ -1,4 +1,7 @@
-<option value="" selected>Объект...</option>
+<option value="" {% if not request.GET.facility %}selected="selected"{% endif %}>Объект...</option>
 {% for facility in facility_list %}
-   <option value="{{facility.pk}}">{{facility.abbreviation}}</option>
+   <option value="{{facility.pk}}"
+      {% if facility.pk == request.GET.facility %}selected="selected"{% endif %}>
+      {{facility.abbreviation}}
+   </option>
 {% endfor %}
