@@ -1,0 +1,7 @@
+<option value="" {% if not request.GET.cabinet %}selected="selected"{% endif %}>Шкаф...</option>
+{% for cabinet in cabinet_list %}
+   <option value="{{ cabinet.pk }}"
+      {% if cabinet.pk == request.GET.cabinet %}selected="selected"{% endif %}>
+      {{ cabinet.abbreviation }}
+   </option>
+{% endfor %}

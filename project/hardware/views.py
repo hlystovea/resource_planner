@@ -6,9 +6,11 @@ from django.views.generic import (CreateView, DeleteView,
 from django.urls import reverse_lazy
 
 from defects.models import Defect
-from hardware.filters import ComponentFilter, ConnectionFilter
+from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
+                              HardwareFilter, PartFilter)
 from hardware.forms import ComponentForm, ComponentFilterForm
-from hardware.models import Component, Connection, Group, Facility
+from hardware.models import (Cabinet, Component, Connection, Group,
+                             Hardware, Facility, Part)
 from warehouse.models import ComponentStorage
 
 
@@ -80,6 +82,11 @@ def group_select_view(request):
     return render(request, 'hardware/group_select.html', context)
 
 
+def facility_select_view(request):
+    context = {'facility_list': Facility.objects.all()}
+    return render(request, 'hardware/facility_select.html', context)
+
+
 def connection_select_view(request):
     queryset = Connection.objects.all()
     connections = ConnectionFilter(request.GET, queryset=queryset).qs
@@ -87,6 +94,22 @@ def connection_select_view(request):
     return render(request, 'hardware/connection_select.html', context)
 
 
-def facility_select_view(request):
-    context = {'facility_list': Facility.objects.all()}
-    return render(request, 'hardware/facility_select.html', context)
+def hardware_select_view(request):
+    queryset = Hardware.objects.all()
+    hardware = HardwareFilter(request.GET, queryset=queryset).qs
+    context = {'hardware_list': hardware}
+    return render(request, 'hardware/hardware_select.html', context)
+
+
+def cabinet_select_view(request):
+    queryset = Cabinet.objects.all()
+    cabinets = CabinetFilter(request.GET, queryset=queryset).qs
+    context = {'cabinet_list': cabinets}
+    return render(request, 'hardware/cabinet_select.html', context)
+
+
+def part_select_view(request):
+    queryset = Part.objects.all()
+    parts = PartFilter(request.GET, queryset=queryset).qs
+    context = {'part_list': parts.select_related('component')}
+    return render(request, 'hardware/part_select.html', context)

@@ -1,0 +1,7 @@
+<option value="" {% if not request.GET.part %}selected="selected"{% endif %}>Комплектующее...</option>
+{% for part in part_list %}
+   <option value="{{ part.pk }}"
+      {% if part.pk == request.GET.part %}selected="selected"{% endif %}>
+      {{ part.name }} {{ part.component.name }}
+   </option>
+{% endfor %}

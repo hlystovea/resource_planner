@@ -1,6 +1,6 @@
 from django_filters import FilterSet, NumberFilter
 
-from hardware.models import Component, Connection
+from hardware.models import Cabinet, Component, Connection, Hardware, Part
 
 
 class ComponentFilter(FilterSet):
@@ -15,3 +15,21 @@ class ConnectionFilter(FilterSet):
     class Meta:
         model = Connection
         fields = ['facility']
+
+
+class HardwareFilter(FilterSet):
+    class Meta:
+        model = Hardware
+        fields = ['connection']
+
+
+class CabinetFilter(FilterSet):
+    class Meta:
+        model = Cabinet
+        fields = ['hardware']
+
+
+class PartFilter(FilterSet):
+    class Meta:
+        model = Part
+        fields = ['cabinet']
