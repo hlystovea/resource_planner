@@ -1,7 +1,7 @@
 <option value="" {% if not request.GET.hardware %}selected="selected"{% endif %}>Оборудование...</option>
 {% for hardware in hardware_list %}
    <option value="{{hardware.pk}}"
-      {% if hardware.pk == request.GET.hardware %}selected="selected"{% endif %}>
+      {% if hardware.pk|stringformat:'i' == request.GET.hardware %}selected="selected"{% endif %}>
       {{ hardware.name|capfirst }}
    </option>
 {% endfor %}

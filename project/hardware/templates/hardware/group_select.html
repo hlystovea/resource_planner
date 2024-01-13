@@ -1,7 +1,7 @@
 <option value="" {% if not request.GET.group %}selected="selected"{% endif %}>Группа оборудования...</option>
 {% for group in group_list %}
    <option value="{{group.pk}}"
-       {% if group.pk == request.GET.group %}selected="selected"{% endif %}>
+       {% if group.pk|stringformat:'i' == request.GET.group %}selected="selected"{% endif %}>
        {{group.name|capfirst}}
    </option>
 {% endfor %}

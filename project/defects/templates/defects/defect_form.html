@@ -57,24 +57,23 @@
                             class="col-md-4 col-form-label text-md-right">Присоединение</label>
                         <div class="col-md-8">
                             <select class="form-select" id="selectConnection" name="connection"
-                                hx-get="{% url 'hardware:hardware-select' %}{% if defect %}?hardware={{ defect.part.cabinet.hardware.pk }}{% endif %}"
+                                hx-get="{% url 'hardware:hardware-select' %}"
                                 hx-target="#selectHardware"
                             >
-                                <option value="" selected>--------------</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Оборудование -->
                     {% if defect %}
-                        <div hx-get="{% url 'hardware:hardware-select' %}?hardware={{ defect.part.cabinet.hardware.pk }}"
-                            hx-trigger="load" hx-target="#selectHardware" hx-params="[name='connection']"></div>
+                        <div hx-get="{% url 'hardware:hardware-select' %}?hardware={{ defect.part.cabinet.hardware.pk }}&connection={{ defect.part.cabinet.hardware.connection.pk }}"
+                            hx-trigger="load" hx-target="#selectHardware"></div>
                     {% endif %}
                     <div class="form-group row my-1" aria-required="false">
                         <label for="selectHardware" class="col-md-4 col-form-label text-md-right">Оборудование</label>
                         <div class="col-md-8">
                             <select class="form-select" id="selectHardware" name="hardware"
-                                hx-get="{% url 'hardware:cabinet-select' %}{% if defect %}?cabinet={{ defect.part.cabinet.pk }}{% endif %}"
+                                hx-get="{% url 'hardware:cabinet-select' %}"
                                 hx-target="#selectCabinet"
                             >
                                 <option value="" selected>--------------</option>
@@ -84,15 +83,15 @@
 
                     <!-- Шкаф/панель -->
                     {% if defect %}
-                        <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}"
-                            hx-trigger="load" hx-target="#selectCabinet" hx-params="[name='hardware']"></div>
+                        <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}&hardware={{ defect.part.cabinet.hardware.pk }}"
+                            hx-trigger="load" hx-target="#selectCabinet"></div>
                     {% endif %}
                     <div class="form-group row my-1" aria-required="false">
                         <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
                         <div class="col-md-8">
                             <select class="form-select" id="selectCabinet" name="cabinet"
-                                hx-get="{% url 'hardware:part-select' %}{% if defect %}?part={{ defect.part.pk }}{% endif %}"
-                                hx-target="#selectPart"
+                                hx-get="{% url 'hardware:part-select' %}"
+                                hx-target="#id_part"
                             >
                                 <option value="" selected>--------------</option>
                             </select>
@@ -106,7 +105,13 @@
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            <select class="form-select" id="id_part" name="part" required>
+                            <select class="form-select" id="id_part" name="part" required
+                                {% if defect %}
+                                    hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
+                                    hx-trigger="load"
+                                    hx-params="none"
+                                {% endif %}
+                            >
                                 <option value="" selected>--------------</option>
                             </select>
                         </div>
