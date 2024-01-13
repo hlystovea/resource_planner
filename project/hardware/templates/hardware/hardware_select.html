@@ -1,7 +1,21 @@
-<option value="" {% if not request.GET.hardware %}selected="selected"{% endif %}>Оборудование...</option>
+<option value=""
+    {% if not request.GET.hardware %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Оборудование...
+    {% else %}
+        --------------
+    {% endif %}
+</option>
+
 {% for hardware in hardware_list %}
-   <option value="{{hardware.pk}}"
-      {% if hardware.pk|stringformat:'i' == request.GET.hardware %}selected="selected"{% endif %}>
-      {{ hardware.name|capfirst }}
+    <option value="{{ hardware.pk }}"
+        {% if hardware.pk|stringformat:'i' == request.GET.hardware %}
+            selected
+        {% endif %}
+    >
+        {{ hardware.name|capfirst }}
    </option>
 {% endfor %}

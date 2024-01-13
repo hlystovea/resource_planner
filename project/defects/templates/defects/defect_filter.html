@@ -1,20 +1,20 @@
 <div class="row justify-content-end">
     <!-- Get options for the selectFacility on load -->
-    <div hx-get="{% url 'hardware:facility-select' %}" hx-trigger="load" hx-target="#selectFacility" hx-params="none">
+    <div hx-get="{% url 'hardware:facility-select' %}?label=true" hx-trigger="load" hx-target="#selectFacility" hx-params="none">
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectFacility" name="facility"
-            hx-get="{% url 'hardware:connection-select' %}" hx-target="#selectConnection">
+            hx-get="{% url 'hardware:connection-select' %}?label=true" hx-target="#selectConnection">
         </select>
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectConnection" name="connection"
-            hx-get="{% url 'hardware:connection-select' %}" hx-trigger="load" hx-params="none">
+            hx-get="{% url 'hardware:connection-select' %}?label=true" hx-trigger="load" hx-params="none">
         </select>
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectGroup" name="group"
-            hx-get="{% url 'hardware:group-select' %}" hx-trigger="load" hx-params="none">
+            hx-get="{% url 'hardware:group-select' %}?label=true" hx-trigger="load" hx-params="none">
         </select>
     </div>
     <div class="col-sm-2">
