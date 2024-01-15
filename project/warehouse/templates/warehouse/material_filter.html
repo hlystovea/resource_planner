@@ -1,0 +1,11 @@
+<div class="row justify-content-end">
+    <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept"></div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectDept" name="dept"
+            hx-get="{% url 'warehouse:material-list' %}"
+            hx-target="#materialTable"
+            hx-swap="outerHTML"
+        >
+        </select>
+    </div>
+</div>

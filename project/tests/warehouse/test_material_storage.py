@@ -65,7 +65,7 @@ class TestMaterialStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('number, amount', test_args)
     def test_material_storage_view_create(
-        self, number, amount, material, storage_1, auto_login_user
+        self, number, amount, material_1, storage_1, auto_login_user
     ):
         client, user = auto_login_user()
         url = reverse(
@@ -89,7 +89,7 @@ class TestMaterialStorage:
             'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
-            'material': material,
+            'material': material_1,
             'inventory_number': number,
             'amount': amount,
         }

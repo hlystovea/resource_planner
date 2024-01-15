@@ -1,0 +1,23 @@
+<div id="instrumentTable">
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Наименование</th>
+                <th scope="col">Инв. номер</th>
+                <th scope="col">Зав. номер</th>
+                <th scope="col">Подразделение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in instrument_list %}
+                <tr>
+                    <td><a href="{% url 'warehouse:instrument-detail' i.pk %}">{{ i.name }}</a></td>
+                    <td>{{ i.inventory_number|default:"-" }}</td>
+                    <td>{{ i.serial_number|default:"-" }}</td>
+                    <td>{{ i.owner|default:"-" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "includes/paginator.html" %}
+</div>

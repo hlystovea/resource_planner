@@ -6,7 +6,7 @@ from django_resized import ResizedImageField
 from django.urls import reverse
 
 from tests.common import get_field_context, search_field
-from warehouse.forms import DeptForm, MaterialForm
+from warehouse.forms import MaterialForm
 from warehouse.models import Material, MaterialStorage
 
 
@@ -59,8 +59,6 @@ class TestMaterial:
 
         assert 'material_list' in response.context, \
             'Проверьте, что передали поле "material_list" в контекст страницы'
-        assert type(response.context.get('form')) == DeptForm, \
-            'Проверьте, что передали поле типа DeptForm в контекст страницы'
 
     @pytest.mark.django_db
     def test_material_view_get_detail(
@@ -81,11 +79,11 @@ class TestMaterial:
         assert material is not None, \
             'Проверьте, что передали поле типа Material в контекст страницы'
         assert type(material.amount.first()) == MaterialStorage, \
-            'Проверьте, что вместе с объектом Material передали поле' \
+            'Проверьте, что вместе с объектом Material передали поле ' \
             'типа MaterialStorage в контекст страницы'
         total = material_in_storage_1.amount + material_in_storage_2.amount
         assert math.isclose(material.total, total), \
-            'Проверьте, что объект Material содержит поле total' \
+            'Проверьте, что объект Material содержит поле total ' \
             'с общим количеством материала'
 
     @pytest.mark.django_db
@@ -132,9 +130,9 @@ class TestMaterial:
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, unit', test_args)
-    def test_material_view_update(self, name, unit, auto_login_user, material):
+    def test_material_view_update(self, name, unit, auto_login_user, material_1):
         client, user = auto_login_user()
-        url = reverse('warehouse:material-update', kwargs={'pk': material.pk})
+        url = reverse('warehouse:material-update', kwargs={'pk': material_1.pk})
 
         try:
             response = client.get(url)
@@ -188,3 +186,24 @@ class TestMaterial:
 
         assert not queryset.exists(), \
             'Проверьте, что эксземпляр `material` удаляется из БД'
+
+    @pytest.mark.django_db
+    def test_material_filters(
+        self, client, material_in_storage_dept1, material_in_storage_dept2
+    ):
+        url = reverse('warehouse:material-list')
+        materials = Material.objects.all()
+
+        response = client.get(url)
+        material_list = response.context['material_list']
+
+        assert len(material_list) == len(materials), \
+            'Проверьте, что без фильтрации передаются все объекты'
+
+        response = client.get(f'{url}?dept={material_in_storage_dept1.owner.pk}')
+        material_list = response.context['material_list']
+
+        assert material_in_storage_dept1.material in material_list, \
+            'Фильтр по подразделению работает не правильно'
+        assert material_in_storage_dept2.material not in material_list, \
+            'Фильтр по подразделению работает не правильно'

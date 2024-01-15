@@ -1,0 +1,21 @@
+<div id="materialTable">
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Наименование</th>
+                <th scope="col">Артикул</th>
+                <th scope="col">Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in material_list %}
+            <tr>
+                <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
+                <td>{{ m.article_number|default:"-" }}</td>
+                <td>{% if m.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ m.measurement_unit}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "includes/paginator.html" %}
+</div>

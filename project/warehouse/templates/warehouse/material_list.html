@@ -1,40 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Материалы</li>
-    </ol>
-  </nav>
-  {% if user.is_authenticated %}
-  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:material-create' %}" role="button">
-    Добавить
-  </a>
-  {% endif %}
-  {% include "includes/select_owner.html" %}
-  <figure class="text-center">
-    <h3>Материалы</h3>
-  </figure>
-  <table class="table table-sm table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Наименование</th>
-        <th scope="col">Артикул</th>
-        <th scope="col">Количество</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for m in material_list %}
-        <tr>
-          <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
-          <td>{{ m.article_number|default:"-" }}</td>
-          <td>{% if m.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ m.measurement_unit}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
-  {% endif %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Материалы</li>
+        </ol>
+    </nav>
+    {% if user.is_authenticated %}
+        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:material-create' %}" role="button">
+            Добавить
+        </a>
+    {% endif %}
+    <figure class="text-center">
+        <h3>Материалы</h3>
+    </figure>
+    {% include "./material_filter.html" %}
 {% endblock %}

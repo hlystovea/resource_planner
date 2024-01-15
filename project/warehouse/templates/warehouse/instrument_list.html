@@ -1,42 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Инструменты</li>
-    </ol>
-  </nav>
-  {% if user.is_authenticated %}
-  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:instrument-create' %}" role="button">
-    Добавить
-  </a>
-  {% endif %}
-  {% include "includes/select_owner.html" %}
-  <figure class="text-center">
-      <h3>Инструменты/Приборы</h3>
-  </figure>
-  <table class="table table-sm table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Наименование</th>
-        <th scope="col">Инв. номер</th>
-        <th scope="col">Зав. номер</th>
-        <th scope="col">Подразделение</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for i in instrument_list %}
-        <tr>
-          <td><a href="{% url 'warehouse:instrument-detail' i.pk %}">{{ i.name }}</a></td>
-          <td>{{ i.inventory_number|default:"-" }}</td>
-          <td>{{ i.serial_number|default:"-" }}</td>
-          <td>{{ i.owner|default:"-" }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
-  {% endif %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Инструменты</li>
+        </ol>
+    </nav>
+    {% if user.is_authenticated %}
+        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:instrument-create' %}" role="button">
+            Добавить
+        </a>
+    {% endif %}
+    <figure class="text-center">
+        <h3>Инструменты/Приборы</h3>
+    </figure>
+    {% include "./instrument_filter.html" %}
 {% endblock %}

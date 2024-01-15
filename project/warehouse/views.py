@@ -6,7 +6,9 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
-from warehouse.forms import (ComponentStorageForm, DeptForm, InstrumentForm,
+from core.utils import is_htmx
+from warehouse.filters import InstrumentFilter, MaterialFilter
+from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              MaterialForm, MaterialStorageForm, StorageAddForm,
                              StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
@@ -126,19 +128,16 @@ class MaterialDetail(DetailView):
 class MaterialList(ListView):
     paginate_by = 20
     model = Material
-    template_name = 'warehouse/material_list.html'
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related('amount')
-        owner = self.request.GET.get('owner')
-        if owner and owner.isdigit():
-            queryset = queryset.filter(amount__owner=owner)
+        queryset = MaterialFilter(self.request.GET, queryset=queryset).qs
         return queryset.annotate(total=Sum('amount__amount')).order_by('name')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = DeptForm(self.request.GET or None)
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/material_table.html']
+        return ['warehouse/material_list.html']
 
 
 class MaterialCreate(LoginRequiredMixin, CreateView):
@@ -177,15 +176,13 @@ class InstrumentList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related('owner')
-        owner = self.request.GET.get('owner')
-        if owner and owner.isdigit():
-            queryset = queryset.filter(owner=owner)
+        queryset = InstrumentFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('name')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = DeptForm(self.request.GET or None)
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/instrument_table.html']
+        return ['warehouse/instrument_list.html']
 
 
 class InstrumentCreate(LoginRequiredMixin, CreateView):
@@ -201,7 +198,6 @@ class InstrumentCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         if not hasattr(form.instance, 'owner'):
             form.instance.owner = self.request.user.dept
-
         return super().form_valid(form)
 
 

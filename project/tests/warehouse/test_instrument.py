@@ -5,7 +5,6 @@ from django_resized import ResizedImageField
 
 from staff.models import Dept
 from tests.common import get_field_context, search_field
-from warehouse.forms import DeptForm
 from warehouse.models import Instrument
 
 
@@ -66,8 +65,6 @@ class TestInstrument:
 
         assert 'instrument_list' in response.context, \
             'Проверьте, что передали поле "instrument_list" в контекст стр.'
-        assert type(response.context.get('form')) == DeptForm, \
-            'Проверьте, что передали поле типа DeptForm в контекст стр.'
 
     @pytest.mark.django_db
     def test_instrument_view_get_detail(self, client, instrument):
@@ -83,3 +80,24 @@ class TestInstrument:
         instrument = get_field_context(response.context, Instrument)
         assert instrument, \
             'Проверьте, что передали поле типа Instrument в контекст страницы'
+
+    @pytest.mark.django_db
+    def test_instrument_filters(
+        self, client, instrument_dept1, instrument_dept2
+    ):
+        url = reverse('warehouse:instrument-list')
+        instruments = Instrument.objects.all()
+
+        response = client.get(url)
+        instrument_list = response.context['instrument_list']
+
+        assert len(instrument_list) == len(instruments), \
+            'Проверьте, что без фильтрации передаются все объекты'
+
+        response = client.get(f'{url}?dept={instrument_dept1.owner.pk}')
+        instrument_list = response.context['instrument_list']
+
+        assert instrument_dept1 in instrument_list, \
+            'Фильтр по подразделению работает не правильно'
+        assert instrument_dept2 not in instrument_list, \
+            'Фильтр по подразделению работает не правильно'

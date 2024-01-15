@@ -1,9 +1,19 @@
-import django_filters
+from django_filters import FilterSet, NumberFilter
 
-from warehouse.models import Material
+from warehouse.models import Instrument, Material
 
 
-class MaterialFilter(django_filters.FilterSet):
+class InstrumentFilter(FilterSet):
+    dept = NumberFilter(field_name='owner')
+
+    class Meta:
+        model = Instrument
+        fields = ['owner']
+
+
+class MaterialFilter(FilterSet):
+    dept = NumberFilter(field_name='amount', lookup_expr='owner')
+
     class Meta:
         model = Material
-        fields = ['amount__storage']
+        fields = ['amount']
