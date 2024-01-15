@@ -4,10 +4,10 @@ from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView,
                                   ListView, UpdateView, TemplateView)
 
+from core.utils import is_htmx
 from defects.filters import DefectFilter
 from defects.forms import DefectForm
 from defects.models import Defect
-from defects.utils import is_htmx
 
 
 class DefectListView(ListView):

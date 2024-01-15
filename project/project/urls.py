@@ -19,6 +19,7 @@ urlpatterns = [
     path('repairs/', include('repairs.urls', namespace='repairs')),
     path('defects/', include('defects.urls', namespace='defects')),
     path('hardware/', include('hardware.urls', namespace='hardware')),
+    path('staff/', include('staff.urls', namespace='staff')),
 ]
 
 

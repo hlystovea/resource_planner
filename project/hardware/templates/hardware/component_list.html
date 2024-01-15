@@ -1,44 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Запчасти</li>
-    </ol>
-  </nav>
-  {% if user.is_authenticated %}
-  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'hardware:component-create' %}" role="button">
-    Добавить
-  </a>
-  {% endif %}
-  {% include "hardware/component_filter.html" %}
-  <figure class="text-center">
-    <h3>Запасные части</h3>
-  </figure>
-  <table class="table table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Производитель</th>
-        <th scope="col">Наименование</th>
-        <th scope="col">Тип</th>
-        <th scope="col">Количество</th>
-        <th scope="col">Дефекты</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for c in component_list %}
-        <tr>
-          <td>{{ c.manufacturer|default:"-" }}</td>
-          <td><a href="{% url 'hardware:component-detail' c.pk %}">{{ c.name }}</a></td>
-          <td>{{ c.type|default:"-" }}</td>
-          <td>{% if c.total %}{{ c.total }}{% else %}0{% endif %} шт.</td>
-          <td>{% if c.defect_count %}<a href="{% url 'defects:defect-list' %}?component={{ c.pk }}">{{ c.defect_count }}</a>{% else %}0{% endif %} шт.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
-  {% endif %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Запчасти</li>
+        </ol>
+    </nav>
+    {% if user.is_authenticated %}
+        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'hardware:component-create' %}" role="button">
+            Добавить
+        </a>
+    {% endif %}
+    <figure class="text-center">
+        <h3>Запасные части</h3>
+    </figure>
+    {% include "./component_filter.html" %}
+    {% include "./component_table.html" %}
 {% endblock %}

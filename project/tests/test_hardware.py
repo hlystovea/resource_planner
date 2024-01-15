@@ -76,10 +76,6 @@ class TestComponent:
         assert 'component_list' in response.context, \
             'Проверьте, что передали поле "component_list" в контекст страницы'
 
-        dept_form = get_field_context(response.context, ComponentFilterForm)
-        assert dept_form is not None, \
-            'Проверьте, что передали поле ComponentFilterForm в контекст стр.'
-
     @pytest.mark.django_db
     def test_component_view_get_detail(
         self, client, component_1, component_in_storage_1
@@ -227,7 +223,7 @@ class TestComponent:
         assert len(component_list) == len(components), \
             'Проверьте, что без фильтрации передаются все объекты'
 
-        response = client.get(f'{url}?owner={component_in_storage_1.owner.pk}')
+        response = client.get(f'{url}?dept={component_in_storage_1.owner.pk}')
         component_list = response.context['component_list']
 
         assert component_in_storage_1.component in component_list, \

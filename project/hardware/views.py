@@ -5,12 +5,13 @@ from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
 
+from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm, ComponentFilterForm
+from hardware.forms import ComponentForm
 from hardware.models import (Cabinet, Component, Connection, Group,
-                             Hardware, Facility, Part)
+                             Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
 
 
@@ -48,10 +49,10 @@ class ComponentList(ListView):
         )
         return queryset.order_by('manufacturer', 'name')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = ComponentFilterForm(self.request.GET or None)
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['defects/defect_table.html']
+        return ['defects/defect_list.html']
 
 
 class ComponentCreate(LoginRequiredMixin, CreateView):
@@ -113,3 +114,8 @@ def part_select_view(request):
     parts = PartFilter(request.GET, queryset=queryset).qs
     context = {'part_list': parts.select_related('component')}
     return render(request, 'hardware/part_select.html', context)
+
+
+def manufacturer_select_view(request):
+    context = {'manufacturer_list': Manufacturer.objects.all()}
+    return render(request, 'hardware/manufacturer_select.html', context)

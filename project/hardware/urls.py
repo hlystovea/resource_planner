@@ -12,9 +12,10 @@ urlpatterns = [
     path('component/<int:pk>/delete/', views.ComponentDelete.as_view(), name='component-delete'),  # noqa (E501)
     path('component/create/', views.ComponentCreate.as_view(), name='component-create'),
     path('groups/select/', views.group_select_view, name='group-select'),
-    path('facilities/select/', views.facility_select_view, name='facility-select'),
-    path('connections/select/', views.connection_select_view, name='connection-select'),
-    path('hardware/select/', views.hardware_select_view, name='hardware-select'),
+    path('facilities/select/', views.facility_select_view, name='facility-select'),  # noqa (E501)
+    path('connections/select/', views.connection_select_view, name='connection-select'),  # noqa (E501)
+    path('hardware/select/', views.hardware_select_view, name='hardware-select'),  # noqa (E501)
     path('cabinets/select/', views.cabinet_select_view, name='cabinet-select'),
     path('parts/select/', views.part_select_view, name='part-select'),
+    path('manufacturer/select/', views.manufacturer_select_view, name='manufacturer-select'),  # noqa (E501)
 ]
