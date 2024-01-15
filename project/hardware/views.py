@@ -51,8 +51,8 @@ class ComponentList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['defects/defect_table.html']
-        return ['defects/defect_list.html']
+            return ['hardware/component_table.html']
+        return ['hardware/component_list.html']
 
 
 class ComponentCreate(LoginRequiredMixin, CreateView):
