@@ -124,6 +124,10 @@ class MaterialDetail(DetailView):
             Prefetch('amount', queryset=amount)
         )
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/material_row.html']
+        return ['warehouse/material_detail.html']
 
 class MaterialList(ListView):
     paginate_by = 20

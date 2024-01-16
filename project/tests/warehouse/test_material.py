@@ -57,8 +57,15 @@ class TestMaterial:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/material_list.html', \
+            'Проверьте, что используете шаблон material_list.html в ответе'
         assert 'material_list' in response.context, \
             'Проверьте, что передали поле "material_list" в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/material_table.html', \
+            'Проверьте, что используете шаблон material_table.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     def test_material_view_get_detail(
@@ -119,14 +126,22 @@ class TestMaterial:
 
         material = get_field_context(response.context, Material)
 
+        assert response.templates[0].name == 'warehouse/material_detail.html', \
+            'Проверьте, что используете шаблон material_detail.html в ответе'
         assert material is not None, \
             'Проверьте, что передали поле типа Material в контекст страницы'
         assert data['name'] == material.name, \
-            'Проверьте, что сохраненный экземпляр `material` содержит' \
+            'Проверьте, что сохраненный экземпляр `material` содержит ' \
             'соответствующее поле `name`'
         assert data['measurement_unit'] == material.measurement_unit, \
-            'Проверьте, что измененный экземпляр `material` содержит' \
+            'Проверьте, что измененный экземпляр `material` содержит ' \
             'соответствующее поле `measurement_unit`'
+
+        headers = {'Hx-Request': True}
+        response = client.post(url, follow=True, data=data, headers=headers)
+        assert response.templates[0].name == 'warehouse/material_row.html', \
+            'Проверьте, что используете шаблон material_row.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, unit', test_args)

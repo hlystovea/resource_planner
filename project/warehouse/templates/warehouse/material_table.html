@@ -15,6 +15,15 @@
                 <td>{% if m.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ m.measurement_unit}}</td>
             </tr>
             {% endfor %}
+            {% if user.is_authenticated %}
+            <tr>
+                <form hx-post="{% url 'warehouse:material-create' %}" hx-swap="beforebegin">
+                {% csrf_token %}
+                <td><input name="name" type="text"></td>
+                <td><input name="article" type="text"></td>
+                <td><button type="submit">Добавить</button></td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
     {% include "includes/paginator.html" %}
