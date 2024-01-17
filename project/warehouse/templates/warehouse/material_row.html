@@ -1,5 +1,5 @@
 <tr>
-    <td><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></td>
+    <td colspan="2"><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></td>
     <td>{{ material.article_number|default:"-" }}</td>
-    <td>0 {{ material.measurement_unit}}</td>
+    <td>{% if material.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</td>
 </tr>
