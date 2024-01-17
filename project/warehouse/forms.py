@@ -33,10 +33,9 @@ class MaterialInlineForm(ModelForm):
         exclude = ('image', )
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
-            "article_number": TextInput(attrs={'placeholder': 'Артикул'}),
+            'article_number': TextInput(attrs={'placeholder': 'Артикул'}),
             'measurement_unit': TextInput(attrs={'placeholder': 'Единицы измерения'}),
         }
-
 
 
 class MaterialStorageForm(ModelForm):

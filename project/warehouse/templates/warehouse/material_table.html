@@ -3,6 +3,7 @@
         <thead class="table">
             <tr>
                 <th scope="col">Наименование</th>
+                <th></th>
                 <th scope="col">Артикул</th>
                 <th scope="col">Количество</th>
             </tr>
@@ -10,7 +11,7 @@
         <tbody>
             {% for m in material_list %}
             <tr>
-                <td><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
+                <td colspan="2"><a href="{% url 'warehouse:material-detail' m.pk %}">{{ m.name }}</a></td>
                 <td>{{ m.article_number|default:"-" }}</td>
                 <td>{% if m.total %}{{ m.total|floatformat }}{% else %}0{% endif %} {{ m.measurement_unit}}</td>
             </tr>
@@ -21,8 +22,8 @@
                 {% load user_filters %}
                 <tr>
                     <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
-                    <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
                     <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
                     <td><button class="btn btn-sm btn-secondary me-1" type="submit">Добавить</button></td>
                 </tr>
             </form>
