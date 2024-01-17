@@ -4,7 +4,7 @@
     <td>{{ material.article_number|default:"-" }}</td>
     <td>{% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</td>
     <td>
-        {% if user.is_authenticate %}
+        {% if user.is_authenticated %}
             <button class="btn btn-sm btn-secondary me-1 my-0" hx-get="{% url 'warehouse:material-update' material.pk %}">
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
             </button>
@@ -12,5 +12,5 @@
                 <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
             </button>
         {% endif %}
-      </td>
+    </td>
 </tr>
