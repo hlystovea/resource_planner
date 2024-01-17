@@ -1,5 +1,5 @@
 {% load static %}
-<tr hx-target="this" hx-swap="outerHTML">
+<tr>
     <td colspan="2"><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></td>
     <td>{{ material.article_number|default:"-" }}</td>
     <td>{% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</td>
@@ -7,12 +7,16 @@
         {% if user.is_authenticated %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:material-update' material.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
             </button>
             {% csrf_token %}
             <button class="btn btn-sm btn-danger my-0" type="submit"
-                hx-post="{% url 'warehouse:material-delete' material.pk %}"
+                hx-delete="{% url 'warehouse:material-delete' material.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML swap:1s"
                 hx-include="[name='csrfmiddlewaretoken']"
                 hx-confirm="Вы уверены, что хотите удалить материал?"
             >

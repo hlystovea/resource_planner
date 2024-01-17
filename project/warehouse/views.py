@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Sum, Prefetch
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
@@ -176,6 +177,15 @@ class MaterialDelete(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:material-list')
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        if is_htmx(request):
+            return HttpResponse()
+
+        return HttpResponseRedirect(success_url)
 
 class InstrumentDetail(DetailView):
     model = Instrument
