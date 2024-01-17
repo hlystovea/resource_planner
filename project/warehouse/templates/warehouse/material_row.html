@@ -16,7 +16,6 @@
                 hx-delete="{% url 'warehouse:material-delete' material.pk %}"
                 hx-target="closest tr"
                 hx-swap="outerHTML swap:1s"
-                hx-include="[name='csrfmiddlewaretoken']"
                 hx-confirm="Вы уверены, что хотите удалить материал?"
             >
                 <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
