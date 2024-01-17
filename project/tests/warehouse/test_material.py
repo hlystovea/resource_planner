@@ -61,6 +61,8 @@ class TestMaterial:
             'Проверьте, что используете шаблон material_list.html в ответе'
         assert 'material_list' in response.context, \
             'Проверьте, что передали поле "material_list" в контекст страницы'
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
 
         response = client.get(url, headers={'Hx-Request': True})
         assert response.templates[0].name == 'warehouse/material_table.html', \

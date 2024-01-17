@@ -1,4 +1,4 @@
-from django.forms import ChoiceField, Form, ModelForm
+from django.forms import ChoiceField, Form, ModelForm, TextInput
 
 from staff.models import Dept
 from warehouse.models import (ComponentStorage, Instrument, Material,
@@ -25,6 +25,18 @@ class MaterialForm(ModelForm):
     class Meta:
         model = Material
         fields = '__all__'
+
+
+class MaterialInlineForm(ModelForm):
+    class Meta:
+        model = Material
+        exclude = ('image', )
+        widgets = {
+            'name': TextInput(attrs={'placeholder': 'Наименование'}),
+            "article_number": TextInput(attrs={'placeholder': 'Артикул'}),
+            'measurement_unit': TextInput(attrs={'placeholder': 'Единицы измерения'}),
+        }
+
 
 
 class MaterialStorageForm(ModelForm):

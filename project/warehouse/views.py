@@ -9,8 +9,8 @@ from qr_code.qrcode.utils import QRCodeOptions
 from core.utils import is_htmx
 from warehouse.filters import InstrumentFilter, MaterialFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
-                             MaterialForm, MaterialStorageForm,
-                             StorageAddForm, StorageForm)
+                             MaterialForm, MaterialInlineForm,
+                             MaterialStorageForm, StorageAddForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -145,7 +145,7 @@ class MaterialList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = MaterialForm()
+        context['form'] = MaterialInlineForm()
         return context
 
 
