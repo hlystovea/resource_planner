@@ -12,7 +12,6 @@
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
             </button>
-            {% csrf_token %}
             <button class="btn btn-sm btn-danger my-0" type="submit"
                 hx-delete="{% url 'warehouse:material-delete' material.pk %}"
                 hx-target="closest tr"
