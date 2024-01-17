@@ -6,6 +6,7 @@
                 <th></th>
                 <th scope="col">Артикул</th>
                 <th scope="col">Количество</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -13,7 +14,7 @@
                 {% include "./material_row.html" with material=material %}
             {% endfor %}
             {% if user.is_authenticated %}
-            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="#materialForm" hx-swap="beforebegin">
+            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="this" hx-swap="beforebegin">
                 {% csrf_token %}
                 {% load user_filters %}
                 <tr>

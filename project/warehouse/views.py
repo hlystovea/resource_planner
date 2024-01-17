@@ -165,6 +165,10 @@ class MaterialUpdate(LoginRequiredMixin, UpdateView):
     form_class = MaterialForm
     login_url = reverse_lazy('login')
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/material_inline_update.html']
+        return ['warehouse/material_form.html']
 
 class MaterialDelete(LoginRequiredMixin, DeleteView):
     model = Material

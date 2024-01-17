@@ -1,5 +1,16 @@
-<tr>
+{% load static %}
+<tr hx-confirm="Вы уверены, что хотите удалить материал?" hx-target="this" hx-swap="outerHTML swap:1s">
     <td colspan="2"><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></td>
     <td>{{ material.article_number|default:"-" }}</td>
     <td>{% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</td>
+    <td>
+        {% if user.is_authenticate %}
+            <button class="btn btn-sm btn-secondary me-1 my-0" hx-get="{% url 'warehouse:material-update' material.pk %}">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+            </button>
+            <button class="btn btn-sm btn-danger my-0" hx-delete="{% url 'warehouse:material-delete' material.pk %}">
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+            </button>
+        {% endif %}
+      </td>
 </tr>
