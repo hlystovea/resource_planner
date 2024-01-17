@@ -1,5 +1,5 @@
 {% load static %}
-<form hx-put="{% url 'warehouse:material-update' material.pk %}" hx-target="this" hx-swap="outerHTML">
+<form hx-post="{% url 'warehouse:material-update' material.pk %}" hx-target="this" hx-swap="outerHTML">
     {% csrf_token %}
     {% load user_filters %}
     <tr>

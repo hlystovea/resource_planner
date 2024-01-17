@@ -10,14 +10,14 @@
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
             </button>
-            <form hx-post="{% url 'warehouse:material-delete' material.pk %}"
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger my-0" type="submit"
+                hx-post="{% url 'warehouse:material-delete' material.pk %}"
+                hx-include="[name='csrfmiddlewaretoken']"
                 hx-confirm="Вы уверены, что хотите удалить материал?"
             >
-                {% csrf_token %}
-                <button class="btn btn-sm btn-danger my-0" type="submit">
-                    <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-                </button>
-            </form>
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+            </button>
         {% endif %}
     </td>
 </tr>

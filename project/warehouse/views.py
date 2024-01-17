@@ -170,6 +170,7 @@ class MaterialUpdate(LoginRequiredMixin, UpdateView):
             return ['warehouse/material_inline_update.html']
         return ['warehouse/material_form.html']
 
+
 class MaterialDelete(LoginRequiredMixin, DeleteView):
     model = Material
     login_url = reverse_lazy('login')
