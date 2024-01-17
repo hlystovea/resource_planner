@@ -1,19 +1,26 @@
 {% load static %}
-<form hx-post="{% url 'warehouse:material-update' material.pk %}" hx-target="this" hx-swap="outerHTML">
-    {% csrf_token %}
-    {% load user_filters %}
-    <tr>
-        <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
-        <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>
-        <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
-        <td></td>
-        <td>
-            <button class="btn btn-sm btn-secondary me-1" type="submit">
-                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-            </button>
-            <button class="btn btn-sm btn-secondary me-1" hx-get="{% url 'warehouse:material-detail' material.pk %}">
-                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-            </button>
-        </td>
-    </tr>
-</form>
+{% load user_filters %}
+<tr>
+    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
+    <td></td>
+    <td>
+        <button class="btn btn-sm btn-secondary me-1" 
+            hx-post="{% url 'warehouse:material-update' material.pk %}"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+            hx-include="closest tr"
+        >
+
+            <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+        </button>
+        <button class="btn btn-sm btn-secondary me-1" 
+            hx-get="{% url 'warehouse:material-detail' material.pk %}"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+        >
+            <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+        </button>
+    </td>
+</tr>
