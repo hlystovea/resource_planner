@@ -27,12 +27,6 @@ class MaterialForm(ModelForm):
         fields = '__all__'
 
 
-class MaterialFormInline(ModelForm):
-    class Meta:
-        model = Material
-        exclude = ('image', )
-
-
 class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
