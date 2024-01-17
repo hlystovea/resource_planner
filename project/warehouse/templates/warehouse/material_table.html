@@ -16,13 +16,15 @@
             </tr>
             {% endfor %}
             {% if user.is_authenticated %}
-            <tr>
-                <form hx-post="{% url 'warehouse:material-create' %}" hx-swap="beforebegin">
+            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="#materialForm" hx-swap="beforebegin">
                 {% csrf_token %}
-                <td><input name="name" type="text"></td>
-                <td><input name="article" type="text"></td>
-                <td><button type="submit">Добавить</button></td>
-            </tr>
+                <tr>
+                    <td><input class="form-control form-control-sm" name="name" type="text" placeholder="Наименование" required></td>
+                    <td><input class="form-control form-control-sm" name="article_number" type="text" placeholder="Артикул"></td>
+                    <td><input class="form-control form-control-sm" name="measurement_unit" type="text" placeholder="Ед.изм." required></td>
+                    <td><button class="btn btn-sm btn-secondary me-1" type="submit">Добавить</button></td>
+                </tr>
+            </form>
             {% endif %}
         </tbody>
     </table>
