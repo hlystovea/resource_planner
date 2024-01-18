@@ -1,6 +1,26 @@
+{% load static %}
 <tr>
     <td><a href="{% url 'warehouse:instrument-detail' instrument.pk %}">{{ instrument.name }}</a></td>
     <td>{{ instrument.inventory_number|default:"-" }}</td>
     <td>{{ instrument.serial_number|default:"-" }}</td>
     <td>{{ instrument.owner|default:"-" }}</td>
+    <td>
+        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == instrument.owner %}
+            <button class="btn btn-sm btn-secondary me-1 my-0"
+                hx-get="{% url 'warehouse:instrument-update' instrument.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+            </button>
+            <button class="btn btn-sm btn-danger my-0" type="submit"
+                hx-delete="{% url 'warehouse:instrument-delete' instrument.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить инструмент?"
+            >
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+            </button>
+        {% endif %}
+    </td>
 </tr>

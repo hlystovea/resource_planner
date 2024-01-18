@@ -5,10 +5,17 @@ from django_resized import ResizedImageField
 
 from staff.models import Dept
 from tests.common import get_field_context, search_field
+from warehouse.forms import InstrumentForm
 from warehouse.models import Instrument
 
 
 class TestInstrument:
+    test_args = [
+        ('some-name', 'number', 'number'),
+        ('foo', 'bar', '123'),
+        ('12', '11', '10'),
+    ]
+
     def test_instrument_model(self):
         model_fields = Instrument._meta.fields
 
@@ -89,6 +96,159 @@ class TestInstrument:
         instrument = get_field_context(response.context, Instrument)
         assert instrument, \
             'Проверьте, что передали поле типа Instrument в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/instrument_row.html', \
+            'Проверьте, что используете шаблон instrument_row.html в ответе ' \
+            'для htmx запроса'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('name, inventory_number, serial_number', test_args)
+    def test_instrument_view_create(
+        self, name, inventory_number, serial_number, auto_login_user
+    ):
+        client, user = auto_login_user()
+        url = reverse('warehouse:instrument-create')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], InstrumentForm), \
+            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+        assert 'is_new' in response.context, \
+            'Проверьте, что передали поле `is_new` в контекст страницы'
+        assert response.context['is_new'], \
+            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
+
+        data = {
+            'name': name,
+            'inventory_number': inventory_number,
+            'serial_number': serial_number,
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        instrument = get_field_context(response.context, Instrument)
+
+        assert response.templates[0].name == 'warehouse/instrument_detail.html', \
+            'Проверьте, что используете шаблон material_instrument.html в ответе'
+        assert instrument is not None, \
+            'Проверьте, что передали поле типа Instrument в контекст страницы'
+        assert data['name'] == instrument.name, \
+            'Проверьте, что сохраненный экземпляр `instrument` содержит ' \
+            'соответствующее поле `name`'
+        assert data['inventory_number'] == instrument.inventory_number, \
+            'Проверьте, что измененный экземпляр `instrument` содержит ' \
+            'соответствующее поле `inventory_number`'
+        assert data['serial_number'] == instrument.serial_number, \
+            'Проверьте, что измененный экземпляр `instrument` содержит ' \
+            'соответствующее поле `serial_number`'
+
+        headers = {'Hx-Request': True}
+        response = client.post(url, follow=True, data=data, headers=headers)
+        assert response.templates[0].name == 'warehouse/instrument_row.html', \
+            'Проверьте, что используете шаблон instrument_row.html в ответе ' \
+            'для htmx запроса'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('name, inventory_number, serial_number', test_args)
+    def test_inventory_number_view_update(
+        self, name, inventory_number, serial_number, auto_login_user, instrument
+    ):
+        client, user = auto_login_user()
+        url = reverse('warehouse:instrument-update', kwargs={'pk': instrument.pk})
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], InstrumentForm), \
+            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/instrument_inline_form.html', \
+            'Проверьте, что используете шаблон instrument_inline_form.html в ответе ' \
+            'для htmx запроса'
+
+        data = {
+            'name': name,
+            'inventory_number': inventory_number,
+            'serial_number': serial_number,
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        instrument = get_field_context(response.context, Instrument)
+
+        assert instrument is not None, \
+            'Проверьте, что передали поле типа Material в контекст страницы'
+        assert data['name'] == instrument.name, \
+            'Проверьте, что сохраненный экземпляр `instrument` содержит' \
+            'соответствующее поле `name`'
+        assert data['inventory_number'] == instrument.inventory_number, \
+            'Проверьте, что измененный экземпляр `instrument` содержит' \
+            'соответствующее поле `inventory_number`'
+        assert data['serial_number'] == instrument.serial_number, \
+            'Проверьте, что измененный экземпляр `instrument` содержит' \
+            'соответствующее поле `serial_number`'
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('name, inventory_number, serial_number', test_args)
+    def test_material_view_delete(
+        self, name, inventory_number, serial_number, auto_login_user
+    ):
+        client, user = auto_login_user()
+        instrument = Instrument.objects.create(
+            name=name,
+            inventory_number=inventory_number,
+            serial_number=serial_number
+        )
+        queryset = Instrument.objects.filter(
+            name=name,
+            inventory_number=inventory_number,
+            serial_number=serial_number
+        )
+
+        assert queryset.exists(), \
+            'Тест работает неправильно, экземпляр `material` отсутствует в БД'
+
+        url = reverse('warehouse:instrument-delete', kwargs={'pk': instrument.pk})
+
+        try:
+            response = client.delete(url, follow=True)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert not queryset.exists(), \
+            'Проверьте, что эксземпляр `material` удаляется из БД'
+        
+        instrument = Instrument.objects.create(
+            name=name,
+            inventory_number=inventory_number,
+            serial_number=serial_number
+        )
+        url = reverse('warehouse:instrument-delete', kwargs={'pk': instrument.pk})
+        response = client.delete(url, headers={'Hx-Request': True})
+
+        assert response.status_code == 200
+        assert len(response.content) == 0, \
+            'Проверьте, что на htmx запрос возвращется пустой ответ'
 
     @pytest.mark.django_db
     def test_instrument_filters(

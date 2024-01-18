@@ -194,6 +194,11 @@ class InstrumentDetail(DetailView):
     def get_queryset(self):
         return super().get_queryset().select_related('owner')
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/instrument_row.html']
+        return ['warehouse/instrument_detail.html']
+
 
 class InstrumentList(ListView):
     paginate_by = 20
@@ -236,11 +241,26 @@ class InstrumentUpdate(LoginRequiredMixin, UpdateView):
     form_class = InstrumentForm
     login_url = reverse_lazy('login')
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/instrument_inline_form.html']
+        return ['warehouse/instrument_form.html']
+
 
 class InstrumentDelete(LoginRequiredMixin, DeleteView):
     model = Instrument
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:instrument-list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        if is_htmx(request):
+            return HttpResponse()
+
+        return HttpResponseRedirect(success_url)
 
 
 class MaterialStorageCreate(LoginRequiredMixin, CreateView):
