@@ -231,8 +231,7 @@ class InstrumentCreate(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        if not hasattr(form.instance, 'owner'):
-            form.instance.owner = self.request.user.dept
+        form.instance.owner = self.request.user.dept
         return super().form_valid(form)
 
 
