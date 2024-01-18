@@ -18,13 +18,13 @@ class DeptForm(Form):
 class InstrumentForm(ModelForm):
     class Meta:
         model = Instrument
-        exclude = ('owner', )
+        fields = ['name', 'inventory_number', 'serial_number', 'image']
 
 
 class InstrumentInlineForm(ModelForm):
     class Meta:
         model = Instrument
-        exclude = ('owner', )
+        fields = ['name', 'inventory_number', 'serial_number']
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
             'inventory_number': TextInput(attrs={'placeholder': 'Инв. номер'}),
