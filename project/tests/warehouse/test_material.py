@@ -95,6 +95,11 @@ class TestMaterial:
             'Проверьте, что объект Material содержит поле total ' \
             'с общим количеством материала'
 
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/material_row.html', \
+            'Проверьте, что используете шаблон material_row.html в ответе ' \
+            'для htmx запроса'
+
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, unit', test_args)
     def test_material_view_create(self, name, unit, auto_login_user):
@@ -162,6 +167,11 @@ class TestMaterial:
         assert isinstance(response.context['form'], MaterialForm), \
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
 
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/material_inline_form.html', \
+            'Проверьте, что используете шаблон material_inline_form.html в ответе ' \
+            'для htmx запроса'
+
         data = {
             'name': name,
             'measurement_unit': unit,
@@ -203,6 +213,14 @@ class TestMaterial:
 
         assert not queryset.exists(), \
             'Проверьте, что эксземпляр `material` удаляется из БД'
+        
+        material = Material.objects.create(name=name, measurement_unit=unit)
+        url = reverse('warehouse:material-delete', kwargs={'pk': material.pk})
+        response = client.delete(url, headers={'Hx-Request': True})
+
+        assert response.status_code == 200
+        assert len(response.content) == 0, \
+            'Проверьте, что на htmx запрос возвращется пустой ответ'
 
     @pytest.mark.django_db
     def test_material_filters(

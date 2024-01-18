@@ -168,7 +168,7 @@ class MaterialUpdate(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/material_inline_update.html']
+            return ['warehouse/material_inline_form.html']
         return ['warehouse/material_form.html']
 
 
