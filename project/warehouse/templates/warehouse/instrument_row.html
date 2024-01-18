@@ -1,0 +1,6 @@
+<tr>
+    <td><a href="{% url 'warehouse:instrument-detail' instrument.pk %}">{{ instrument.name }}</a></td>
+    <td>{{ instrument.inventory_number|default:"-" }}</td>
+    <td>{{ instrument.serial_number|default:"-" }}</td>
+    <td>{{ instrument.owner|default:"-" }}</td>
+</tr>

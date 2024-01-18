@@ -9,14 +9,21 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in instrument_list %}
-                <tr>
-                    <td><a href="{% url 'warehouse:instrument-detail' i.pk %}">{{ i.name }}</a></td>
-                    <td>{{ i.inventory_number|default:"-" }}</td>
-                    <td>{{ i.serial_number|default:"-" }}</td>
-                    <td>{{ i.owner|default:"-" }}</td>
-                </tr>
+            {% for instrument in instrument_list %}
+                {% include "./instrument_row.html" with instrument=instrument %}
             {% endfor %}
+            {% if user.is_authenticated %}
+            <form hx-post="{% url 'warehouse:instrument-create' %}" hx-target="this" hx-swap="beforebegin">
+                {% csrf_token %}
+                {% load user_filters %}
+                <tr>
+                    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.serial_number|addclass:"form-control form-control-sm" }}</td>
+                    <td><button class="btn btn-sm btn-secondary me-1" type="submit">Добавить</button></td>
+                </tr>
+            </form>
+            {% endif %}
         </tbody>
     </table>
     {% include "includes/paginator.html" %}
