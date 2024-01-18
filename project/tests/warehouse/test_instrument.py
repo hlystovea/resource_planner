@@ -63,8 +63,17 @@ class TestInstrument:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/instrument_list.html', \
+            'Проверьте, что используете шаблон instrument_list.html в ответе'
         assert 'instrument_list' in response.context, \
             'Проверьте, что передали поле "instrument_list" в контекст стр.'
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/instrument_table.html', \
+            'Проверьте, что используете шаблон instrument_table.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     def test_instrument_view_get_detail(self, client, instrument):
