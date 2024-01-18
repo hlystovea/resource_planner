@@ -10,8 +10,9 @@ from qr_code.qrcode.utils import QRCodeOptions
 from core.utils import is_htmx
 from warehouse.filters import InstrumentFilter, MaterialFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
-                             MaterialForm, MaterialInlineForm,
-                             MaterialStorageForm, StorageAddForm, StorageForm)
+                             InstrumentInlineForm, MaterialForm,
+                             MaterialInlineForm, MaterialStorageForm,
+                             StorageAddForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -207,6 +208,11 @@ class InstrumentList(ListView):
         if is_htmx(self.request):
             return ['warehouse/instrument_table.html']
         return ['warehouse/instrument_list.html']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = InstrumentInlineForm()
+        return context
 
 
 class InstrumentCreate(LoginRequiredMixin, CreateView):

@@ -21,6 +21,14 @@ class InstrumentForm(ModelForm):
         exclude = ('owner', )
 
 
+class InstrumentInlineForm(InstrumentForm):
+    class Meta:
+        widgets = {
+            'name': TextInput(attrs={'placeholder': 'Наименование'}),
+            'inventory_number': TextInput(attrs={'placeholder': 'Инв. номер'}),
+            'serial_number': TextInput(attrs={'placeholder': 'Зав. номер'}),
+        }
+
 class MaterialForm(ModelForm):
     class Meta:
         model = Material
