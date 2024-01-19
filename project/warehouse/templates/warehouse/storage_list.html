@@ -16,5 +16,10 @@
   <figure class="text-center">
     <h3>Места хранения</h3>
   </figure>
+  <style>
+    ul {
+      list-style-type: none;
+    }
+  </style>
   <div hx-get="{% url 'warehouse:storage-list' %}?is_root=true" hx-trigger="load"></div>
 {% endblock %}
