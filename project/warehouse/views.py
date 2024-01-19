@@ -8,7 +8,7 @@ from django.urls import reverse, reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
 from core.utils import is_htmx
-from warehouse.filters import InstrumentFilter, MaterialFilter
+from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              InstrumentInlineForm, MaterialForm,
                              MaterialInlineForm, MaterialStorageForm,
@@ -70,6 +70,7 @@ class StorageList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = StorageFilter(self.request.GET, queryset=queryset).qs
         return queryset.select_related(
             'parent_storage'
         ).annotate(

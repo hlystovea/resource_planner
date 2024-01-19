@@ -1,6 +1,6 @@
 from django_filters import FilterSet, NumberFilter
 
-from warehouse.models import Instrument, Material
+from warehouse.models import Instrument, Material, Storage
 
 
 class InstrumentFilter(FilterSet):
@@ -17,3 +17,11 @@ class MaterialFilter(FilterSet):
     class Meta:
         model = Material
         fields = ['amount']
+
+
+class StorageFilter(FilterSet):
+    storage = NumberFilter(field_name='parent_storage')
+
+    class Meta:
+        model = Storage
+        fields = ['parent_storage']
