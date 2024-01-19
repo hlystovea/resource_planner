@@ -1,14 +1,17 @@
 <ul>
 {% for storage in storage_list %}
   <li>
-    <button class="btn btn-sm btn-secondary"
+    <a class="icon-link" href="#"
         hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
         hx-target="closest li"
         hx-swap="beforeend"
     >
-        +
-    </button>
+        <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+    </a>
     {{ storage.name }}
+    <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+        {{ storage.components_count }}
+    </span>
   </li>
 {% endfor %}
 </ul>
