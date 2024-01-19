@@ -1,0 +1,14 @@
+<ul>
+{% for storage in storage_list %}
+  <li>
+    <button class="btn btn-sm btn-secondary"
+        hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+        hx-target="closest li"
+        hx-swap="beforeend"
+    >
+        +
+    </button>
+    {{ storage.name }}
+  </li>
+{% endfor %}
+</ul>

@@ -77,6 +77,11 @@ class StorageList(ListView):
             components_count=Count('components')
         ).order_by('name')
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/storage_ul.html']
+        return ['warehouse/storage_list.html']
+
 
 class StorageCreate(LoginRequiredMixin, CreateView):
     model = Storage
