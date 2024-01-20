@@ -2,24 +2,47 @@
 {% block title %}Склад{% endblock %}
 {% block content %}
 {% load static %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Места хранения</li>
-    </ol>
-  </nav>
-  {% if user.is_authenticated %}
-  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:storage-create' %}" role="button">
-    Добавить
-  </a>
-  {% endif %}
-  <figure class="text-center">
-    <h3>Места хранения</h3>
-  </figure>
-  <style>
-    ul {
-      list-style-type: none;
-    }
-  </style>
-  <div hx-get="{% url 'warehouse:storage-list' %}?is_root=true" hx-trigger="load"></div>
+{% load is_root %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Места хранения</li>
+        </ol>
+    </nav>
+    {% if user.is_authenticated %}
+        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:storage-create' %}" role="button">
+            Добавить
+        </a>
+    {% endif %}
+    <figure class="text-center">
+        <h3>Места хранения</h3>
+    </figure>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+    </style>
+    <ul>
+        {% for storage in storage_list|is_root %}
+            <li>
+                {% if storage.storage_count %}
+                    <a class="icon-link align-middle" href="#"
+                        hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+                        hx-target="closest li"
+                        hx-swap="outerHTML"
+                    >
+                        <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+                    </a>
+                {% endif %}
+                <span {% if not storage.storage_count %}style="margin-left: 21px;"{% endif %}>
+                    {{ storage.name }}
+                </span>
+                {% if storage.storage_count %}
+                    <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+                        {{ storage.storage_count }}
+                    </span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

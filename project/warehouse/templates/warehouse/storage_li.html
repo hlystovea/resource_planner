@@ -1,0 +1,20 @@
+{% load static %}
+<li>
+    {% if storage.storage_count %}
+        <a class="icon-link align-middle" href="#"
+            hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+            hx-target="closest li"
+            hx-swap="outerHTML"
+        >
+            <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+        </a>
+    {% endif %}
+    <span {% if not storage.storage_count %}style="margin-left: 21px;" {% endif %}>
+        {{ storage.name }}
+    </span>
+    {% if storage.storage_count %}
+        <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+            {{ storage.storage_count }}
+        </span>
+    {% endif %}
+</li>

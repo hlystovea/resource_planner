@@ -1,18 +1,35 @@
 {% load static %}
-<ul>
-{% for storage in storage_list %}
-  <li>
-    <a class="icon-link" href="#"
-        hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+<li>
+    <a class="icon-link align-middle" href="#"
+        hx-get="{% url 'warehouse:storage-li' parent_storage.pk %}"
         hx-target="closest li"
-        hx-swap="beforeend"
+        hx-swap="outerHTML"
     >
-        <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+        <img src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" class="bi bi-dash-square">
     </a>
-    {{ storage.name }}
-    <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
-        {{ storage.components_count }}
-    </span>
-  </li>
-{% endfor %}
-</ul>
+    <span>{{ parent_storage.name }}</span>
+
+    <ul class="list">
+    {% for storage in storage_list %}
+        <li>
+            {% if storage.storage_count %}
+                <a class="icon-link align-middle" href="#"
+                    hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+                    hx-target="closest li"
+                    hx-swap="outerHTML"
+                >
+                    <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+                </a>
+            {% endif %}
+            <span {% if not storage.storage_count %}style="margin-left: 21px;" {% endif %}>
+                {{ storage.name }}
+            </span>
+            {% if storage.storage_count %}
+                <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+                    {{ storage.storage_count }}
+                </span>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</li>

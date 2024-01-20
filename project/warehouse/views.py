@@ -65,22 +65,27 @@ class StorageDetail(DetailView):
 
 
 class StorageList(ListView):
-    paginate_by = 20
     model = Storage
+    ordering = 'name'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = StorageFilter(self.request.GET, queryset=queryset).qs
-        return queryset.select_related(
-            'parent_storage'
-        ).annotate(
-            components_count=Count('components')
-        ).order_by('name')
+        queryset = StorageFilter(self.request.GET, super().get_queryset()).qs
+        return queryset.annotate(storage_count=Count('storage'))
 
     def get_template_names(self):
         if is_htmx(self.request):
             return ['warehouse/storage_ul.html']
         return ['warehouse/storage_list.html']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if is_htmx(self.request):
+            parent_storage_pk = self.request.GET.get('storage')
+            parent_storage = get_object_or_404(Storage, pk=parent_storage_pk)
+            context['parent_storage'] = parent_storage
+
+        return context
 
 
 class StorageCreate(LoginRequiredMixin, CreateView):
@@ -136,6 +141,7 @@ class MaterialDetail(DetailView):
         if is_htmx(self.request):
             return ['warehouse/material_row.html']
         return ['warehouse/material_detail.html']
+
 
 class MaterialList(ListView):
     paginate_by = 20
@@ -193,6 +199,7 @@ class MaterialDelete(LoginRequiredMixin, DeleteView):
             return HttpResponse()
 
         return HttpResponseRedirect(success_url)
+
 
 class InstrumentDetail(DetailView):
     model = Instrument
@@ -408,3 +415,10 @@ class ComponentStorageDelete(LoginRequiredMixin,
             'warehouse:storage-detail',
             kwargs={'pk': self.kwargs['storage_pk']}
         )
+
+
+def storage_li_view(request, pk):
+    queryset = Storage.objects.annotate(storage_count=Count('storage'))
+    storage = get_object_or_404(queryset, pk=pk)
+    context = {'storage':  storage}
+    return render(request, 'warehouse/storage_li.html', context)
