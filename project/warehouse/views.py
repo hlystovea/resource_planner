@@ -110,6 +110,15 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:storage-list')
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        if is_htmx(request):
+            return HttpResponse()
+        return HttpResponseRedirect(success_url)
+
 
 class StorageAdd(StorageCreate):
     form_class = StorageAddForm
