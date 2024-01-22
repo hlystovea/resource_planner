@@ -17,58 +17,60 @@
     <figure class="text-center">
         <h3>Места хранения</h3>
     </figure>
-    <div class="col-4">
-        <style>
-            ul {
-                list-style-type: none;
-            }
-        </style>
-        <ul>
-            {% for storage in storage_list|is_root %}
-                <li>
-                    {% if storage.storage_count %}
-                        <a class="icon-link align-middle" href="#"
-                            hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
-                            hx-target="closest li"
-                            hx-swap="outerHTML"
+    <div class="row">
+        <div class="col-4">
+            <style>
+                ul {
+                    list-style-type: none;
+                }
+            </style>
+            <ul>
+                {% for storage in storage_list|is_root %}
+                    <li>
+                        {% if storage.storage_count %}
+                            <a class="icon-link align-middle" href="#"
+                                hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
+                                hx-target="closest li"
+                                hx-swap="outerHTML"
+                            >
+                                <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+                            </a>
+                        {% endif %}
+                        <a href="#" {% if not storage.storage_count %}style="margin-left: 21px;"{% endif %}
+                            hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
+                            hx-target="#storageContent"
                         >
-                            <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
+                            {{ storage.name }}
                         </a>
-                    {% endif %}
-                    <a href="#" {% if not storage.storage_count %}style="margin-left: 21px;"{% endif %}
-                        hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
-                        hx-target="#storageContent"
-                    >
-                        {{ storage.name }}
-                    </a>
-                    {% if storage.storage_count %}
-                        <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
-                            {{ storage.storage_count }}
-                        </span>
-                    {% endif %}
+                        {% if storage.storage_count %}
+                            <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+                                {{ storage.storage_count }}
+                            </span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                <li>
+                    <div class="input-group input-group-sm mb-3" style="margin-left: 21px;">
+                        <input type="text" class="form-control" name="name" placeholder="Наименование.." required>
+                        <button class="btn btn-outline-secondary" type="button"
+                            hx-post="{% url 'warehouse:storage-create' %}"
+                            hx-target="closest li"
+                            hx-swap="beforebegin"
+                            hx-include="previous input"
+                        >
+                            <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+                        </button>
+                    </div>
                 </li>
-            {% endfor %}
-            <li>
-                <div class="input-group input-group-sm mb-3" style="margin-left: 21px;">
-                    <input type="text" class="form-control" name="name" placeholder="Наименование.." required>
-                    <button class="btn btn-outline-secondary" type="button"
-                        hx-post="{% url 'warehouse:storage-create' %}"
-                        hx-target="closest li"
-                        hx-swap="beforebegin"
-                        hx-include="previous input"
-                    >
-                        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-                    </button>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="col-8">
-        <div id="storageContent position-relative">
-            <div class="row h-100 justify-content-center align-items-center">
-                <div class="card">
-                    <div class="card-body">
-                        Для просмотра просмотра содержимого места хранения воспользуйтесь меню слева
+            </ul>
+        </div>
+        <div class="col-8">
+            <div id="storageContent">
+                <div class="row h-100 justify-content-center align-items-center">
+                    <div class="card">
+                        <div class="card-body">
+                            Для просмотра просмотра содержимого места хранения воспользуйтесь меню слева
+                        </div>
                     </div>
                 </div>
             </div>
