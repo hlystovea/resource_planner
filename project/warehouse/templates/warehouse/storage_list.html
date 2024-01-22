@@ -9,11 +9,6 @@
             <li class="breadcrumb-item">Места хранения</li>
         </ol>
     </nav>
-    {% if user.is_authenticated %}
-        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:storage-create' %}" role="button">
-            Добавить
-        </a>
-    {% endif %}
     <figure class="text-center">
         <h3>Места хранения</h3>
     </figure>
