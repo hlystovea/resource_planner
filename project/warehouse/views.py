@@ -287,19 +287,21 @@ class InstrumentDelete(LoginRequiredMixin, DeleteView):
 class MaterialStorageDetail(DetailView):
     model = MaterialStorage
     queryset = MaterialStorage.objects.select_related('material')
-    template_name = 'warehouse/material_storage_detail.html'
 
 
 class MaterialStorageCreate(LoginRequiredMixin, CreateView):
     model = MaterialStorage
     form_class = MaterialStorageForm
     login_url = reverse_lazy('login')
+    success_url = '/warehouse/storage/{storage_id}/material/{id}/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
         context['is_new'] = True
+
         return context
 
     def form_valid(self, form):
@@ -325,8 +327,10 @@ class MaterialStorageUpdate(LoginRequiredMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
+
         return context
 
 
@@ -351,18 +355,18 @@ class ComponentStorageDetail(DetailView):
     queryset = ComponentStorage.objects.select_related(
         'component__manufacturer'
     )
-    template_name = 'warehouse/component_storage_detail.html'
 
 
 class ComponentStorageCreate(LoginRequiredMixin, CreateView):
     model = ComponentStorage
     form_class = ComponentStorageForm
     login_url = reverse_lazy('login')
+    success_url = '/warehouse/storage/{storage_id}/component/{id}/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
 
+        storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
         context['is_new'] = True
 
@@ -375,12 +379,6 @@ class ComponentStorageCreate(LoginRequiredMixin, CreateView):
 
         form.instance.owner = self.request.user.dept
         return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
 
 
 class ComponentStorageUpdate(LoginRequiredMixin,

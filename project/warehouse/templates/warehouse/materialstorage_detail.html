@@ -1,26 +1,30 @@
 {% load static %}
 <tr>
-    <td><a href="{% url 'warehouse:material-detail' material_storage.material.pk %}">{{ material_storage.material.name }}</a></td>
-    <td>{{ material_storage.material.article_number|default:"-" }}</td>
-    <td>{{ material_storage.inventory_number|default:"-" }}</td>
-    <td>{{ material_storage.amount|floatformat }} {{ material_storage.material.measurement_unit}}</td>
     <td>
-      {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == m.owner %}
-        <button class="btn btn-sm btn-secondary me-1 my-0" 
-            hx-get="{% url 'warehouse:material-storage-update' material_storage.storage.pk material_storage.pk %}"
-            hx-target="closest tr"
-            hx-swap="outerHTML"
-            >
-          <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+        <a href="{% url 'warehouse:material-detail' materialstorage.material.pk %}">
+            {{ materialstorage.material.name}}
         </a>
-        <button type="submit" class="btn btn-sm btn-danger my-0" 
-            hx-delete="{% url 'warehouse:material-storage-delete' material_storage.storage.pk material_storage.pk %}"
-            hx-target="closest tr"
-            hx-swap="outerHTML swap:1s"
-            hx-confirm="Вы уверены, что хотите удалить хранящийся материал?"
-        >
-          <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-        </button>
-      {% endif %}
     </td>
-  </tr>
+    <td>{{ materialstorage.material.article_number|default:"-" }}</td>
+    <td>{{ materialstorage.inventory_number|default:"-" }}</td>
+    <td>{{ materialstorage.amount|floatformat }} {{ materialstorage.material.measurement_unit}}</td>
+    <td>
+        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == materialstorage.owner %}
+            <button class="btn btn-sm btn-secondary me-1 my-0"
+                hx-get="{% url 'warehouse:material-storage-update' materialstorage.storage.pk materialstorage.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+            </button>
+            <button class="btn btn-sm btn-danger me-1 my-0"
+                hx-delete="{% url 'warehouse:material-storage-delete' materialstorage.storage.pk materialstorage.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить хранящийся материал?"
+            >
+                <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+            </button>
+        {% endif %}
+    </td>
+</tr>
