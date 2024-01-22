@@ -1,0 +1,27 @@
+{% load static %}
+<tr>
+    <td>{{ component_storage.component.manufacturer|default:"-" }}</td>
+    <td><a href="{% url 'hardware:component-detail' c.component.pk %}">{{ component_storage.component.name }}</a></td>
+    <td>{{ component_storage.component.type|default:"-" }}</td>
+    <td>{{ component_storage.inventory_number|default:"-" }}</td>
+    <td>{{ component_storage.amount }} шт.</td>
+    <td>
+      {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == component_storage.owner %}
+        <button class="btn btn-sm btn-secondary me-1 my-0" 
+            hx-get="{% url 'warehouse:component-storage-update' component_storage.storage.pk c.pk %}"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+        >
+            <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+        </button>
+        <button class="btn btn-sm btn-danger me-1 my-0" type="submit"
+            hx-delete="{% url 'warehouse:component-storage-delete' component_storage.storage.pk component_storage.pk %}"
+            hx-target="closest tr"
+            hx-swap="outerHTML swap:1s"
+            hx-confirm="Вы уверены, что хотите удалить хранящуюся запчасть?"
+        >
+            <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+        </button>
+      {% endif %}
+    </td>
+  </tr>

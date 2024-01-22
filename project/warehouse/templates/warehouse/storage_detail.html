@@ -1,5 +1,5 @@
 {% load static %}
-<h4>Запасные части</h4>
+<h5>Запасные части</h5>
 <table class="table table-sm table-hover">
   <thead class="table">
     <tr>
@@ -34,7 +34,7 @@
     {% endfor %}
     {% if user.is_authenticated %}
       <tr>
-        <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:component-storage-create' storage.pk %}">
+        <form hx-post="{% url 'warehouse:component-storage-create' storage.pk %}" hx-target="this" hx-swap="beforebegin">
           {% csrf_token %}
           {% load user_filters %}
           <td colspan="3">{{ component_add_form.component|addclass:"form-control form-control-sm" }}</td>
@@ -48,7 +48,7 @@
 </table>
 <br>
 <br>
-<h4>Расходные материалы</h4>
+<h5>Расходные материалы</h5>
 <table class="table table-sm table-hover">
   <thead class="table">
     <tr>
@@ -81,7 +81,7 @@
     {% endfor %}
     {% if user.is_authenticated %}
       <tr>
-        <form method="post" enctype="multipart/form-data" action="{% url 'warehouse:material-storage-create' storage.pk %}">
+        <form hx-post="{% url 'warehouse:material-storage-create storage.pk %}" hx-target="this" hx-swap="beforebegin">
           {% csrf_token %}
           {% load user_filters %}
           <td>{{ material_add_form.material|addclass:"form-control form-control-sm" }}</td>

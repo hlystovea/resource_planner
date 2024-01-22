@@ -275,6 +275,12 @@ class InstrumentDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
+class MaterialStorageDetail(DetailView):
+    model = MaterialStorage
+    queryset = MaterialStorage.objects.select_related('material')
+    template_name = 'warehouse/material_storage_detail.html'
+
+
 class MaterialStorageCreate(LoginRequiredMixin, CreateView):
     model = MaterialStorage
     form_class = MaterialStorageForm
@@ -293,14 +299,7 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
             form.instance.storage = storage
 
         form.instance.owner = self.request.user.dept
-
         return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
 
 
 class MaterialStorageUpdate(LoginRequiredMixin,
@@ -309,6 +308,7 @@ class MaterialStorageUpdate(LoginRequiredMixin,
     model = MaterialStorage
     form_class = MaterialStorageForm
     login_url = reverse_lazy('login')
+    success_url = reverse_lazy('warehouse:material-storage-detail')
 
     def test_func(self):
         user = self.request.user
@@ -319,12 +319,6 @@ class MaterialStorageUpdate(LoginRequiredMixin,
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
         return context
-
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
 
 
 class MaterialStorageDelete(LoginRequiredMixin,
@@ -337,11 +331,18 @@ class MaterialStorageDelete(LoginRequiredMixin,
         user = self.request.user
         return user.is_superuser or user.dept == self.get_object().owner
 
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
+
+class ComponentStorageDetail(DetailView):
+    model = ComponentStorage
+    queryset = ComponentStorage.objects.select_related(
+        'component__manufacturer'
+    )
+    template_name = 'warehouse/component_storage_detail.html'
 
 
 class ComponentStorageCreate(LoginRequiredMixin, CreateView):
@@ -364,7 +365,6 @@ class ComponentStorageCreate(LoginRequiredMixin, CreateView):
             form.instance.storage = storage
 
         form.instance.owner = self.request.user.dept
-
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -380,6 +380,7 @@ class ComponentStorageUpdate(LoginRequiredMixin,
     model = ComponentStorage
     form_class = ComponentStorageForm
     login_url = reverse_lazy('login')
+    success_url = reverse_lazy('warehouse:component-storage-detail')
 
     def test_func(self):
         user = self.request.user
@@ -390,12 +391,6 @@ class ComponentStorageUpdate(LoginRequiredMixin,
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
         return context
-
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
 
 
 class ComponentStorageDelete(LoginRequiredMixin,
@@ -410,11 +405,11 @@ class ComponentStorageDelete(LoginRequiredMixin,
                 or user.dept == self.get_object().owner
                 or self.get_object().owner is None)
 
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['storage_pk']}
-        )
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
 
 
 def storage_li_view(request, pk):
