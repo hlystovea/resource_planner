@@ -29,18 +29,39 @@
                         {{ storage.storage_count }}
                     </span>
                 {% endif %}
+                {% if user.is_authenticated %}
+                    <div class="row ms-3">
+                        <a class="icon-link align-middle" role="button"
+                            hx-get="{% url 'warehouse:storage-update' storage.pk %}"
+                            hx-target="closest li"
+                            hx-swap="outerHTML"
+                        >
+                            <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+                        </a>
+                        <a class="icon-link align-middle" role="button"
+                            hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
+                            hx-target="closest li"
+                            hx-swap="outerHTML"
+                            hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
+                        >
+                            <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-trash3">
+                        </a>
+                    </div>
+                {% endif %}
             </li>
         {% endfor %}
         <li>
-            <input style="margin-left: 21px;" type="text" name="name" placeholder="Наименование.." required>
-            <a class="icon-link align-middle" href="#"
-                hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
-                hx-target="closest li"
-                hx-swap="beforebegin"
-                hx-include="previous input"
-            >
-                <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-            </a>
+            {% if user.is_authenticated %}
+                {{ form.name }}
+                <a class="icon-link align-middle" role="button"
+                    hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
+                    hx-target="closest li"
+                    hx-swap="beforebegin"
+                    hx-include="previous input"
+                >
+                    <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+                </a>
+            {% endif %}
         </li>
     </ul>
 </li>

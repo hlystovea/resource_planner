@@ -35,32 +35,44 @@
                             {{ storage.name }}
                         </a>
                         {% if storage.storage_count %}
-                            <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
+                            <span class="position-absolute badge bg-danger rounded-pill" style="--bs-badge-font-size: .5rem;">
                                 {{ storage.storage_count }}
                             </span>
                         {% endif %}
-                        <a class="icon-link align-middle" href="#" hx-update="{% url 'warehouse:storage-update' storage.pk %}"
-                            hx-target="closest li" hx-swap="outerHTML">
-                            <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-                        </a>
-                        <a class="icon-link align-middle" href="#" hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
-                            hx-target="closest li" hx-swap="outerHTML"
-                            hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?">
-                            <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-trash3">
-                        </a>
+                        {% if user.is_authenticated %}
+                            <div class="row ms-3">
+                                <a class="icon-link align-middle" role="button"
+                                    hx-get="{% url 'warehouse:storage-update' storage.pk %}"
+                                    hx-target="closest li"
+                                    hx-swap="outerHTML"
+                                >
+                                    <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+                                </a>
+                                <a class="icon-link align-middle" role="button"
+                                    hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
+                                    hx-target="closest li"
+                                    hx-swap="outerHTML"
+                                    hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
+                                >
+                                    <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-trash3">
+                                </a>
+                            </div>
+                        {% endif %}
                     </li>
                 {% endfor %}
-                <li>
-                    {{ form.name }}
-                    <a class="icon-link align-middle" href="#"
-                        hx-post="{% url 'warehouse:storage-create' %}"
-                        hx-target="closest li"
-                        hx-swap="beforebegin"
-                        hx-include="previous input"
-                    >
-                        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-                    </a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li>
+                        {{ form.name }}
+                        <a class="icon-link align-middle" href="#"
+                            hx-post="{% url 'warehouse:storage-create' %}"
+                            hx-target="closest li"
+                            hx-swap="beforebegin"
+                            hx-include="previous input"
+                        >
+                            <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <div class="col-8">
