@@ -90,16 +90,16 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_new'] = True
-        return context
-
 
 class StorageUpdate(LoginRequiredMixin, UpdateView):
     model = Storage
     form_class = StorageForm
     login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
 
 class StorageDelete(LoginRequiredMixin, DeleteView):

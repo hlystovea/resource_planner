@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-{% load static %}
-{% load is_root %}
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
@@ -11,69 +9,7 @@
     </nav>
     <div class="row">
         <div class="col-4">
-            <style>
-                ul {
-                    list-style-type: none;
-                }
-            </style>
-            <ul>
-                {% for storage in storage_list|is_root %}
-                    <li>
-                        {% if storage.storage_count %}
-                            <a class="icon-link align-middle" href="#"
-                                hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
-                                hx-target="closest li"
-                                hx-swap="outerHTML"
-                            >
-                                <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
-                            </a>
-                        {% endif %}
-                        <a href="#" {% if not storage.storage_count %}style="margin-left: 21px;"{% endif %}
-                            hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
-                            hx-target="#storageContent"
-                        >
-                            {{ storage.name }}
-                        </a>
-                        {% if storage.storage_count %}
-                            <span class="position-absolute badge bg-danger rounded-pill" style="--bs-badge-font-size: .5rem;">
-                                {{ storage.storage_count }}
-                            </span>
-                        {% endif %}
-                        {% if user.is_authenticated %}
-                            <div class="row ms-3">
-                                <a class="icon-link align-middle" role="button"
-                                    hx-get="{% url 'warehouse:storage-update' storage.pk %}"
-                                    hx-target="closest li"
-                                    hx-swap="outerHTML"
-                                >
-                                    <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-                                </a>
-                                <a class="icon-link align-middle" role="button"
-                                    hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
-                                    hx-target="closest li"
-                                    hx-swap="outerHTML"
-                                    hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
-                                >
-                                    <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-trash3">
-                                </a>
-                            </div>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                {% if user.is_authenticated %}
-                    <li>
-                        {{ form.name }}
-                        <a class="icon-link align-middle" href="#"
-                            hx-post="{% url 'warehouse:storage-create' %}"
-                            hx-target="closest li"
-                            hx-swap="beforebegin"
-                            hx-include="previous input"
-                        >
-                            <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
+            {% include 'warehouse/includes/storage_tree.html' %}
         </div>
         <div class="col-8">
             <div id="storageContent">

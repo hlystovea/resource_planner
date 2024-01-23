@@ -9,12 +9,18 @@
             <img src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" class="bi bi-plus-square">
         </a>
     {% endif %}
-    <span {% if not storage.storage_count %}style="margin-left: 21px;" {% endif %}>
+    <a role="button" {% if not storage.storage_count %}style="margin-left: 21px;"{% endif %}
+        hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
+        hx-target="#storageContent"
+    >
         {{ storage.name }}
-    </span>
+    </a>
     {% if storage.storage_count %}
         <span class="position-absolute badge bg-danger rounded-pill ms-1" style="--bs-badge-font-size: .5rem;">
             {{ storage.storage_count }}
         </span>
+    {% endif %}
+    {% if user.is_authenticated %}
+        {% include './storage_edit_buttons.html' %}
     {% endif %}
 </li>

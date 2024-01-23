@@ -1,0 +1,20 @@
+{% load static %}
+<li>
+    <a class="icon-link align-middle" href="#"
+        hx-get="{% url 'warehouse:storage-li' parent_storage.pk %}"
+        hx-target="closest li"
+        hx-swap="outerHTML"
+    >
+        <img src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" class="bi bi-dash-square">
+    </a>
+    <span>{{ parent_storage.name }}</span>
+
+    <ul class="list">
+        {% for storage in storage_list %}
+            {% include './storage_li.html' %}
+        {% endfor %}
+        {% if user.is_authenticated %}    
+            {% include 'warehouse/storage_add_form.html' %}
+        {% endif %}
+    </ul>
+</li>

@@ -107,10 +107,6 @@ class TestStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], StorageForm), \
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
-        assert 'is_new' in response.context, \
-            'Проверьте, что передали поле `is_new` в контекст стр.'
-        assert response.context['is_new'], \
-            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
             'name': name,
@@ -143,6 +139,10 @@ class TestStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], StorageForm), \
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
+        assert 'is_update' in response.context, \
+            'Проверьте, что передали поле `is_update` в контекст стр.'
+        assert response.context['is_update'], \
+            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         data = {
             'name': name,

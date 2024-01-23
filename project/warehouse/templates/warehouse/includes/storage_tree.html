@@ -1,0 +1,15 @@
+{% load static %}
+{% load is_root %}
+<style>
+    ul {
+        list-style-type: none;
+    }
+</style>
+<ul>
+    {% for storage in storage_list|is_root %}
+        {% include './storage_li.html' %}
+    {% endfor %}
+    {% if user.is_authenticated %}
+        {% include 'warehouse/storage_form.html' %}
+    {% endif %}
+</ul>
