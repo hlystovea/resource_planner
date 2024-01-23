@@ -13,24 +13,8 @@
     </tr>
   </thead>
   <tbody>
-    {% for c in storage.components.all %}
-      <tr>
-        <td>{{ c.component.manufacturer|default:"-" }}</td>
-        <td><a href="{% url 'hardware:component-detail' c.component.pk %}">{{ c.component.name }}</a></td>
-        <td>{{ c.component.type|default:"-" }}</td>
-        <td>{{ c.inventory_number|default:"-" }}</td>
-        <td>{{ c.amount }} шт.</td>
-        <td>
-          {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == c.owner %}
-            <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:component-storage-update' c.storage.pk c.pk %}" role="button">
-              <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-            </a>
-            <button type="button" class="btn btn-sm btn-danger me-1 my-0" data-bs-toggle="modal" data-bs-target="#deleteComponentModal_{{ c.pk }}">
-              <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-            </button>
-          {% endif %}
-        </td>
-      </tr>
+    {% for componentstorage in storage.components.all %}
+      {% include './conponentstorage_detail.html' %}
     {% endfor %}
     {% if user.is_authenticated %}
       <tr>
@@ -65,23 +49,8 @@
     </tr>
   </thead>
   <tbody>
-    {% for m in storage.materials.all %}
-      <tr>
-        <td><a href="{% url 'warehouse:material-detail' m.material.pk %}">{{ m.material.name }}</a></td>
-        <td>{{ m.material.article_number|default:"-" }}</td>
-        <td>{{ m.inventory_number|default:"-" }}</td>
-        <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
-        <td>
-          {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == m.owner %}
-            <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'warehouse:material-storage-update' m.storage.pk m.pk %}" role="button">
-              <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-            </a>
-            <button type="button" class="btn btn-sm btn-danger me-1 my-0" data-bs-toggle="modal" data-bs-target="#deleteMaterialModal_{{ m.pk }}">
-              <img src="{% static 'icons/basket.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
-            </button>
-          {% endif %}
-        </td>
-      </tr>
+    {% for materialstorage in storage.materials.all %}
+      {% include './materialstorage_detail.html' %}
     {% endfor %}
     {% if user.is_authenticated %}
       <tr>
