@@ -53,11 +53,6 @@ class StorageDetail(DetailView):
             Prefetch('components', queryset=components),
         )
 
-    def get_template_names(self):
-        if is_htmx(self.request):
-            return ['warehouse/includes/storage_li.html']
-        return ['warehouse/storage_detail.html']
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['materialstorage_form'] = MaterialStorageForm()
@@ -94,12 +89,14 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     model = Storage
     form_class = StorageForm
     login_url = reverse_lazy('login')
+    success_url = '/warehouse/storage/{id}/li/'
 
 
 class StorageUpdate(LoginRequiredMixin, UpdateView):
     model = Storage
     form_class = StorageForm
     login_url = reverse_lazy('login')
+    success_url = '/warehouse/storage/{id}/li/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -125,7 +122,7 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
 
 class StorageAdd(StorageCreate):
     form_class = StorageAddForm
-    success_url = '/warehouse/storage/{id}/'
+    success_url = '/warehouse/storage/{id}/li/'
 
     def form_valid(self, form):
         parent_storage = get_object_or_404(Storage, pk=self.kwargs['pk'])
