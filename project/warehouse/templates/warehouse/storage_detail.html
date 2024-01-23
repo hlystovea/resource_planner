@@ -1,5 +1,3 @@
-{% load static %}
-{% load user_filters %}
 <h5>Запасные части</h5>
 <table class="table table-sm table-hover">
   <thead class="table">
@@ -17,21 +15,7 @@
       {% include './conponentstorage_detail.html' %}
     {% endfor %}
     {% if user.is_authenticated %}
-      <tr>
-          <td colspan="3">{{ component_add_form.component|addclass:"form-control form-control-sm" }}</td>
-          <td>{{ component_add_form.inventory_number|addclass:"form-control form-control-sm" }}</td>
-          <td>{{ component_add_form.amount|addclass:"form-control form-control-sm" }}</td>
-          <td>
-            <button class="btn btn-sm btn-secondary me-1"
-              hx-post="{% url 'warehouse:component-storage-create' storage.pk %}"
-              hx-target="closest tr"
-              hx-swap="beforebegin"
-              hx-include="closest tr"
-            >
-              Добавить
-            </button>
-          </td>
-      </tr>
+      {% include './componentstorage_form.html' with form=componentstorage_form %}
     {% endif %}
   </tbody>
 </table>
@@ -53,23 +37,7 @@
       {% include './materialstorage_detail.html' %}
     {% endfor %}
     {% if user.is_authenticated %}
-      <tr>
-          <td>{{ material_add_form.material|addclass:"form-control form-control-sm" }}</td>
-          <td></td>
-          <td>{{ material_add_form.inventory_number|addclass:"form-control form-control-sm" }}</td>
-          <td>{{ material_add_form.amount|addclass:"form-control form-control-sm" }}</td>
-          <td>
-            <button class="btn btn-sm btn-secondary me-1"
-              hx-post="{% url 'warehouse:material-storage-create' storage.pk %}"
-              hx-target="closest tr"
-              hx-swap="beforebegin"
-              hx-include="closest tr"
-            >
-              Добавить
-            </button>
-          </td>
-        </form>
-      </tr>
+      {% include './materialstorage_form.html' with form=materialstorage_form %}
     {% endif %}
   </tbody>
 </table>

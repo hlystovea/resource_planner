@@ -83,10 +83,6 @@ class TestMaterialStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], MaterialStorageForm), \
             'Проверьте, что поле `form` содержит форму `MaterialStorageForm`'
-        assert 'is_new' in response.context, \
-            'Проверьте, что передали поле `is_new` в контекст стр.'
-        assert response.context['is_new'], \
-            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
             'material': material_1,
@@ -131,6 +127,10 @@ class TestMaterialStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], MaterialStorageForm), \
             'Проверьте, что поле `form` содержит форму `MaterialStorageForm`'
+        assert 'is_update' in response.context, \
+            'Проверьте, что передали поле `is_update` в контекст стр.'
+        assert response.context['is_update'], \
+            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         data = {
             'inventory_number': number,

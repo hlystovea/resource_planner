@@ -55,8 +55,8 @@ class StorageDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['material_add_form'] = MaterialStorageForm()
-        context['component_add_form'] = ComponentStorageForm()
+        context['materialstorage_form'] = MaterialStorageForm()
+        context['componentstorage_form'] = ComponentStorageForm()
         return context
 
 
@@ -113,6 +113,7 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
 
         if is_htmx(request):
             return HttpResponse()
+
         return HttpResponseRedirect(success_url)
 
 
@@ -296,7 +297,6 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
 
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
-        context['is_new'] = True
 
         return context
 
@@ -326,6 +326,7 @@ class MaterialStorageUpdate(LoginRequiredMixin,
 
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
+        context['is_update'] = True
 
         return context
 
@@ -391,8 +392,11 @@ class ComponentStorageUpdate(LoginRequiredMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
+        context['is_update'] = True
+
         return context
 
 

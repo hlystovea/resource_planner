@@ -68,7 +68,7 @@ class TestStorage:
     def test_storage_view_get_detail(self, client, storage_1):
         try:
             url = reverse(
-                'warehouse:storage-detail', kwargs={'pk': storage_1.id}
+                'warehouse:storage-detail', kwargs={'pk': storage_1.pk}
             )
             response = client.get(url)
         except Exception as e:
@@ -79,15 +79,15 @@ class TestStorage:
         assert storage_from_context is not None, \
             'Проверьте, что передали поле типа Storage в контекст страницы'
 
-        material_add_form = get_field_context(
+        materialstorage_form = get_field_context(
             response.context, MaterialStorageForm)
-        assert material_add_form is not None, \
+        assert materialstorage_form is not None, \
             'Проверьте, что передали поле типа MaterialStorageForm ' \
             'в контекст страницы'
 
-        component_add_form = get_field_context(
+        componentstorage_form = get_field_context(
             response.context, ComponentStorageForm)
-        assert component_add_form is not None, \
+        assert componentstorage_form is not None, \
             'Проверьте, что передали поле типа ComponentStorageForm ' \
             'в контекст страницы'
 
