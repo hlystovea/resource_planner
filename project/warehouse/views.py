@@ -53,6 +53,11 @@ class StorageDetail(DetailView):
             Prefetch('components', queryset=components),
         )
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/includes/storage_li.html']
+        return ['warehouse/storage_detail.html']
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['materialstorage_form'] = MaterialStorageForm()
@@ -419,9 +424,8 @@ class ComponentStorageDelete(LoginRequiredMixin,
         return HttpResponse()
 
 
-
 def storage_li_view(request, pk):
     queryset = Storage.objects.annotate(storage_count=Count('storage'))
     storage = get_object_or_404(queryset, pk=pk)
     context = {'storage':  storage}
-    return render(request, 'warehouse/storage_li.html', context)
+    return render(request, 'warehouse/includes/storage_li.html', context)

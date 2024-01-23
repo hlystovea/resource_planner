@@ -18,10 +18,10 @@
     </thead>
     <tbody>
         {% for componentstorage in storage.components.all %}
-            {% include "./componentstorage_detail.html" %}
+            {% include "warehouse/componentstorage_detail.html" %}
         {% endfor %}
         {% if user.is_authenticated %}
-            {% include "./componentstorage_form.html" with form=componentstorage_form %}
+            {% include "warehouse/componentstorage_form.html" with form=componentstorage_form %}
         {% endif %}
     </tbody>
 </table>
@@ -40,10 +40,10 @@
     </thead>
     <tbody>
         {% for materialstorage in storage.materials.all %}
-            {% include "./materialstorage_detail.html" %}
+            {% include "warehouse/materialstorage_detail.html" %}
         {% endfor %}
         {% if user.is_authenticated %}
-            {% include "./materialstorage_form.html" with form=materialstorage_form %}
+            {% include "warehouse/materialstorage_form.html" with form=materialstorage_form %}
         {% endif %}
     </tbody>
 </table>

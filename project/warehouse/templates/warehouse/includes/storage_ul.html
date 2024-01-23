@@ -11,10 +11,10 @@
 
     <ul class="list">
         {% for storage in storage_list %}
-            {% include './storage_li.html' %}
+            {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}
         {% if user.is_authenticated %}    
-            {% include 'warehouse/storage_add_form.html' %}
+            {% include 'warehouse/includes/storage_add_form.html' %}
         {% endif %}
     </ul>
 </li>

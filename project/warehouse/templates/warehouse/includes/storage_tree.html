@@ -1,4 +1,3 @@
-{% load static %}
 {% load is_root %}
 <style>
     ul {
@@ -7,7 +6,7 @@
 </style>
 <ul>
     {% for storage in storage_list|is_root %}
-        {% include './storage_li.html' %}
+        {% include 'warehouse/includes/storage_li.html' %}
     {% endfor %}
     {% if user.is_authenticated %}
         {% include 'warehouse/storage_form.html' %}
