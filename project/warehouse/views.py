@@ -125,17 +125,12 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
 
 class StorageAdd(StorageCreate):
     form_class = StorageAddForm
+    success_url = '/warehouse/storage/{id}/'
 
     def form_valid(self, form):
         parent_storage = get_object_or_404(Storage, pk=self.kwargs['pk'])
         form.instance.parent_storage = parent_storage
         return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'warehouse:storage-detail',
-            kwargs={'pk': self.kwargs['pk']}
-        )
 
 
 class MaterialDetail(DetailView):
