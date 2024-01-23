@@ -75,7 +75,7 @@ class StorageList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/storage_ul.html']
+            return ['warehouse/includes/storage_ul.html']
         return ['warehouse/storage_list.html']
 
     def get_context_data(self, **kwargs):
@@ -151,7 +151,7 @@ class MaterialDetail(DetailView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/material_row.html']
+            return ['warehouse/includes/material_row.html']
         return ['warehouse/material_detail.html']
 
 
@@ -166,7 +166,7 @@ class MaterialList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/material_table.html']
+            return ['warehouse/includes/material_table.html']
         return ['warehouse/material_list.html']
 
     def get_context_data(self, **kwargs):
@@ -193,7 +193,7 @@ class MaterialUpdate(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/material_inline_form.html']
+            return ['warehouse/includes/material_inline_form.html']
         return ['warehouse/material_form.html']
 
 
@@ -221,7 +221,7 @@ class InstrumentDetail(DetailView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/instrument_row.html']
+            return ['warehouse/includes/instrument_row.html']
         return ['warehouse/instrument_detail.html']
 
 
@@ -236,7 +236,7 @@ class InstrumentList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/instrument_table.html']
+            return ['warehouse/includes/instrument_table.html']
         return ['warehouse/instrument_list.html']
 
     def get_context_data(self, **kwargs):
@@ -267,7 +267,7 @@ class InstrumentUpdate(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/instrument_inline_form.html']
+            return ['warehouse/includes/instrument_inline_form.html']
         return ['warehouse/instrument_form.html']
 
 
@@ -371,7 +371,6 @@ class ComponentStorageCreate(LoginRequiredMixin, CreateView):
 
         storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
         context['storage'] = storage
-        context['is_new'] = True
 
         return context
 

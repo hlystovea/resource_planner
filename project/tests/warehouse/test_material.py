@@ -65,7 +65,7 @@ class TestMaterial:
             'Проверьте, что передали поле `form` в контекст страницы'
 
         response = client.get(url, headers={'Hx-Request': True})
-        assert response.templates[0].name == 'warehouse/material_table.html', \
+        assert response.templates[0].name == 'warehouse/includes/material_table.html', \
             'Проверьте, что используете шаблон material_table.html в ответе ' \
             'для htmx запроса'
 
@@ -96,7 +96,7 @@ class TestMaterial:
             'с общим количеством материала'
 
         response = client.get(url, headers={'Hx-Request': True})
-        assert response.templates[0].name == 'warehouse/material_row.html', \
+        assert response.templates[0].name == 'warehouse/includes/material_row.html', \
             'Проверьте, что используете шаблон material_row.html в ответе ' \
             'для htmx запроса'
 
@@ -146,7 +146,7 @@ class TestMaterial:
 
         headers = {'Hx-Request': True}
         response = client.post(url, follow=True, data=data, headers=headers)
-        assert response.templates[0].name == 'warehouse/material_row.html', \
+        assert response.templates[0].name == 'warehouse/includes/material_row.html', \
             'Проверьте, что используете шаблон material_row.html в ответе ' \
             'для htmx запроса'
 
@@ -168,7 +168,7 @@ class TestMaterial:
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
 
         response = client.get(url, headers={'Hx-Request': True})
-        assert response.templates[0].name == 'warehouse/material_inline_form.html', \
+        assert response.templates[0].name == 'warehouse/includes/material_inline_form.html', \
             'Проверьте, что используете шаблон material_inline_form.html в ответе ' \
             'для htmx запроса'
 

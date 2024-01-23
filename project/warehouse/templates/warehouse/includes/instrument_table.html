@@ -16,7 +16,7 @@
         </thead>
         <tbody>
             {% for instrument in instrument_list %}
-                {% include "./instrument_row.html" with instrument=instrument %}
+                {% include "warehouse/includes/instrument_row.html" with instrument=instrument %}
             {% endfor %}
             {% if user.is_authenticated %}
             <form hx-post="{% url 'warehouse:instrument-create' %}" hx-target="this" hx-swap="beforebegin">
