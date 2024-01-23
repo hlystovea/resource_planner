@@ -44,21 +44,17 @@ class StorageDetail(DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        storage = Storage.objects.annotate(materials_count=Count('materials'))
+
         materials = MaterialStorage.objects.select_related('material')
         components = ComponentStorage.objects.select_related('component')
 
-        return queryset.select_related(
-            'parent_storage'
-        ).prefetch_related(
-            Prefetch('storage', queryset=storage),
+        return queryset.prefetch_related(
             Prefetch('materials', queryset=materials),
             Prefetch('components', queryset=components),
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['storage_add_form'] = StorageAddForm()
         context['material_add_form'] = MaterialStorageForm()
         context['component_add_form'] = ComponentStorageForm()
         return context
