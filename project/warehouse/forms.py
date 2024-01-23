@@ -71,3 +71,6 @@ class StorageAddForm(ModelForm):
     class Meta:
         model = Storage
         exclude = ('parent_storage', )
+        widgets = {
+            'name': TextInput(attrs={'placeholder': 'Наименование'}),
+        }

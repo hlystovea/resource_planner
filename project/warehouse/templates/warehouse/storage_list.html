@@ -9,9 +9,6 @@
             <li class="breadcrumb-item">Места хранения</li>
         </ol>
     </nav>
-    <figure class="text-center">
-        <h3>Места хранения</h3>
-    </figure>
     <div class="row">
         <div class="col-4">
             <style>
@@ -54,17 +51,15 @@
                     </li>
                 {% endfor %}
                 <li>
-                    <div class="input-group input-group-sm mb-3" style="margin-left: 21px;">
-                        <input type="text" class="form-control" name="name" placeholder="Наименование.." required>
-                        <button class="btn btn-outline-secondary" type="button"
-                            hx-post="{% url 'warehouse:storage-create' %}"
-                            hx-target="closest li"
-                            hx-swap="beforebegin"
-                            hx-include="previous input"
-                        >
-                            <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-                        </button>
-                    </div>
+                    {{ form.name }}
+                    <a class="icon-link align-middle" href="#"
+                        hx-post="{% url 'warehouse:storage-create' %}"
+                        hx-target="closest li"
+                        hx-swap="beforebegin"
+                        hx-include="previous input"
+                    >
+                        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+                    </a>
                 </li>
             </ul>
         </div>

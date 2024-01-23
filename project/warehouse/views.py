@@ -81,6 +81,7 @@ class StorageList(ListView):
             parent_storage = get_object_or_404(Storage, pk=parent_storage_pk)
             context['parent_storage'] = parent_storage
 
+        context['form'] = StorageAddForm()
         return context
 
 

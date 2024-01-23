@@ -32,17 +32,15 @@
             </li>
         {% endfor %}
         <li>
-            <div class="input-group input-group-sm mb-3" style="margin-left: 21px;">
-                <input type="text" class="form-control" name="name" placeholder="Наименование.." required>
-                <button class="btn btn-outline-secondary" type="button" 
-                    hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
-                    hx-target="closest li"
-                    hx-swap="beforebegin"
-                    hx-include="previous input"
-                >
-                    <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-                </button>
-            </div>
+            <input style="margin-left: 21px;" type="text" name="name" placeholder="Наименование.." required>
+            <a class="icon-link align-middle" href="#"
+                hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
+                hx-target="closest li"
+                hx-swap="beforebegin"
+                hx-include="previous input"
+            >
+                <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+            </a>
         </li>
     </ul>
 </li>
