@@ -315,7 +315,7 @@ class MaterialStorageUpdate(LoginRequiredMixin,
     model = MaterialStorage
     form_class = MaterialStorageForm
     login_url = reverse_lazy('login')
-    success_url = reverse_lazy('warehouse:material-storage-detail')
+    success_url = '/warehouse/storage/{storage_id}/material/{id}/'
 
     def test_func(self):
         user = self.request.user
@@ -384,7 +384,7 @@ class ComponentStorageUpdate(LoginRequiredMixin,
     model = ComponentStorage
     form_class = ComponentStorageForm
     login_url = reverse_lazy('login')
-    success_url = reverse_lazy('warehouse:component-storage-detail')
+    success_url = '/warehouse/storage/{storage_id}/component/{id}/'
 
     def test_func(self):
         user = self.request.user
