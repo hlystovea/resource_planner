@@ -4,7 +4,7 @@
         list-style-type: none;
     }
 </style>
-<ul>
+<ul class="p-0">
     {% for storage in storage_list|is_root %}
         {% include 'warehouse/includes/storage_li.html' %}
     {% endfor %}
