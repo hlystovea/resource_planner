@@ -12,7 +12,7 @@ from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              InstrumentInlineForm, MaterialForm,
                              MaterialInlineForm, MaterialStorageForm,
-                             StorageAddForm, StorageForm)
+                             StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -81,7 +81,7 @@ class StorageList(ListView):
             parent_storage = get_object_or_404(Storage, pk=parent_storage_pk)
             context['parent_storage'] = parent_storage
 
-        context['form'] = StorageAddForm()
+        context['form'] = StorageForm()
         return context
 
 
@@ -125,7 +125,7 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
 
 
 class StorageAdd(StorageCreate):
-    form_class = StorageAddForm
+    form_class = StorageForm
     success_url = '/warehouse/storage/{id}/li/'
 
     def form_valid(self, form):

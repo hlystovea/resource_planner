@@ -64,12 +64,6 @@ class ComponentStorageForm(ModelForm):
 class StorageForm(ModelForm):
     class Meta:
         model = Storage
-        fields = '__all__'
-
-
-class StorageAddForm(ModelForm):
-    class Meta:
-        model = Storage
         exclude = ('parent_storage', 'owner')
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
