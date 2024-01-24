@@ -1,6 +1,6 @@
 {% load static %}
 <li>
-    <a class="icon-link align-middle" href="#"
+    <a class="icon-link align-middle" role="button"
         hx-get="{% url 'warehouse:storage-li' parent_storage.pk %}"
         hx-target="closest li"
         hx-swap="outerHTML"
@@ -19,7 +19,7 @@
         {% for storage in storage_list %}
             {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}
-        {% if user.is_authenticated %}    
+        {% if user.is_authenticated and user.dept == parent_storage.owner or not parent_storage.owner %}    
             {% include 'warehouse/includes/storage_add_form.html' %}
         {% endif %}
     </ul>

@@ -91,6 +91,10 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/li/'
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user.dept
+        return super().form_valid(form)
+
 
 class StorageUpdate(LoginRequiredMixin, UpdateView):
     model = Storage

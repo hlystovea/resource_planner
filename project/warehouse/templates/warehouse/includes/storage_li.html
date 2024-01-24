@@ -1,6 +1,6 @@
 {% load static %}
 <li>
-    <a class="icon-link align-middle" href="#"
+    <a class="icon-link align-middle" role="button"
         hx-get="{% url 'warehouse:storage-list' %}?storage={{ storage.pk }}"
         hx-target="closest li"
         hx-swap="outerHTML"
@@ -14,7 +14,7 @@
     >
         {{ storage.name }}
     </a>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and storage.owner == user.dept or user.is_authenticated and user.is_superuser %}
         {% include 'warehouse/includes/storage_edit_buttons.html' %}
     {% endif %}
 </li>
