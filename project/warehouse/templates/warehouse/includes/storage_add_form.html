@@ -1,6 +1,12 @@
 {% load static %}
+{% load user_filters %}
+<style>
+    input {
+        line-height: 19px;
+    }
+</style>
 <li class="mb-1">
-    {{ form.name }}
+    {{ form.name|addclass:"p-0" }}
     <a class="icon-link align-middle" role="button"
         hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
         hx-target="closest li"
