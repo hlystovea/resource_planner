@@ -14,5 +14,7 @@
     >
         {{ storage.name }}
     </a>
-    {% include 'warehouse/includes/storage_edit_buttons.html' %}
+    {% if user.is_authenticated %}
+        {% include 'warehouse/includes/storage_edit_buttons.html' %}
+    {% endif %}
 </li>
