@@ -10,7 +10,7 @@
     <td>{{ componentstorage.inventory_number|default:"-" }}</td>
     <td>{{ componentstorage.amount }} шт.</td>
     <td>
-        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == componentstorage.owner %}
+        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == storage.owner %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:component-storage-update' componentstorage.storage.pk componentstorage.pk %}"
                 hx-target="closest tr"

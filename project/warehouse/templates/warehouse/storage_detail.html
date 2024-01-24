@@ -25,7 +25,7 @@
         {% for componentstorage in storage.components.all %}
             {% include "warehouse/componentstorage_detail.html" %}
         {% endfor %}
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and storage.owner == user.dept %}
             {% include "warehouse/componentstorage_form.html" with form=componentstorage_form %}
         {% endif %}
     </tbody>
@@ -47,7 +47,7 @@
         {% for materialstorage in storage.materials.all %}
             {% include "warehouse/materialstorage_detail.html" %}
         {% endfor %}
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and storage.owner == user.dept %}
             {% include "warehouse/materialstorage_form.html" with form=materialstorage_form %}
         {% endif %}
     </tbody>
