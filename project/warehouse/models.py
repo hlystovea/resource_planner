@@ -18,6 +18,14 @@ class Storage(models.Model):
         blank=True,
         null=True,
     )
+    owner = models.ForeignKey(
+        to='staff.Dept',
+        verbose_name=_('Подразделение'),
+        on_delete=models.SET_NULL,
+        related_name='storage',
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ('name', )
