@@ -1,14 +1,14 @@
 {% load static %}
 <a class="icon-link align-middle ms-3" role="button"
     hx-get="{% url 'warehouse:storage-update' storage.pk %}"
-    hx-target="closest li"
+    hx-target="previous h3"
     hx-swap="outerHTML"
 >
     <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
 </a>
 <a class="icon-link align-middle ms-1" role="button"
     hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
-    hx-target="closest li"
+    hx-target="previous h3"
     hx-swap="outerHTML"
     hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
 >

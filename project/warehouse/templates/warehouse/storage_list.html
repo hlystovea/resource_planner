@@ -4,10 +4,12 @@
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-            <li class="breadcrumb-item">Места хранения</li>
+            <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
         </ol>
     </nav>
-    <h1 class="mb-5">Места хранения</h1>
+    <div class="row mb-5">
+        <h1>Места хранения</h1>
+    </div>
     <div class="row">
         <div class="col-4">
             {% include 'warehouse/includes/storage_tree.html' %}

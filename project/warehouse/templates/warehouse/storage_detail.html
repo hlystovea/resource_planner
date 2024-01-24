@@ -4,7 +4,14 @@
         transition: opacity 1s ease-out;
     }
 </style>
-<h3 class="mb-3">{{ storage.name }}</h3>{% include 'warehouse/includes/storage_edit_buttons.html' %}
+<div class="row justify-content-start mb-3">
+    <div class="col">
+        <h3>{{ storage.name }}</h3>
+    </div>
+    <div class="col align-middle">
+        {% include 'warehouse/includes/storage_edit_buttons.html' %}
+    </div>
+</div>
 <h5>Запасные части</h5>
 <table class="table table-sm table-hover">
     <thead class="table">
