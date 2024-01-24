@@ -10,12 +10,12 @@
 </nav>
 {% if user.is_authenticated %}
 <a class="btn btn-sm btn-secondary me-auto" href="{% url 'defects:defect-create' %}" role="button">
-    Добавить новый
+    Добавить
 </a>
 {% endif %}
-<figure class="text-center">
-    <h3>Дефекты</h3>
-</figure>
+<div class="row mb-5">
+    <h1>Журнал дефектов</h1>
+</div>
 {% include './defect_filter.html' %}
 {% include './defect_table.html' %}
 {% endblock %}

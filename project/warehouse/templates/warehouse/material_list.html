@@ -7,14 +7,9 @@
             <li class="breadcrumb-item">Материалы</li>
         </ol>
     </nav>
-    {% if user.is_authenticated %}
-        <a class="btn btn-sm btn-secondary me-auto" href="{% url 'warehouse:material-create' %}" role="button">
-            Добавить
-        </a>
-    {% endif %}
-    <figure class="text-center">
-        <h3>Материалы</h3>
-    </figure>
+    <div class="row mb-5">
+        <h1>Материалы</h1>
+    </div>
     {% include "warehouse/includes/material_filter.html" %}
     {% include "warehouse/includes/material_table.html" %}
 {% endblock %}
