@@ -285,7 +285,7 @@ class InstrumentDelete(LoginRequiredMixin, DeleteView):
 
 class MaterialStorageDetail(DetailView):
     model = MaterialStorage
-    queryset = MaterialStorage.objects.select_related('material')
+    queryset = MaterialStorage.objects.select_related('material', 'storage')
 
 
 class MaterialStorageCreate(LoginRequiredMixin, CreateView):
@@ -352,7 +352,8 @@ class MaterialStorageDelete(LoginRequiredMixin,
 class ComponentStorageDetail(DetailView):
     model = ComponentStorage
     queryset = ComponentStorage.objects.select_related(
-        'component__manufacturer'
+        'component__manufacturer',
+        'storage'
     )
 
 

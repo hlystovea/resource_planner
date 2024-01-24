@@ -9,7 +9,7 @@
     <td>{{ materialstorage.inventory_number|default:"-" }}</td>
     <td>{{ materialstorage.amount|floatformat }} {{ materialstorage.material.measurement_unit}}</td>
     <td>
-        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == storage.owner %}
+        {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == materialstorage.storage.owner %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:material-storage-update' materialstorage.storage.pk materialstorage.pk %}"
                 hx-target="closest tr"
