@@ -4,8 +4,11 @@
         transition: opacity 1s ease-out;
     }
 </style>
-<div class="row">
-    <h3>{{ storage.name }}</h3>
+<div class="row justify-content-between">
+    <div class="col me-auto"><h3>{{ storage.name }}</h3></div>
+    <div class="col-auto pt-1">
+          {% include "warehouse/includes/qrcode_link.html" with storage_pk=storage.pk %}
+    </div>
 </div>
 <div class="row mt-5">
     <h5>Запасные части</h5>
