@@ -1,13 +1,11 @@
 {% load static %}
-<li>
-    <form>
+<li class="mb-1">
+    <form hx-post="{% if is_update %}{% url 'warehouse:storage-update' storage.pk %}{% else %}{% url 'warehouse:storage-create' %}{% endif %}"
+        hx-target="closest li"
+        hx-swap="{% if is_update %}outerHTML{% else %}beforebegin{% endif %}"
+    >
         {{ form.name }}
-        <a class="icon-link align-middle" role="button"
-            hx-post="{% if is_update %}{% url 'warehouse:storage-update' storage.pk %}{% else %}{% url 'warehouse:storage-create' %}{% endif %}"
-            hx-target="closest li"
-            hx-swap="{% if is_update %}outerHTML{% else %}beforebegin{% endif %}"
-            hx-include="previous input"
-        >
+        <a class="icon-link align-middle" role="button" type="submit">
             <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
         </a>
     </form>

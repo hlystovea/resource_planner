@@ -1,5 +1,5 @@
 {% load static %}
-<li>
+<li class="mb-1">
     {{ form.name }}
     <a class="icon-link align-middle" role="button"
         hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"

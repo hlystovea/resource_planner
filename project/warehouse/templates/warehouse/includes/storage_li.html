@@ -14,9 +14,5 @@
     >
         {{ storage.name }}
     </a>
-    {% if storage.storage_count %}
-        <span class="position-absolute badge bg-danger rounded-pill" style="--bs-badge-font-size: .5rem;">
-            {{ storage.storage_count }}
-        </span>
-    {% endif %}
+    {% include 'warehouse/includes/storage_edit_buttons.html' %}
 </li>
