@@ -4,10 +4,12 @@
         transition: opacity 1s ease-out;
     }
 </style>
-<div class="row justify-content-start mb-3">
+<div class="row">
     <h3>{{ storage.name }}</h3>
 </div>
-<h5>Запасные части</h5>
+<div class="row mt-5">
+    <h5>Запасные части</h5>
+</div>
 <table class="table table-sm table-hover">
     <thead class="table">
         <tr>
@@ -28,9 +30,9 @@
         {% endif %}
     </tbody>
 </table>
-<br>
-<br>
-<h5>Расходные материалы</h5>
+<div class="row mt-5">
+    <h5>Расходные материалы</h5>
+</div>
 <table class="table table-sm table-hover">
     <thead class="table">
         <tr>
