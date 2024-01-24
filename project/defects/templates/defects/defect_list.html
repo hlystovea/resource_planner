@@ -8,14 +8,14 @@
         <li class="breadcrumb-item">Журнал</li>
     </ol>
 </nav>
+<div class="row mb-2">
+    <h1>Журнал дефектов</h1>
+</div>
 {% if user.is_authenticated %}
 <a class="btn btn-sm btn-secondary me-auto" href="{% url 'defects:defect-create' %}" role="button">
     Добавить
 </a>
 {% endif %}
-<div class="row mb-5">
-    <h1>Журнал дефектов</h1>
-</div>
 {% include './defect_filter.html' %}
 {% include './defect_table.html' %}
 {% endblock %}

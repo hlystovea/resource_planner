@@ -7,14 +7,14 @@
             <li class="breadcrumb-item">Запчасти</li>
         </ol>
     </nav>
+    <div class="row mb-2">
+        <h1>Запасные части</h1>
+    </div>
     {% if user.is_authenticated %}
         <a class="btn btn-sm btn-secondary me-auto" href="{% url 'hardware:component-create' %}" role="button">
             Добавить
         </a>
     {% endif %}
-    <div class="row mb-5">
-        <h1>Запасные части</h1>
-    </div>
     {% include "./component_filter.html" %}
     {% include "./component_table.html" %}
 {% endblock %}
