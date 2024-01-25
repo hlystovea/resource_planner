@@ -138,7 +138,7 @@ class MaterialDetail(DetailView):
     model = Material
 
     def get_queryset(self):
-        amount = MaterialStorage.objects.select_related('storage', 'owner')
+        amount = MaterialStorage.objects.select_related('storage__owner')
         return Material.objects.annotate(
             total=Sum('amount__amount')
         ).prefetch_related(
@@ -321,7 +321,8 @@ class MaterialStorageUpdate(LoginRequiredMixin,
 
     def test_func(self):
         user = self.request.user
-        return user.is_superuser or user.dept == self.get_object().owner
+        return (user.is_superuser
+                or user.dept == self.get_object().storage.owner)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -341,7 +342,8 @@ class MaterialStorageDelete(LoginRequiredMixin,
 
     def test_func(self):
         user = self.request.user
-        return user.is_superuser or user.dept == self.get_object().owner
+        return (user.is_superuser
+                or user.dept == self.get_object().storage.owner)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -390,7 +392,8 @@ class ComponentStorageUpdate(LoginRequiredMixin,
 
     def test_func(self):
         user = self.request.user
-        return user.is_superuser or user.dept == self.get_object().owner
+        return (user.is_superuser
+                or user.dept == self.get_object().storage.owner)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -411,8 +414,7 @@ class ComponentStorageDelete(LoginRequiredMixin,
     def test_func(self):
         user = self.request.user
         return (user.is_superuser
-                or user.dept == self.get_object().owner
-                or self.get_object().owner is None)
+                or user.dept == self.get_object().storage.owner)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

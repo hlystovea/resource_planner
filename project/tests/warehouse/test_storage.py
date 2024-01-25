@@ -4,8 +4,9 @@ from django.urls import reverse
 from qr_code.qrcode.utils import QRCodeOptions
 
 from tests.common import get_field_context, search_field
+from staff.models import Dept
 from warehouse.forms import (ComponentStorageForm, MaterialStorageForm,
-                             StorageAddForm, StorageForm)
+                             StorageForm)
 from warehouse.models import Storage
 
 
@@ -32,6 +33,16 @@ class TestStorage:
             'Поле parent_storage должно быть ссылкой на модель Storage'
         assert parent_storage_field.blank, \
             'Поле parent_storage модели Storage не должно быть обязательным'
+
+        owner_field = search_field(model_fields, 'owner_id')
+        assert owner_field is not None, \
+            'Модель Storage должна содержать поле owner'
+        assert type(owner_field) == fields.related.ForeignKey, \
+            'Поле owner должно быть ссылкой на другую модель'
+        assert owner_field.related_model == Dept, \
+            'Поле owner должно быть ссылкой на модель Dept'
+        assert owner_field.blank, \
+            'Поле owner не должно быть обязательным'
 
     @pytest.mark.django_db
     def test_storage_view_get_qrcode(self, client, storage_1):
@@ -195,8 +206,8 @@ class TestStorage:
 
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], StorageAddForm), \
-            'Проверьте, что поле `form` содержит форму `StorageAddForm`'
+        assert isinstance(response.context['form'], StorageForm), \
+            'Проверьте, что поле `form` содержит форму `StorageForm`'
 
         data = {
             'name': 'some-storage-name',
@@ -210,5 +221,5 @@ class TestStorage:
         storage = get_field_context(response.context, Storage)
         assert storage, \
             'Проверьте, что передали поле типа `Storage` в контекст страницы'
-        assert storage.storage.filter(name='some-storage-name').exists(), \
+        assert storage.parent_storage == storage_1, \
             'Проверьте, что сохраненный экземпляр `storage` имеет родителя'

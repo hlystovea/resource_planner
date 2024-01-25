@@ -23,7 +23,7 @@ class ComponentDetail(DetailView):
 
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
         count = defects.values('part__component').annotate(count=Count('pk'))
-        amount = ComponentStorage.objects.select_related('storage', 'owner')
+        amount = ComponentStorage.objects.select_related('storage__owner')
 
         queryset = queryset.annotate(
             defect_count=Subquery(count.values('count')),

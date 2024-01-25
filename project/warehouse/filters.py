@@ -6,7 +6,7 @@ class InstrumentFilter(FilterSet):
 
 
 class MaterialFilter(FilterSet):
-    dept = NumberFilter(field_name='amount', lookup_expr='owner')
+    dept = NumberFilter(field_name='amount', lookup_expr='storage__owner')
 
 
 class StorageFilter(FilterSet):

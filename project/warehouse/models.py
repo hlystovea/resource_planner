@@ -93,14 +93,6 @@ class MaterialStorage(models.Model):
             MinValueValidator(0),
         ]
     )
-    owner = models.ForeignKey(
-        to='staff.Dept',
-        verbose_name=_('Подразделение'),
-        on_delete=models.SET_NULL,
-        related_name='materials',
-        blank=True,
-        null=True,
-    )
     storage = models.ForeignKey(
         to=Storage,
         verbose_name=_('Место хранения'),
@@ -176,14 +168,6 @@ class ComponentStorage(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name=_('Количество'),
-    )
-    owner = models.ForeignKey(
-        to='staff.Dept',
-        verbose_name=_('Подразделение'),
-        on_delete=models.SET_NULL,
-        related_name='components',
-        blank=True,
-        null=True,
     )
     storage = models.ForeignKey(
         to=Storage,

@@ -62,7 +62,7 @@
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' m.storage.pk %}">{{ m.storage.name }}</a></td>
             <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit }}</td>
-            <td>{{ m.owner|default:"-" }}</td>
+            <td>{{ m.storage.owner|default:"-" }}</td>
           </tr>
         {% endfor %}
       </tbody>

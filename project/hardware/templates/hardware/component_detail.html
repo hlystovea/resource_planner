@@ -57,7 +57,7 @@
           <tr>
             <td><a href="{% url 'warehouse:storage-detail' c.storage.pk %}">{{ c.storage.name }}</a></td>
             <td>{{ c.amount }} шт.</td>
-            <td>{{ c.owner|default:"-" }}</td>
+            <td>{{ c.storage.owner|default:"-" }}</td>
           </tr>
         {% endfor %}
       </tbody>

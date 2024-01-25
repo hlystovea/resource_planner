@@ -235,7 +235,7 @@ class TestMaterial:
         assert len(material_list) == len(materials), \
             'Проверьте, что без фильтрации передаются все объекты'
 
-        response = client.get(f'{url}?dept={material_in_storage_dept1.owner.pk}')
+        response = client.get(f'{url}?dept={material_in_storage_dept1.storage.owner.pk}')
         material_list = response.context['material_list']
 
         assert material_in_storage_dept1.material in material_list, \

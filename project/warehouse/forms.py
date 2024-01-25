@@ -52,13 +52,13 @@ class MaterialInlineForm(ModelForm):
 class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
-        exclude = ('storage', 'owner')
+        exclude = ('storage', )
 
 
 class ComponentStorageForm(ModelForm):
     class Meta:
         model = ComponentStorage
-        exclude = ('storage', 'owner')
+        exclude = ('storage', )
 
 
 class StorageForm(ModelForm):

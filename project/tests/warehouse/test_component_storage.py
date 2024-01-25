@@ -43,16 +43,6 @@ class TestComponentStorage:
         assert not amount_field.blank, \
             'Поле amount должно быть обязательным'
 
-        owner_field = search_field(model_fields, 'owner_id')
-        assert owner_field is not None, \
-            'Модель ComponentStorage должна содержать поле owner'
-        assert type(owner_field) == fields.related.ForeignKey, \
-            'Поле owner должно быть ссылкой на другую модель'
-        assert owner_field.related_model == Dept, \
-            'Поле owner должно быть ссылкой на модель Dept'
-        assert owner_field.blank, \
-            'Поле owner не должно быть обязательным'
-
         storage_field = search_field(model_fields, 'storage_id')
         assert storage_field is not None, \
             'Модель ComponentStorage должна содержать поле storage'
@@ -104,17 +94,17 @@ class TestComponentStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('number, amount', test_args)
     def test_component_storage_view_update(
-        self, number, amount, component_in_storage_1, auto_login_user
+        self, number, amount, component_in_storage_dept1, auto_login_user
     ):
         client, user = auto_login_user()
-        user.dept = component_in_storage_1.owner
+        user.dept = component_in_storage_dept1.storage.owner
         user.save()
 
         url = reverse(
             'warehouse:component-storage-update',
             kwargs={
-                'storage_pk': component_in_storage_1.storage.pk,
-                'pk': component_in_storage_1.pk,
+                'storage_pk': component_in_storage_dept1.storage.pk,
+                'pk': component_in_storage_dept1.pk,
             }
         )
 
@@ -127,7 +117,7 @@ class TestComponentStorage:
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], ComponentStorageForm), \
-            'Проверьте, что поле `form` содержит форму `MaterialStorageForm`'
+            'Проверьте, что поле `form` содержит форму `ComponentStorageForm`'
         assert 'is_update' in response.context, \
             'Проверьте, что передали поле `is_update` в контекст стр.'
         assert response.context['is_update'], \

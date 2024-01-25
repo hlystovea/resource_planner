@@ -4,7 +4,7 @@ from hardware.models import Cabinet, Component, Connection, Hardware, Part
 
 
 class ComponentFilter(FilterSet):
-    dept = NumberFilter(field_name='amount', lookup_expr='owner')
+    dept = NumberFilter(field_name='amount', lookup_expr='storage__owner')
 
     class Meta:
         model = Component
