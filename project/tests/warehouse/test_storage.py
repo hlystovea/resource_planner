@@ -4,8 +4,9 @@ from django.urls import reverse
 from qr_code.qrcode.utils import QRCodeOptions
 
 from tests.common import get_field_context, search_field
+from staff.models import Dept
 from warehouse.forms import (ComponentStorageForm, MaterialStorageForm,
-                             StorageAddForm, StorageForm)
+                             StorageForm)
 from warehouse.models import Storage
 
 
@@ -33,6 +34,16 @@ class TestStorage:
         assert parent_storage_field.blank, \
             'Поле parent_storage модели Storage не должно быть обязательным'
 
+        owner_field = search_field(model_fields, 'owner_id')
+        assert owner_field is not None, \
+            'Модель Storage должна содержать поле owner'
+        assert type(owner_field) == fields.related.ForeignKey, \
+            'Поле owner должно быть ссылкой на другую модель'
+        assert owner_field.related_model == Dept, \
+            'Поле owner должно быть ссылкой на модель Dept'
+        assert owner_field.blank, \
+            'Поле owner не должно быть обязательным'
+
     @pytest.mark.django_db
     def test_storage_view_get_qrcode(self, client, storage_1):
         try:
@@ -53,7 +64,7 @@ class TestStorage:
             'Проверьте, что передали поле "internal_storage_urls" в контекст стр.'  # noqa (E501)
 
     @pytest.mark.django_db
-    def test_storage_view_get_list(self, client):
+    def test_storage_view_get_list(self, client, storage_1):
         try:
             url = reverse('warehouse:storage-list')
             response = client.get(url)
@@ -61,35 +72,54 @@ class TestStorage:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/storage_list.html', \
+            'Проверьте, что используете шаблон storage_list.html в ответе'
+
         assert 'storage_list' in response.context, \
             'Проверьте, что передали поле "storage_list" в контекст страницы'
+
+        response = client.get(
+            f'{url}?storage={storage_1.pk}',
+            headers={'Hx-Request': True}
+        )
+        assert response.templates[0].name == 'warehouse/includes/storage_ul.html', \
+            'Проверьте, что используете шаблон storage_ul.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     def test_storage_view_get_detail(self, client, storage_1):
         try:
             url = reverse(
-                'warehouse:storage-detail', kwargs={'pk': storage_1.id}
+                'warehouse:storage-detail', kwargs={'pk': storage_1.pk}
             )
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/storage_detail.html', \
+            'Проверьте, что используете шаблон storage_detail.html в ответе'
+
         storage_from_context = get_field_context(response.context, Storage)
         assert storage_from_context is not None, \
             'Проверьте, что передали поле типа Storage в контекст страницы'
 
-        material_add_form = get_field_context(
+        materialstorage_form = get_field_context(
             response.context, MaterialStorageForm)
-        assert material_add_form is not None, \
+        assert materialstorage_form is not None, \
             'Проверьте, что передали поле типа MaterialStorageForm ' \
             'в контекст страницы'
 
-        component_add_form = get_field_context(
+        componentstorage_form = get_field_context(
             response.context, ComponentStorageForm)
-        assert component_add_form is not None, \
+        assert componentstorage_form is not None, \
             'Проверьте, что передали поле типа ComponentStorageForm ' \
             'в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/includes/storage_content.html', \
+            'Проверьте, что используете шаблон storage_content.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
@@ -107,10 +137,6 @@ class TestStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], StorageForm), \
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
-        assert 'is_new' in response.context, \
-            'Проверьте, что передали поле `is_new` в контекст стр.'
-        assert response.context['is_new'], \
-            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
             'name': name,
@@ -143,6 +169,10 @@ class TestStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], StorageForm), \
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
+        assert 'is_update' in response.context, \
+            'Проверьте, что передали поле `is_update` в контекст стр.'
+        assert response.context['is_update'], \
+            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         data = {
             'name': name,
@@ -195,8 +225,8 @@ class TestStorage:
 
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], StorageAddForm), \
-            'Проверьте, что поле `form` содержит форму `StorageAddForm`'
+        assert isinstance(response.context['form'], StorageForm), \
+            'Проверьте, что поле `form` содержит форму `StorageForm`'
 
         data = {
             'name': 'some-storage-name',
@@ -210,5 +240,5 @@ class TestStorage:
         storage = get_field_context(response.context, Storage)
         assert storage, \
             'Проверьте, что передали поле типа `Storage` в контекст страницы'
-        assert storage.storage.filter(name='some-storage-name').exists(), \
+        assert storage.parent_storage == storage_1, \
             'Проверьте, что сохраненный экземпляр `storage` имеет родителя'

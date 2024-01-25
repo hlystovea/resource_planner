@@ -1,7 +1,7 @@
 {% if is_paginated %}
 {% load param_replace %}
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center"">
+<nav>
+  <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
     <li class="page-item">
       <a class="page-link" href="?{% param_replace page=page_obj.previous_page_number %}">&laquo; Предыдущая</a>

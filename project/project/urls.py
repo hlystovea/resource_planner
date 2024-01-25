@@ -11,7 +11,7 @@ admin.site.site_header = _('Эксплуатация')
 admin.site.index_title = _('Администрирование')
 
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='defects:defect-list'), name='index'),
+    path('', RedirectView.as_view(pattern_name='defects:defect-list'), name='index'),  # noqa (E501)
     path('admin/', admin.site.urls),
     path('auth/', include('django.contrib.auth.urls')),
     path('api/', include('api.urls', namespace='api')),
@@ -19,6 +19,7 @@ urlpatterns = [
     path('repairs/', include('repairs.urls', namespace='repairs')),
     path('defects/', include('defects.urls', namespace='defects')),
     path('hardware/', include('hardware.urls', namespace='hardware')),
+    path('staff/', include('staff.urls', namespace='staff')),
 ]
 
 

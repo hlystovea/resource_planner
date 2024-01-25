@@ -13,7 +13,7 @@ services:
     build: .
     container_name: planner_backend
     restart: unless-stopped
-    command: gunicorn project.wsgi --bind 0.0.0.0:8001
+    command: gunicorn project.wsgi --bind 0.0.0.0:8001 --timeout 120
     volumes:
       - static_value:/resource_planner/static/
       - media_value:/resource_planner/media/

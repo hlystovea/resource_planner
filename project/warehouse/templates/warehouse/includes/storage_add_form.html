@@ -1,0 +1,21 @@
+{% load static %}
+{% load user_filters %}
+<style>
+    input {
+        line-height: 19px;
+        font-size: 0.875rem;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius-sm);
+    }
+</style>
+<li class="mb-1">
+    {{ form.name|addclass:"py-0 px-1" }}
+    <a class="icon-link align-middle" role="button"
+        hx-post="{% url 'warehouse:storage-add-storage' parent_storage.pk %}"
+        hx-target="closest li"
+        hx-swap="beforebegin"
+        hx-include="previous input"
+    >
+        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+    </a>
+</li>

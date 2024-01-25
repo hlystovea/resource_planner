@@ -1,0 +1,21 @@
+<option value=""
+    {% if not request.GET.dept %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Подразделение...
+    {% else %}
+        --------------
+    {% endif %}
+</option>
+
+{% for dept in dept_list %}
+    <option value="{{ dept.pk }}"
+        {% if dept.pk|stringformat:'i' == request.GET.dept %}
+            selected
+        {% endif %}
+    >
+        {{ dept.abbreviation }}
+    </option>
+{% endfor %}

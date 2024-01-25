@@ -42,9 +42,9 @@ class MaterialAdmin(ImageTagField, MixinAdmin):
 @admin.register(MaterialStorage)
 class MaterialStorageAdmin(MixinAdmin):
     list_display = ('id', 'material', 'inventory_number',
-                    'amount', 'owner', 'storage')
+                    'amount', 'storage')
     search_fields = ('material', 'inventory_number')
-    list_filter = ('owner', )
+    list_filter = ('storage__owner', )
     autocomplete_fields = ('material', )
 
 

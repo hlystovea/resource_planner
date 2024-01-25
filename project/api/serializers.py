@@ -16,9 +16,9 @@ class YearSerializer(Serializer):
     years = ListField()
 
 
-class StatisticsByYearSerializer(Serializer):
-    year = IntegerField()
-    defect_count = IntegerField()
+class StatisticsSerializer(Serializer):
+    label = CharField()
+    value = IntegerField()
 
 
 class FacilitySerializer(ModelSerializer):

@@ -29,7 +29,7 @@ part_router = routers.SimpleRouter()
 part_router.register(r'parts', PartViewSet, basename='part')
 
 component_router = routers.SimpleRouter()
-component_router.register(r'components', ComponentViewSet, basename='component')
+component_router.register(r'components', ComponentViewSet, basename='component')  # noqa(E501)
 
 urlpatterns = [
     path('', include(defect_router.urls)),

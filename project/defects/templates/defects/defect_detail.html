@@ -29,7 +29,7 @@
               {{ defect.part.cabinet.hardware.name }} /
               {{ defect.part.cabinet }}</dt>
             <dt class="col-sm-4">Комплектующее</dt>
-            <dd class="col-sm-8">{{ defect.part }}</dd>
+            <dd class="col-sm-8"><a href="{% url 'hardware:component-detail' defect.part.component.pk %}">{{ defect.part }}</a></dd>
             <dt class="col-sm-4">Обнаруживший</dt>
             <dd class="col-sm-8">{{ defect.employee }}</dd>
             <dt class="col-sm-4">Последствия</dt>

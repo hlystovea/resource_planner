@@ -1,13 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
+from django.shortcuts import render
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
 
+from core.utils import is_htmx
 from defects.models import Defect
-from hardware.filters import ComponentFilter
-from hardware.forms import ComponentForm, ComponentFilterForm
-from hardware.models import Component
+from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
+                              HardwareFilter, PartFilter)
+from hardware.forms import ComponentForm
+from hardware.models import (Cabinet, Component, Connection, Group,
+                             Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
 
 
@@ -19,7 +23,7 @@ class ComponentDetail(DetailView):
 
         defects = Defect.objects.filter(part__component=OuterRef('pk'))
         count = defects.values('part__component').annotate(count=Count('pk'))
-        amount = ComponentStorage.objects.select_related('storage', 'owner')
+        amount = ComponentStorage.objects.select_related('storage__owner')
 
         queryset = queryset.annotate(
             defect_count=Subquery(count.values('count')),
@@ -45,10 +49,10 @@ class ComponentList(ListView):
         )
         return queryset.order_by('manufacturer', 'name')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = ComponentFilterForm(self.request.GET or None)
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/component_table.html']
+        return ['hardware/component_list.html']
 
 
 class ComponentCreate(LoginRequiredMixin, CreateView):
@@ -72,3 +76,46 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     model = Component
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('hardware:component-list')
+
+
+def group_select_view(request):
+    context = {'group_list': Group.objects.all()}
+    return render(request, 'hardware/group_select.html', context)
+
+
+def facility_select_view(request):
+    context = {'facility_list': Facility.objects.all()}
+    return render(request, 'hardware/facility_select.html', context)
+
+
+def connection_select_view(request):
+    queryset = Connection.objects.all()
+    connections = ConnectionFilter(request.GET, queryset=queryset).qs
+    context = {'connection_list': connections.select_related('facility')}
+    return render(request, 'hardware/connection_select.html', context)
+
+
+def hardware_select_view(request):
+    queryset = Hardware.objects.all()
+    hardware = HardwareFilter(request.GET, queryset=queryset).qs
+    context = {'hardware_list': hardware}
+    return render(request, 'hardware/hardware_select.html', context)
+
+
+def cabinet_select_view(request):
+    queryset = Cabinet.objects.all()
+    cabinets = CabinetFilter(request.GET, queryset=queryset).qs
+    context = {'cabinet_list': cabinets}
+    return render(request, 'hardware/cabinet_select.html', context)
+
+
+def part_select_view(request):
+    queryset = Part.objects.all()
+    parts = PartFilter(request.GET, queryset=queryset).qs
+    context = {'part_list': parts.select_related('component')}
+    return render(request, 'hardware/part_select.html', context)
+
+
+def manufacturer_select_view(request):
+    context = {'manufacturer_list': Manufacturer.objects.all()}
+    return render(request, 'hardware/manufacturer_select.html', context)

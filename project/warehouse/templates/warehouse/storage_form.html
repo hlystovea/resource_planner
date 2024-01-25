@@ -1,28 +1,21 @@
-{% extends 'base.html' %}
-{% block title %}Места хранения{% endblock %}
+{% load static %}
 {% load user_filters %}
-{% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
-      <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} место хранения</li>
-    </ol>
-  </nav>
-
-  <div class="row justify-content-center">
-    <div class="col-md-8 p-5 pt-2">
-      <div class="card">
-        <div class="card-header">Место хранения</div>
-        <div class="card-body">
-          <form method="post" enctype="multipart/form-data">
-            {% include 'includes/form.html' %}
-            <div class="d-flex justify-content-end mt-3">
-              <button type="submit" class="btn btn-primary">Сохранить</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
+<style>
+    input {
+        line-height: 19px;
+        font-size: 0.875rem;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius-sm);
+    }
+</style>
+<li class="mb-1">
+    {{ form.name|addclass:"py-0 px-1" }}
+    <a class="icon-link align-middle" role="button"
+        hx-post="{% if is_update %}{% url 'warehouse:storage-update' storage.pk %}{% else %}{% url 'warehouse:storage-create' %}{% endif %}"
+        hx-target="closest li"
+        hx-swap="{% if is_update %}outerHTML{% else %}beforebegin{% endif %}"
+        hx-include="previous input"
+    >
+        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
+    </a>
+</li>

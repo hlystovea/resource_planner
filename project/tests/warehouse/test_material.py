@@ -6,7 +6,7 @@ from django_resized import ResizedImageField
 from django.urls import reverse
 
 from tests.common import get_field_context, search_field
-from warehouse.forms import DeptForm, MaterialForm
+from warehouse.forms import MaterialForm
 from warehouse.models import Material, MaterialStorage
 
 
@@ -57,10 +57,17 @@ class TestMaterial:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/material_list.html', \
+            'Проверьте, что используете шаблон material_list.html в ответе'
         assert 'material_list' in response.context, \
             'Проверьте, что передали поле "material_list" в контекст страницы'
-        assert type(response.context.get('form')) == DeptForm, \
-            'Проверьте, что передали поле типа DeptForm в контекст страницы'
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/includes/material_table.html', \
+            'Проверьте, что используете шаблон material_table.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     def test_material_view_get_detail(
@@ -81,12 +88,17 @@ class TestMaterial:
         assert material is not None, \
             'Проверьте, что передали поле типа Material в контекст страницы'
         assert type(material.amount.first()) == MaterialStorage, \
-            'Проверьте, что вместе с объектом Material передали поле' \
+            'Проверьте, что вместе с объектом Material передали поле ' \
             'типа MaterialStorage в контекст страницы'
         total = material_in_storage_1.amount + material_in_storage_2.amount
         assert math.isclose(material.total, total), \
-            'Проверьте, что объект Material содержит поле total' \
+            'Проверьте, что объект Material содержит поле total ' \
             'с общим количеством материала'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/includes/material_row.html', \
+            'Проверьте, что используете шаблон material_row.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, unit', test_args)
@@ -121,20 +133,28 @@ class TestMaterial:
 
         material = get_field_context(response.context, Material)
 
+        assert response.templates[0].name == 'warehouse/material_detail.html', \
+            'Проверьте, что используете шаблон material_detail.html в ответе'
         assert material is not None, \
             'Проверьте, что передали поле типа Material в контекст страницы'
         assert data['name'] == material.name, \
-            'Проверьте, что сохраненный экземпляр `material` содержит' \
+            'Проверьте, что сохраненный экземпляр `material` содержит ' \
             'соответствующее поле `name`'
         assert data['measurement_unit'] == material.measurement_unit, \
-            'Проверьте, что измененный экземпляр `material` содержит' \
+            'Проверьте, что измененный экземпляр `material` содержит ' \
             'соответствующее поле `measurement_unit`'
+
+        headers = {'Hx-Request': True}
+        response = client.post(url, follow=True, data=data, headers=headers)
+        assert response.templates[0].name == 'warehouse/includes/material_row.html', \
+            'Проверьте, что используете шаблон material_row.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, unit', test_args)
-    def test_material_view_update(self, name, unit, auto_login_user, material):
+    def test_material_view_update(self, name, unit, auto_login_user, material_1):
         client, user = auto_login_user()
-        url = reverse('warehouse:material-update', kwargs={'pk': material.pk})
+        url = reverse('warehouse:material-update', kwargs={'pk': material_1.pk})
 
         try:
             response = client.get(url)
@@ -146,6 +166,11 @@ class TestMaterial:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], MaterialForm), \
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/includes/material_inline_form.html', \
+            'Проверьте, что используете шаблон material_inline_form.html в ответе ' \
+            'для htmx запроса'
 
         data = {
             'name': name,
@@ -188,3 +213,32 @@ class TestMaterial:
 
         assert not queryset.exists(), \
             'Проверьте, что эксземпляр `material` удаляется из БД'
+        
+        material = Material.objects.create(name=name, measurement_unit=unit)
+        url = reverse('warehouse:material-delete', kwargs={'pk': material.pk})
+        response = client.delete(url, headers={'Hx-Request': True})
+
+        assert response.status_code == 200
+        assert len(response.content) == 0, \
+            'Проверьте, что на htmx запрос возвращется пустой ответ'
+
+    @pytest.mark.django_db
+    def test_material_filters(
+        self, client, material_in_storage_dept1, material_in_storage_dept2
+    ):
+        url = reverse('warehouse:material-list')
+        materials = Material.objects.all()
+
+        response = client.get(url)
+        material_list = response.context['material_list']
+
+        assert len(material_list) == len(materials), \
+            'Проверьте, что без фильтрации передаются все объекты'
+
+        response = client.get(f'{url}?dept={material_in_storage_dept1.storage.owner.pk}')
+        material_list = response.context['material_list']
+
+        assert material_in_storage_dept1.material in material_list, \
+            'Фильтр по подразделению работает не правильно'
+        assert material_in_storage_dept2.material not in material_list, \
+            'Фильтр по подразделению работает не правильно'

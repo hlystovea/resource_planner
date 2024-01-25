@@ -49,13 +49,9 @@ class PartInline(autocomplete_all.TabularInline):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'part' and self.parent_obj:
             if self.parent_obj.__class__.__name__ == 'Cabinet':
-                kwargs['queryset'] = Part.objects.filter(
-                    cabinet=self.parent_obj
-                )
+                kwargs['queryset'] = self.parent_obj.parts
             if self.parent_obj.__class__.__name__ == 'Part':
-                kwargs['queryset'] = Part.objects.filter(
-                    cabinet=self.parent_obj.cabinet
-                )
+                kwargs['queryset'] = self.parent_obj.cabinet.parts
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -98,9 +94,7 @@ class PartAdmin(MixinAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'part' and self._obj:
-            kwargs['queryset'] = Part.objects.filter(
-                cabinet=self._obj.cabinet
-            )
+            kwargs['queryset'] = self._obj.cabinet.parts
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def save_formset(self, request, form, formset, change) -> None:
@@ -139,6 +133,9 @@ class CabinetAdmin(MixinAdmin):
                    'hardware__connection', 'launch_year')
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('parts')
 
 
 class CabinetInline(autocomplete_all.TabularInline):

@@ -8,96 +8,115 @@
       <li class="breadcrumb-item">Статистика</li>
     </ol>
   </nav>
-  <figure class="text-center">
-    <h3>Статистика</h3>
-  </figure>
-  <div class="row justify-content-center">
-    <div class="col-lg-9">
-      <div class="row p-0">
-        <canvas id="statisticsByYearChart"></canvas>
+  <div class="row mb-5">
+    <h1>Статистика</h1>
+</div>
+  <div class="row">
+    <div class="col-lg-3 mt-3">
+      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <button class="nav-link active" id="v-pills-years-tab" data-bs-toggle="pill" data-bs-target="#v-pills-years" type="button" role="tab" aria-controls="v-pills-years" aria-selected="true">По годам</button>
+        <button class="nav-link" id="v-pills-groups-tab" data-bs-toggle="pill" data-bs-target="#v-pills-groups" type="button" role="tab" aria-controls="v-pills-groups" aria-selected="false">По группам оборудования</button>
+        <button class="nav-link" id="v-pills-tech-reasons-tab" data-bs-toggle="pill" data-bs-target="#v-pills-tech-reasons" type="button" role="tab" aria-controls="v-pills-tech-reasons" aria-selected="false">По техническим причинам</button>
+        <button class="nav-link" id="v-pills-org-reasons-tab" data-bs-toggle="pill" data-bs-target="#v-pills-org-reasons" type="button" role="tab" aria-controls="v-pills-org-reasons" aria-selected="false">По организационным причинам</button>
+        <button class="nav-link" id="v-pills-methods-tab" data-bs-toggle="pill" data-bs-target="#v-pills-methods" type="button" role="tab" aria-controls="v-pills-methods" aria-selected="false">По методу устранения</button>
+      </div>
+    </div>
+    <div class="col-lg-9 mt-3">
+      <div class="row justify-content-center">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade show active" id="v-pills-years" role="tabpanel" aria-labelledby="v-pills-years-tab" tabindex="0">
+            <div class="row p-0">
+              <canvas id="statisticsByYearChart"></canvas>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="v-pills-groups" role="tabpanel" aria-labelledby="v-pills-groups-tab" tabindex="0">
+            <div class="row p-0">
+              <canvas id="statisticsByGroupChart"></canvas>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="v-pills-tech-reasons" role="tabpanel" aria-labelledby="v-pills-tech-reasons-tab" tabindex="0">
+            <div class="row p-0">
+              <canvas id="statisticsByTechReasonChart"></canvas>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="v-pills-org-reasons" role="tabpanel" aria-labelledby="v-pills-org-reasons-tab" tabindex="0">
+            <div class="row p-0">
+              <canvas id="statisticsByOrgReasonChart"></canvas>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="v-pills-methods" role="tabpanel" aria-labelledby="v-pills-methods-tab" tabindex="0">
+            <div class="row p-0">
+              <canvas id="statisticsByReapairMethodChart"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  {% load static %}
+  <script src="{% static 'js/charts.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     function updateContent() {
-      updateStatisticsByYear();
-    };
+      Object.entries(charts).forEach(chart => updateStatistics(...chart));
+    }
 
-    function updateStatisticsByYear() {
-      fetch("{% url 'api:defect-statistics-by-year' %}")
+    function updateStatistics(url, chart) {
+      fetch(url + window.location.search)
         .then(function(response) {
           return response.json()
         }).then(function(data) {
-          data = formatStatisticsByYearToArray(data);
-          setStatisticsByYearChart(statisticsByYearChart, data);
+          data = formatStatisticsToArray(data);
+          setStatistics(chart, data);
         }).catch(function(ex) {
           console.log('Error: ', ex)
         });
     }
 
-    function formatStatisticsByYearToArray(data) {
-      let years = [];
-      let defect_counts = [];
-    
-      data.forEach((item, index, array) => {
-        years.push(item.year);
-        defect_counts.push(item.defect_count);
+    function formatStatisticsToArray(data) {
+      let result = {};
+
+      data.forEach(item => {
+        Object.keys(data[0]).forEach(key => {
+          if (result[key] != null && typeof(result[key] == 'object')) {
+            result[key].push(item[key]);
+          } else {
+            result[key] = [];
+          }
+        });
       });
 
-      return {
-        years: years,
-        defect_counts: defect_counts
-      };
+      return result
     }
 
-    var statisticsByYearConfig = {
-      type: "bar",
-      data: {
-      labels: [],
-      datasets: [{
-        label: "Количество дефектов в год, шт.",
-        data: [],
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-        fill: true,
-        yAxisID: 'y'
-      }]
-    },
-      options: {
-        scales: {
-          y: {
-            type: 'linear',
-            display: true,
-            position: 'left',
-          }
-        },
-        elements: {
-          point: {
-            radius: 0
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: "bottom",
-            labels: {
-                boxHeight: 0
-            }
-          }
-        }
-      }
-    }
-
-    function setStatisticsByYearChart(chart, data) {
-      chart.data.labels = data.years;
-      chart.data.datasets[0].data = data.defect_counts;
+    function setStatistics(chart, data) {
+      chart.data.labels = data.label;
+      chart.data.datasets[0].data = data.value;
       chart.update();
     }
 
     const statisticsByYearCtx = document.getElementById("statisticsByYearChart").getContext("2d");
-    const statisticsByYearChart = new Chart(statisticsByYearCtx, statisticsByYearConfig);
+    const statisticsByYearChart = new Chart(statisticsByYearCtx, structuredClone(lineChartConfig));
+
+    const statisticsByGroupCtx = document.getElementById("statisticsByGroupChart").getContext("2d");
+    const statisticsByGroupChart = new Chart(statisticsByGroupCtx, structuredClone(barChartConfig));
+
+    const statisticsByTechReasonCtx = document.getElementById("statisticsByTechReasonChart").getContext("2d");
+    const statisticsByTechReasonChart = new Chart(statisticsByTechReasonCtx, structuredClone(barChartConfig));
+
+    const statisticsByOrgReasonCtx = document.getElementById("statisticsByOrgReasonChart").getContext("2d");
+    const statisticsByOrgReasonChart = new Chart(statisticsByOrgReasonCtx, structuredClone(barChartConfig));
+
+    const statisticsByReapairMethodCtx = document.getElementById("statisticsByReapairMethodChart").getContext("2d");
+    const statisticsByReapairMethodChart = new Chart(statisticsByReapairMethodCtx, structuredClone(barChartConfig));
+
+    const charts = {
+      "{% url 'api:defect-statistics-by-year' %}": statisticsByYearChart,
+      "{% url 'api:defect-statistics-by-group' %}": statisticsByGroupChart,
+      "{% url 'api:defect-statistics-by-tech-reason' %}": statisticsByTechReasonChart,
+      "{% url 'api:defect-statistics-by-org-reason' %}": statisticsByOrgReasonChart,
+      "{% url 'api:defect-statistics-by-repair-method' %}": statisticsByReapairMethodChart,
+    }
 
     updateContent()
   </script>
