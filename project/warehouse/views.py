@@ -314,7 +314,6 @@ class MaterialStorageCreate(LoginRequiredMixin, CreateView):
             storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
             form.instance.storage = storage
 
-        form.instance.owner = self.request.user.dept
         return super().form_valid(form)
 
 
@@ -385,7 +384,6 @@ class ComponentStorageCreate(LoginRequiredMixin, CreateView):
             storage = get_object_or_404(Storage, pk=self.kwargs['storage_pk'])
             form.instance.storage = storage
 
-        form.instance.owner = self.request.user.dept
         return super().form_valid(form)
 
 
