@@ -48,10 +48,17 @@ class StorageDetail(DetailView):
         materials = MaterialStorage.objects.select_related('material')
         components = ComponentStorage.objects.select_related('component')
 
-        return queryset.prefetch_related(
+        return queryset.select_related(
+            'parent_storage'
+        ).prefetch_related(
             Prefetch('materials', queryset=materials),
-            Prefetch('components', queryset=components),
+            Prefetch('components', queryset=components)
         )
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/includes/storage_content.html']
+        return ['warehouse/storage_detail.html']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,8 +76,8 @@ class StorageList(ListView):
         return queryset.annotate(storage_count=Count('storage'))
 
     def get_template_names(self):
-        if is_htmx(self.request):
-            return ['warehouse/includes/storage_ul.html']
+        if is_htmx(self.request) and self.request.GET.get('storage'):
+                return ['warehouse/includes/storage_ul.html']
         return ['warehouse/storage_list.html']
 
     def get_context_data(self, **kwargs):

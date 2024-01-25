@@ -64,7 +64,7 @@ class TestStorage:
             'Проверьте, что передали поле "internal_storage_urls" в контекст стр.'  # noqa (E501)
 
     @pytest.mark.django_db
-    def test_storage_view_get_list(self, client):
+    def test_storage_view_get_list(self, client, storage_1):
         try:
             url = reverse('warehouse:storage-list')
             response = client.get(url)
@@ -72,8 +72,19 @@ class TestStorage:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
+        assert response.templates[0].name == 'warehouse/storage_list.html', \
+            'Проверьте, что используете шаблон storage_list.html в ответе'
+
         assert 'storage_list' in response.context, \
             'Проверьте, что передали поле "storage_list" в контекст страницы'
+
+        response = client.get(
+            f'{url}?storage={storage_1.pk}',
+            headers={'Hx-Request': True}
+        )
+        assert response.templates[0].name == 'warehouse/includes/storage_ul.html', \
+            'Проверьте, что используете шаблон storage_ul.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     def test_storage_view_get_detail(self, client, storage_1):
@@ -85,6 +96,9 @@ class TestStorage:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+
+        assert response.templates[0].name == 'warehouse/storage_detail.html', \
+            'Проверьте, что используете шаблон storage_detail.html в ответе'
 
         storage_from_context = get_field_context(response.context, Storage)
         assert storage_from_context is not None, \
@@ -101,6 +115,11 @@ class TestStorage:
         assert componentstorage_form is not None, \
             'Проверьте, что передали поле типа ComponentStorageForm ' \
             'в контекст страницы'
+
+        response = client.get(url, headers={'Hx-Request': True})
+        assert response.templates[0].name == 'warehouse/includes/storage_content.html', \
+            'Проверьте, что используете шаблон storage_content.html в ответе ' \
+            'для htmx запроса'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)

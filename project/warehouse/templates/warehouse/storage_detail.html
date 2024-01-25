@@ -1,57 +1,19 @@
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 1s ease-out;
-    }
-</style>
-<div class="row justify-content-between">
-    <div class="col me-auto"><h3>{{ storage.name }}</h3></div>
-    <div class="col-auto pt-1">
-          {% include "warehouse/includes/qrcode_link.html" with storage_pk=storage.pk %}
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
+{% block content %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
+            <li class="breadcrumb-item">{{ storage.name }}</li>
+        </ol>
+    </nav>
+    <div class="row mb-5">
+        <h1>Места хранения</h1>
     </div>
-</div>
-<div class="row mt-5">
-    <h5>Запасные части</h5>
-</div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Производитель</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Тип</th>
-            <th scope="col">Инв. номер</th>
-            <th scope="col">Количество</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for componentstorage in storage.components.all %}
-            {% include "warehouse/componentstorage_detail.html" %}
-        {% endfor %}
-        {% if user.is_authenticated and storage.owner == user.dept %}
-            {% include "warehouse/componentstorage_form.html" with form=componentstorage_form %}
-        {% endif %}
-    </tbody>
-</table>
-<div class="row mt-5">
-    <h5>Расходные материалы</h5>
-</div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Наименование</th>
-            <th scope="col">Артикул</th>
-            <th scope="col">Инв. номер</th>
-            <th scope="col">Количество</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for materialstorage in storage.materials.all %}
-            {% include "warehouse/materialstorage_detail.html" %}
-        {% endfor %}
-        {% if user.is_authenticated and storage.owner == user.dept %}
-            {% include "warehouse/materialstorage_form.html" with form=materialstorage_form %}
-        {% endif %}
-    </tbody>
-</table>
+    <div class="row mb-2">
+        <div id="storageContent">
+            {% include 'warehouse/includes/storage_content.html'}
+        </div>
+    </div>
+{% endblock %}
