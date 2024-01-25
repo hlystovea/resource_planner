@@ -77,7 +77,7 @@ class StorageList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request) and self.request.GET.get('storage'):
-                return ['warehouse/includes/storage_ul.html']
+            return ['warehouse/includes/storage_ul.html']
         return ['warehouse/storage_list.html']
 
     def get_context_data(self, **kwargs):
@@ -430,5 +430,5 @@ class ComponentStorageDelete(LoginRequiredMixin,
 def storage_li_view(request, pk):
     queryset = Storage.objects.annotate(storage_count=Count('storage'))
     storage = get_object_or_404(queryset, pk=pk)
-    context = {'storage':  storage}
+    context = {'storage': storage}
     return render(request, 'warehouse/includes/storage_li.html', context)
