@@ -10,6 +10,28 @@
     <div class="row mb-5">
         <h1>Материалы</h1>
     </div>
-    {% include "warehouse/includes/material_filter.html" %}
-    {% include "warehouse/includes/material_table.html" %}
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <form class="row m-0" hx-get="{% url 'warehouse:material-list' %}"
+                hx-target="#materialTable"
+                hx-swap="outerHTML"
+                hx-include="[name='dept']"
+            >
+                <div class="col-auto px-0">
+                    <input class="form-control form-control-sm" type="text" name="search" placeholder="Поиск..">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-secondary">Найти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            {% include "warehouse/includes/material_filter.html" %}
+        </div>
+        <div class="col-auto">
+            {% include "warehouse/includes/material_table.html" %}
+        </div>
+    </div>
 {% endblock %}
