@@ -1,10 +1,22 @@
-<div class="row justify-content-end">
-    <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept"></div>
-    <div class="col-sm-2">
+<div class="row justify-content-between">
+    <div class="col me-auto">
+        <form hx-get="{% url 'warehouse:instrument-list' %}"
+            hx-target="#instrumentTable"
+            hx-swap="outerHTML"
+            hx-include="[name='dept']"
+        >
+            <input class="form-control form-control-sm" type="text" name="search" placeholder="Поиск..">
+            <button class="btn btn-sm btn-secondary">Найти</button>
+        </form>
+    </div>
+    <div class="col-auto">
+        <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept">
+        </div>
         <select class="form-select form-select-sm" id="selectDept" name="dept"
             hx-get="{% url 'warehouse:instrument-list' %}"
             hx-target="#instrumentTable"
             hx-swap="outerHTML"
+            hx-include="[name='search']"
         >
         </select>
     </div>

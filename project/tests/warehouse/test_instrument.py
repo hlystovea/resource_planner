@@ -270,3 +270,11 @@ class TestInstrument:
             'Фильтр по подразделению работает не правильно'
         assert instrument_dept2 not in instrument_list, \
             'Фильтр по подразделению работает не правильно'
+
+        response = client.get(f'{url}?search={instrument_dept1.name[-5:]}')
+        instrument_list = response.context['instrument_list']
+
+        assert instrument_dept1 in instrument_list, \
+            'Поиск по подразделению работает не правильно'
+        assert instrument_dept2 not in instrument_list, \
+            'Поиск по подразделению работает не правильно'

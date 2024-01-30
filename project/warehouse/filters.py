@@ -1,8 +1,9 @@
-from django_filters import BooleanFilter, FilterSet, NumberFilter
+from django_filters import BooleanFilter, CharFilter, FilterSet, NumberFilter
 
 
 class InstrumentFilter(FilterSet):
     dept = NumberFilter(field_name='owner')
+    search = CharFilter(field_name='name', lookup_expr='icontains')
 
 
 class MaterialFilter(FilterSet):
