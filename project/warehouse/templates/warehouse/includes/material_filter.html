@@ -1,10 +1,8 @@
-<div class="row justify-content-between"
-    hx-get="{% url 'warehouse:material-list' %}"
-    hx-target="#instrumentTable"
-    hx-swap="outerHTML"
->
+<div class="row justify-content-between">
     <div class="col me-auto">
         <form class="row m-0" hx-get="{% url 'warehouse:material-list' %}"
+            hx-target="#materialTable"
+            hx-swap="outerHTML"
             hx-include="[name='dept']"
         >
             <div class="col-auto px-0">
@@ -19,6 +17,9 @@
         <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept">
         </div>
         <select class="form-select form-select-sm" id="selectDept" name="dept"
+            hx-get="{% url 'warehouse:material-list' %}"
+            hx-target="#materialTable"
+            hx-swap="outerHTML"
             hx-include="[name='search']"
         >
         </select>
