@@ -1,11 +1,11 @@
 <div class="row justify-content-between">
-    <div class="col-4 me-auto">
+    <div class="col me-auto">
         <form class="row m-0" hx-get="{% url 'warehouse:instrument-list' %}"
             hx-target="#instrumentTable"
             hx-swap="outerHTML"
             hx-include="[name='dept']"
         >
-            <div class="col-8">
+            <div class="col-auto px-0">
                 <input class="form-control form-control-sm" type="text" name="search" placeholder="Поиск..">
             </div>
             <div class="col-auto">
