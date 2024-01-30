@@ -1,5 +1,7 @@
-<div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept">
+<h3>Фильтр:</h3>
+<div hx-get="{% url 'staff:dept-select' %}?label=false" hx-trigger="load" hx-target="#selectDept">
 </div>
+<label name="dept" for="selectDept">Подразделение</label>
 <select class="form-select form-select-sm" id="selectDept" name="dept"
     hx-get="{% url 'warehouse:material-list' %}"
     hx-target="#materialTable"
