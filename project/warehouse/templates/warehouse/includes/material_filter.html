@@ -1,6 +1,6 @@
 <div hx-get="{% url 'staff:dept-checks' %}" hx-trigger="load" hx-target="#filter" hx-swap="afterbegin">
 </div>
-<form id="filter"
+<form class="mt-2" id="filter"
     hx-get="{% url 'warehouse:material-list' %}"
     hx-target="#materialTable"
     hx-swap="outerHTML"
