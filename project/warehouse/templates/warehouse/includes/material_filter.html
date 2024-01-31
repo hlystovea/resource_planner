@@ -1,10 +1,11 @@
-<div hx-get="{% url 'staff:dept-select' %}" hx-trigger="load" hx-target="#selectDept" hx-swap="afterbegin">
+<div class="mt-4">
+    <div hx-get="{% url 'staff:dept-select' %}" hx-trigger="load" hx-target="#selectDept" hx-swap="afterbegin"></div>
+    <label for="selectDept">Подразделение</label>
+    <select class="form-select form-select-sm" id="selectDept" name="dept"
+        hx-get="{% url 'warehouse:instrument-list' %}"
+        hx-target="#materialTable"
+        hx-swap="outerHTML"
+        hx-include="[name='search']"
+    >
+    </select>
 </div>
-<form hx-get="{% url 'warehouse:material-list' %}"
-    hx-target="#materialTable"
-    hx-swap="outerHTML"
-    hx-include="[name='search']"
->
-    <select class="form-select form-select-sm" id="selectDept" name="dept_in" size="4" multiple></select>
-    <button class="btn btn-sm btn-secondary mt-2">Показать</button>
-</form>
