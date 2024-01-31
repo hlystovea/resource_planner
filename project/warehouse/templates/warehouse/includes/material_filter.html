@@ -1,10 +1,10 @@
-<div hx-get="{% url 'staff:dept-checks' %}" hx-trigger="load" hx-target="#filter" hx-swap="afterbegin">
+<div hx-get="{% url 'staff:dept-select' %}" hx-trigger="load" hx-target="#selectDept" hx-swap="afterbegin">
 </div>
-<form class="mt-2" id="filter"
-    hx-get="{% url 'warehouse:material-list' %}"
+<form hx-get="{% url 'warehouse:material-list' %}"
     hx-target="#materialTable"
     hx-swap="outerHTML"
     hx-include="[name='search']"
 >
-    <button class="btn btn-sm btn-secondary">Показать</button>
+    <select class="form-select form-select-sm" id="selectDept" name="dept_in" size="4" multiple></select>
+    <button class="btn btn-sm btn-secondary mt-2">Показать</button>
 </form>
