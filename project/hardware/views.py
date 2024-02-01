@@ -65,6 +65,15 @@ class ComponentCreate(LoginRequiredMixin, CreateView):
         context['is_new'] = True
         return context
 
+    def form_valid(self, form):
+        try:
+            manufacturer = Manufacturer.objects.get(name=form.instance.manufacturer)
+        except Manufacturer.DoesNotExist:
+            manufacturer = Manufacturer.objects.create(name=form.instance.manufacturer)
+
+        form.instance.manufacturer = manufacturer
+        return super().form_valid(form)
+
 
 class ComponentUpdate(LoginRequiredMixin, UpdateView):
     model = Component
