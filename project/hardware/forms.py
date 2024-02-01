@@ -23,7 +23,7 @@ class ListTextWidget(TextInput):
 
 
 class ComponentForm(ModelForm):
-    manufacturer = CharField(required=True)
+    manufacturer = CharField(label='Изготовитель', required=True)
 
     def __init__(self, *args, **kwargs):
         _manufacturer_list = Manufacturer.objects.values_list(
@@ -37,16 +37,18 @@ class ComponentForm(ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
 
-        try:
-            manufacturer = Manufacturer.objects.get(
-                name=cleaned_data['manufacturer']
-            )
-        except Manufacturer.DoesNotExist:
-            manufacturer = Manufacturer.objects.create(
-                name=cleaned_data['manufacturer']
-            )
+        if cleaned_data.get('manufacturer'):
+            try:
+                manufacturer = Manufacturer.objects.get(
+                    name=cleaned_data['manufacturer']
+                )
+            except Manufacturer.DoesNotExist:
+                manufacturer = Manufacturer.objects.create(
+                    name=cleaned_data['manufacturer']
+                )
+            finally:
+                cleaned_data['manufacturer'] = manufacturer
 
-        cleaned_data['manufacturer'] = manufacturer
         return cleaned_data
 
     class Meta:

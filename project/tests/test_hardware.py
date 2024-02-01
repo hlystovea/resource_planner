@@ -155,7 +155,7 @@ class TestComponent:
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], ComponentForm), \
-            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+            'Проверьте, что поле `form` содержит объект класса `ComponentForm`'
 
         data = {
             'name': name,
