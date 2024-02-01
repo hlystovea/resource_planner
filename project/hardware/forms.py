@@ -34,6 +34,21 @@ class ComponentForm(ModelForm):
             name='manufacturer-list'
         )
 
+    def clean(self):
+        cleaned_data = self.cleaned_data
+
+        try:
+            manufacturer = Manufacturer.objects.get(
+                name=cleaned_data['manufacturer']
+            )
+        except Manufacturer.DoesNotExist:
+            manufacturer = Manufacturer.objects.create(
+                name=cleaned_data['manufacturer']
+            )
+
+        cleaned_data['manufacturer'] = manufacturer
+        return cleaned_data
+
     class Meta:
         model = Component
         fields = '__all__'
