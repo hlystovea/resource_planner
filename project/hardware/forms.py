@@ -23,6 +23,8 @@ class ListTextWidget(TextInput):
 
 
 class ComponentForm(ModelForm):
+    manufacturer = CharField(required=True)
+
     def __init__(self, *args, **kwargs):
         _manufacturer_list = Manufacturer.objects.values_list(
             'name', flat=True).order_by('name')
