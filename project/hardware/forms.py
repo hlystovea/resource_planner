@@ -37,6 +37,7 @@ class ComponentForm(ModelForm):
             data_list=_manufacturer_list,
             name='manufacturer-list'
         )
+        self.fields['manufacturer'].widget.template_name = 'hardware/includes/manufacturer_input.html'
 
     def clean_manufacturer(self):
         manufacturer = self.cleaned_data['manufacturer']
