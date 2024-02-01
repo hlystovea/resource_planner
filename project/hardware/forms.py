@@ -11,6 +11,11 @@ class ListTextWidget(TextInput):
         self._list = data_list
         self.attrs.update({'list':'list__%s' % self._name})
 
+    def value_from_datadict(self, data, files, name):
+        if hasattr(data.get(name), 'name'):
+            return data.get(name).name
+        return data.get(name)
+
     def render(self, name, value, attrs=None, renderer=None):
         text_html = super(ListTextWidget, self).render(name, value, attrs=attrs)
         data_list = '<datalist id="list__%s">' % self._name
@@ -37,7 +42,7 @@ class ComponentForm(ModelForm):
             data_list=_manufacturer_list,
             name='manufacturer-list'
         )
-        self.fields['manufacturer'].widget.template_name = 'hardware/includes/manufacturer_input.html'
+
 
     def clean_manufacturer(self):
         manufacturer = self.cleaned_data['manufacturer']
