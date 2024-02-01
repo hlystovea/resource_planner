@@ -25,6 +25,10 @@ class ListTextWidget(TextInput):
 class ComponentForm(ModelForm):
     manufacturer = CharField(label='Изготовитель', required=True)
 
+    class Meta:
+        model = Component
+        fields = '__all__'
+
     def __init__(self, *args, **kwargs):
         _manufacturer_list = Manufacturer.objects.values_list(
             'name', flat=True).order_by('name')
@@ -34,37 +38,26 @@ class ComponentForm(ModelForm):
             name='manufacturer-list'
         )
 
-    def clean(self):
-        cleaned_data = self.cleaned_data
+    def clean_manufacturer(self):
+        manufacturer = self.cleaned_data['manufacturer']
 
-        if cleaned_data.get('manufacturer'):
-            try:
-                manufacturer = Manufacturer.objects.get(
-                    name=cleaned_data['manufacturer']
-                )
-            except Manufacturer.DoesNotExist:
-                manufacturer = Manufacturer.objects.create(
-                    name=cleaned_data['manufacturer']
-                )
-            finally:
-                cleaned_data['manufacturer'] = manufacturer
+        try:
+            manufacturer = Manufacturer.objects.get(name=manufacturer)
+        except Manufacturer.DoesNotExist:
+            manufacturer = Manufacturer.objects.create(name=manufacturer)
 
-        return cleaned_data
-
-    class Meta:
-        model = Component
-        fields = '__all__'
+        return manufacturer
 
 
 class ComponentFilterForm(ModelForm):
     dept = ChoiceField(label='Подразделение')
+
+    class Meta:
+        model = Component
+        fields = ('dept', 'manufacturer')
 
     def __init__(self, *args, **kwargs):
         super(ComponentFilterForm, self).__init__(*args, **kwargs)
         self.fields['dept'].choices = [
             (d.id, d.abbreviation) for d in Dept.objects.all()
         ]
-
-    class Meta:
-        model = Component
-        fields = ('dept', 'manufacturer')
