@@ -1,58 +1,13 @@
-from django.forms import CharField, ChoiceField, ModelForm, TextInput
+from django.forms import ChoiceField, ModelForm
 
-from hardware.models import Component, Manufacturer
+from hardware.models import Component
 from staff.models import Dept
 
 
-class ListTextWidget(TextInput):
-    def __init__(self, data_list, name, *args, **kwargs):
-        super(ListTextWidget, self).__init__(*args, **kwargs)
-        self._name = name
-        self._list = data_list
-        self.attrs.update({'list':'list__%s' % self._name})
-
-    def value_from_datadict(self, data, files, name):
-        if hasattr(data.get(name), 'name'):
-            return data.get(name).name
-        return data.get(name)
-
-    def render(self, name, value, attrs=None, renderer=None):
-        text_html = super(ListTextWidget, self).render(name, value, attrs=attrs)
-        data_list = '<datalist id="list__%s">' % self._name
-
-        for item in self._list:
-            data_list += '<option value="%s">' % item
-        data_list += '</datalist>'
-
-        return (text_html + data_list)
-
-
 class ComponentForm(ModelForm):
-    manufacturer = CharField(label='Изготовитель', required=True)
-
     class Meta:
         model = Component
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        _manufacturer_list = Manufacturer.objects.values_list(
-            'name', flat=True).order_by('name')
-        super(ComponentForm, self).__init__(*args, **kwargs)
-        self.fields['manufacturer'].widget = ListTextWidget(
-            data_list=_manufacturer_list,
-            name='manufacturer-list'
-        )
-
-
-    def clean_manufacturer(self):
-        manufacturer = self.cleaned_data['manufacturer']
-
-        try:
-            manufacturer = Manufacturer.objects.get(name=manufacturer)
-        except Manufacturer.DoesNotExist:
-            manufacturer = Manufacturer.objects.create(name=manufacturer)
-
-        return manufacturer
 
 
 class ComponentFilterForm(ModelForm):
