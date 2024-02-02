@@ -1,14 +1,12 @@
 {% load static %}
-<div class="col-md-5" id="manufacturer_input">
-    <div class="input-group">
-        <select name="manufacturer" class="form-control" id="id_manufacturer" required>
-            {% include 'hardware/includes/manufacturer_options.html' %}
-        </select>
-        <button class="btn btn-outline-secondary" type="button"
-            hx-get="{% url 'hardware:manufacturer-input' %}"
-            hx-target="#manufacturer_input"
-        >
-            <img src="{% static 'icons/file-earmark-plus.svg' %}" height="16" fill="currentColor" class="bi bi-file-earmark-plus">
-        </button>
-    </div>
+<div class="input-group input-group-sm">
+    <select name="manufacturer" class="form-control" id="id_manufacturer" required>
+        {% include 'hardware/includes/manufacturer_options.html' %}
+    </select>
+    <button class="btn btn-outline-secondary" type="button"
+        hx-get="{% url 'hardware:manufacturer-input' %}"
+        hx-target="#manufacturer_input"
+    >
+        <img src="{% static 'icons/file-earmark-plus.svg' %}" height="16" fill="currentColor" class="bi bi-file-earmark-plus">
+    </button>
 </div>

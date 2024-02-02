@@ -44,7 +44,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-5">
-                                        {{ form.name|addclass:"form-control" }}
+                                        {{ form.name|addclass:"form-control form-control-sm" }}
                                         {% if form.name.help_text %}
                                           <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
                                               {{ form.name.help_text|safe }}
@@ -60,7 +60,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-5">
-                                        {{ form.function|addclass:"form-control" }}
+                                        {{ form.function|addclass:"form-control form-control-sm" }}
                                         {% if form.function.help_text %}
                                           <small id="{{ form.function.id_for_label }}-help" class="form-text text-muted">
                                               {{ form.function.help_text|safe }}
@@ -76,7 +76,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-5">
-                                        {{ form.design|addclass:"form-control" }}
+                                        {{ form.design|addclass:"form-control form-control-sm" }}
                                         {% if form.design.help_text %}
                                             <small id="{{ form.design.id_for_label }}-help" class="form-text text-muted">
                                                 {{ form.design.help_text|safe }}
@@ -92,8 +92,8 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-5" id="manufacturer_input">
-                                        <div class="input-group">
-                                            {{ form.manufacturer|addclass:"form-control" }}
+                                        <div class="input-group input-group-sm">
+                                            {{ form.manufacturer|addclass:"form-control form-control-sm" }}
                                             {% if form.manufacturer.help_text %}
                                                 <small id="{{ form.manufacturer.id_for_label }}-help" class="form-text text-muted">
                                                     {{ form.manufacturer.help_text|safe }}
@@ -115,7 +115,7 @@
                                         {{ form.series.label }}
                                     </label>
                                     <div class="col-md-5">
-                                        {{ form.series|addclass:"form-control" }}
+                                        {{ form.series|addclass:"form-control form-control-sm" }}
                                         {% if form.series.help_text %}
                                             <small id="{{ form.series.id_for_label }}-help" class="form-text text-muted">
                                                 {{ form.series.help_text|safe }}
@@ -130,7 +130,7 @@
                                         {{ form.type.label }}
                                     </label>
                                     <div class="col-md-5">
-                                        {{ form.type|addclass:"form-control" }}
+                                        {{ form.type|addclass:"form-control form-control-sm" }}
                                         {% if form.type.help_text %}
                                             <small id="{{ form.type.id_for_label }}-help" class="form-text text-muted">
                                                 {{ form.type.help_text|safe }}
