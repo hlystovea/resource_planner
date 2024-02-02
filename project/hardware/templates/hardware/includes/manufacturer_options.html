@@ -12,8 +12,7 @@
 
 {% for manufacturer in manufacturer_list %}
     <option value="{{ manufacturer.pk }}"
-        {% if manufacturer.pk|stringformat:'i' == request.GET.manufacturer
-           or manufacturer.pk == selected_manufacturer.pk %}
+        {% if manufacturer.pk|stringformat:'i' == request.GET.manufacturer or manufacturer.pk == selected_manufacturer.pk %}
             selected
         {% endif %}
     >
