@@ -91,22 +91,20 @@
                                         {{ form.manufacturer.label }}
                                         <span class="required">*</span>
                                     </label>
-                                    <div id="manufacturer_input">
-                                        <div class="col-md-5">
+                                    <div class="col-md-5" id="manufacturer_input">
+                                        <div class="input-group">
                                             {{ form.manufacturer|addclass:"form-control" }}
                                             {% if form.manufacturer.help_text %}
                                                 <small id="{{ form.manufacturer.id_for_label }}-help" class="form-text text-muted">
                                                     {{ form.manufacturer.help_text|safe }}
                                                 </small>
                                             {% endif %}
-                                        </div>
-                                        <div class="col-md-1 me-auto py-1 px-0">
-                                            <a class="icon-link align-middle" role="button"
+                                            <button class="btn btn-outline-secondary" type="button"
                                                 hx-get="{% url 'hardware:manufacturer-input' %}"
                                                 hx-target="#manufacturer_input"
                                             >
-                                                <img src="{% static 'icons/file-earmark-plus-fill.svg' %}" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill">
-                                            </a>
+                                                <img src="{% static 'icons/file-earmark-plus.svg' %}" height="16" fill="currentColor" class="bi bi-file-earmark-plus">
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
