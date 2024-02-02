@@ -90,16 +90,21 @@
                       {{ form.manufacturer.label }}
                       <span class="required">*</span>
                   </label>
-                  <div class="col-md-5">
-                      {{ form.manufacturer|addclass:"form-control" }}
-                      {% if form.manufacturer.help_text %}
-                        <small id="{{ form.manufacturer.id_for_label }}-help" class="form-text text-muted">
-                            {{ form.manufacturer.help_text|safe }}
-                        </small>
-                      {% endif %}
-                  </div>
-                  <div class="col-md-1 me-auto py-1 px-0">
-                    <button class="btn btn-sm btn-secondary" type="button">+</button>
+                  <div id="manufacturer_input">
+                    <div class="col-md-5">
+                        {{ form.manufacturer|addclass:"form-control" }}
+                        {% if form.manufacturer.help_text %}
+                          <small id="{{ form.manufacturer.id_for_label }}-help" class="form-text text-muted">
+                              {{ form.manufacturer.help_text|safe }}
+                          </small>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-1 me-auto py-1 px-0">
+                      <button class="btn btn-sm btn-secondary" type="button"
+                        hx-get="{% url 'hardware:manufacturer-create' %}"
+                        hx-target="manufacturer_input"
+                      >+</button>
+                    </div>
                   </div>
                 </div>
 

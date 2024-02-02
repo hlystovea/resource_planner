@@ -1,0 +1,14 @@
+<div class="col-md-5">
+    {{ form.name|addclass:"form-control" }}
+    {% if form.name.help_text %}
+      <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+          {{ form.name.help_text|safe }}
+      </small>
+    {% endif %}
+</div>
+<div class="col-md-1 me-auto py-1 px-0">
+  <button class="btn btn-sm btn-secondary" type="button"
+    hx-post="{% url 'hardware:manufacturer-input' %}"
+    hx-target="manufacturer_input"
+  >save</button>
+</div>

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm
+from hardware.forms import ComponentForm, ManufacturerForm
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
@@ -119,3 +120,25 @@ def part_select_view(request):
 def manufacturer_select_view(request):
     context = {'manufacturer_list': Manufacturer.objects.all()}
     return render(request, 'hardware/manufacturer_select.html', context)
+
+
+@login_required
+def manufacturer_input_view(request):
+    form = ManufacturerForm(request.POST or None)
+    if form.is_valid():
+        manufacturer = form.save()
+        return render(
+            request,
+            'hardware/includes/manufacturer_select_with_button.html',
+            context={
+                'select_manufacturer': manufacturer,
+                'manufacturer_list': Manufacturer.objects.all(),
+            }
+        )
+    return render(
+        request,
+        'hardware/includes/manufacturer_input.html',
+        context={
+            'form': form,
+        }
+    )

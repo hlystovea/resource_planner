@@ -1,0 +1,19 @@
+<div class="col-md-5">
+    <select name="manufacturer" class="form-control" id="id_manufacturer" required>
+        {% for manufacturer in manufacturer_list %}
+            <option value="{{ manufacturer.pk }}"
+                {% if manufacturer.pk == select_manufacturer.pk %}
+                    selected
+                {% endif %}
+            >
+                {{ manufacturer.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+<div class="col-md-1 me-auto py-1 px-0">
+    <button class="btn btn-sm btn-secondary" type="button"
+        hx-get="{% url 'hardware:manufacturer-input' %}"
+        hx-target="manufacturer_input"
+    >+</button>
+</div>

@@ -3,7 +3,7 @@ import pytest
 from django.db.models import fields
 from django.urls import reverse
 
-from hardware.forms import ComponentForm, ComponentFilterForm
+from hardware.forms import ComponentForm
 from hardware.models import Component
 from tests.common import get_field_context, search_field
 from warehouse.models import ComponentStorage
