@@ -37,12 +37,10 @@
               <div class="card-body">
 
                 <!-- Наименование -->
-                <div class="form-group row my-1" aria-required="{% if form.name.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="true">
                     <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                         {{ form.name.label }}
-                        {% if form.name.required %}
-                          <span class="required">*</span>
-                        {% endif %}
+                        <span class="required">*</span>
                     </label>
                     <div class="col-md-5">
                         {{ form.name|addclass:"form-control" }}
@@ -55,12 +53,10 @@
                 </div>
 
                 <!-- Назначение -->
-                <div class="form-group row my-1" aria-required="{% if form.function.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="true">
                     <label for="{{ form.function.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                         {{ form.function.label }}
-                        {% if form.function.required %}
-                          <span class="required">*</span>
-                        {% endif %}
+                        <span class="required">*</span>
                     </label>
                     <div class="col-md-5">
                         {{ form.function|addclass:"form-control" }}
@@ -73,12 +69,10 @@
                 </div>
 
                 <!-- Исполнение -->
-                <div class="form-group row my-1" aria-required="{% if form.design.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="true">
                   <label for="{{ form.design.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                       {{ form.design.label }}
-                      {% if form.design.required %}
-                        <span class="required">*</span>
-                      {% endif %}
+                      <span class="required">*</span>
                   </label>
                   <div class="col-md-5">
                       {{ form.design|addclass:"form-control" }}
@@ -91,12 +85,10 @@
                 </div>
 
                 <!-- Изготовитель -->
-                <div class="form-group row my-1" aria-required="{% if form.manufacturer.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="true">
                   <label for="{{ form.manufacturer.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                       {{ form.manufacturer.label }}
-                      {% if form.manufacturer.required %}
-                        <span class="required">*</span>
-                      {% endif %}
+                      <span class="required">*</span>
                   </label>
                   <div class="col-md-5">
                       {{ form.manufacturer|addclass:"form-control" }}
@@ -112,12 +104,9 @@
                 </div>
 
                 <!-- Серия -->
-                <div class="form-group row my-1" aria-required="{% if form.series.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="false">
                   <label for="{{ form.series.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                       {{ form.series.label }}
-                      {% if form.namseriese.required %}
-                        <span class="required">*</span>
-                      {% endif %}
                   </label>
                   <div class="col-md-5">
                       {{ form.series|addclass:"form-control" }}
@@ -130,12 +119,9 @@
                 </div>
 
                 <!-- Тип -->
-                <div class="form-group row my-1" aria-required="{% if form.type.required %}true{% else %}false{% endif %}">
+                <div class="form-group row my-1" aria-required="false">
                     <label for="{{ form.type.id_for_label }}" class="col-md-4 col-form-label text-md-right">
                         {{ form.type.label }}
-                        {% if form.type.required %}
-                          <span class="required">*</span>
-                        {% endif %}
                     </label>
                     <div class="col-md-5">
                         {{ form.type|addclass:"form-control" }}
