@@ -1,35 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Материалы</li>
-    </ol>
-  </nav>
-  {% include "includes/select_owner.html" %}
-  <figure class="text-center">
-    <h3>Материалы</h3>
-  </figure>
-  <table class="table table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Наименование</th>
-        <th scope="col">Артикул</th>
-        <th scope="col">Количество</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for m in material_list %}
-        <tr>
-          <td><a href={% url 'warehouse:material-detail' m.id %}>{{ m.name }}</a></td>
-          <td>{{ m.article_number|default:"-" }}</td>
-          <td>{{ m.total|floatformat }} {{ m.measurement_unit}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
-  {% endif %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Материалы</li>
+        </ol>
+    </nav>
+    <div class="row mb-5">
+        <h1>Материалы</h1>
+    </div>
+    {% include "warehouse/includes/material_filter.html" %}
+    {% include "warehouse/includes/material_table.html" %}
 {% endblock %}

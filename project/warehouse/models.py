@@ -1,4 +1,6 @@
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
@@ -16,11 +18,22 @@ class Storage(models.Model):
         blank=True,
         null=True,
     )
+    owner = models.ForeignKey(
+        to='staff.Dept',
+        verbose_name=_('Подразделение'),
+        on_delete=models.SET_NULL,
+        related_name='storage',
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ('name', )
         verbose_name = _('Место хранения')
         verbose_name_plural = _('Места хранения')
+
+    def get_absolute_url(self):
+        return reverse('warehouse:storage-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.name}'
@@ -54,6 +67,9 @@ class Material(models.Model):
         verbose_name = _('Список материалов')
         verbose_name_plural = _('Список материалов')
 
+    def get_absolute_url(self):
+        return reverse('warehouse:material-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
 
@@ -62,7 +78,7 @@ class MaterialStorage(models.Model):
     material = models.ForeignKey(
         to=Material,
         verbose_name=_('Материал'),
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='amount',
     )
     inventory_number = models.CharField(
@@ -73,14 +89,9 @@ class MaterialStorage(models.Model):
     )
     amount = models.FloatField(
         verbose_name=_('Количество'),
-    )
-    owner = models.ForeignKey(
-        to='staff.Dept',
-        verbose_name=_('Подразделение'),
-        on_delete=models.CASCADE,
-        related_name='materials',
-        blank=True,
-        null=True,
+        validators=[
+            MinValueValidator(0),
+        ]
     )
     storage = models.ForeignKey(
         to=Storage,
@@ -135,5 +146,40 @@ class Instrument(models.Model):
         verbose_name = _('Инструмент/прибор')
         verbose_name_plural = _('Инструмент/приборы')
 
+    def get_absolute_url(self):
+        return reverse('warehouse:instrument-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f'{self.name} ({self.inventory_number})'
+
+
+class ComponentStorage(models.Model):
+    component = models.ForeignKey(
+        to='hardware.Component',
+        verbose_name=_('Запчасть'),
+        on_delete=models.CASCADE,
+        related_name='amount',
+    )
+    inventory_number = models.CharField(
+        verbose_name=_('Инв. номер'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name=_('Количество'),
+    )
+    storage = models.ForeignKey(
+        to=Storage,
+        verbose_name=_('Место хранения'),
+        on_delete=models.CASCADE,
+        related_name='components',
+    )
+
+    class Meta:
+        ordering = ('component', )
+        verbose_name = _('Запчасти на хранении')
+        verbose_name_plural = _('Запчасти на хранении')
+
+    def __str__(self):
+        return f'{self.component.name}, {self.component.type}'

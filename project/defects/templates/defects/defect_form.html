@@ -2,320 +2,309 @@
 {% block title %}Дефекты{% endblock %}
 {% load user_filters %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
-      <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} дефект</li>
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+        <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} дефект</li>
     </ol>
-  </nav>
+</nav>
 
-  <div class="row justify-content-center">
+<div class="row justify-content-center">
     <div class="col-md-8 p-5 pt-2">
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% if form.errors %}
-          {% if form.non_field_errors %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if form.errors %}
+            {% if form.non_field_errors %}
             <div class="alert alert-danger" role="alert">
-              {{ form.non_field_errors }}
+                {{ form.non_field_errors }}
             </div>
-          {% endif %}
-          
-          {% for field in form %}
-            {% if field.errors %}
-              <div class="alert alert-danger" role="alert">
-                {{ field.errors }}
-              </div>
             {% endif %}
-          {% endfor %}
-        {% endif %}
 
-        <div class="card my-2">
-          <div class="card-header">Описание дефекта</div>
-          <div class="card-body">
-            <!-- Дата обнаружения -->
-            <div class="form-group row my-1" aria-required={% if form.date.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.date.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.date.label }}
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                {{ form.date|addclass:"form-control" }}
-                {% if form.date.help_text %}
-                  <small id="{{ form.date.id_for_label }}-help" class="form-text text-muted">{{ form.date.help_text|safe }}</small>
-                {% endif %}
-              </div>
+            {% for field in form %}
+            {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ field.errors }}
             </div>
-          
-            <!-- Присоединение -->
-            <div class="form-group row my-1" aria-required="true">
-              <label for="selectConnection" class="col-md-4 col-form-label text-md-right">Присоединение</label>
-              <div class="col-md-8">
-                <select class="form-select" id="selectConnection" name="connection" onchange="updateSelectHardware()">
-                  <option value="" selected></option>
-                </select>
-              </div>
-            </div>
-          
-            <!-- Оборудование -->
-            <div class="form-group row my-1" aria-required="false">
-              <label for="selectHardware" class="col-md-4 col-form-label text-md-right">Оборудование</label>
-              <div class="col-md-8">
-                <select class="form-select" id="selectHardware" name="hardware" onchange="updateSelectCabinet()">
-                  <option value="" selected></option>
-                </select>
-              </div>
-            </div>
-          
-            <!-- Шкаф/панель -->
-            <div class="form-group row my-1" aria-required="false">
-              <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
-              <div class="col-md-8">
-                <select class="form-select" id="selectCabinet" name="cabinet" onchange="updateSelectComponent()">
-                  <option value="" selected></option>
-                </select>
-              </div>
-            </div>
-          
-            <!-- Комплектующее -->
-            <div class="form-group row my-1" aria-required="true">
-              <label for="id_component" class="col-md-4 col-form-label text-md-right">
-                Комплектующее
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                <select class="form-select" id="id_component" name="component" required>
-                  <option value=""></option>
-                </select>
-              </div>
-            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
 
-            <!-- Описание дефекта -->
-            <div class="form-group row my-1" aria-required={% if form.description.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.description.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.description.label }}
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                {{ form.description|addclass:"form-control" }}
-                {% if form.description.help_text %}
-                  <small id="{{ form.description.id_for_label }}-help" class="form-text text-muted">{{ form.description.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
-          
-            <!-- Фото -->
-            <div class="form-group row my-1" aria-required={% if form.image.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.image.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.image.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.image|addclass:"form-control" }}
-                {% if form.image.help_text %}
-                  <small id="{{ form.image.id_for_label }}-help" class="form-text text-muted">{{ form.image.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
+            <div class="card my-2">
+                <div class="card-header">Описание дефекта</div>
+                <div class="card-body">
+                    <!-- Дата обнаружения -->
+                    <div class="form-group row my-1" aria-required="{% if form.date.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.date.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.date.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.date|addclass:"form-control" }}
+                            {% if form.date.help_text %}
+                            <small id="{{ form.date.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.date.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
 
-            <!-- Последствия дефекта -->
-            <div class="form-group row my-1" aria-required={% if form.effects.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.effects.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.effects.label }}
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                {{ form.effects|addclass:"form-control" }}
-                {% if form.effects.help_text %}
-                  <small id="{{ form.effects.id_for_label }}-help" class="form-text text-muted">{{ form.effects.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
-          
-            <!-- Признаки дефекта -->
-            <div class="form-group row my-1" aria-required={% if form.features.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.features.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.features.label }}
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                {{ form.features }}
-                {% if form.features.help_text %}
-                  <small id="{{ form.features.id_for_label }}-help" class="form-text text-muted">{{ form.features.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
-          
-            <!-- Условия обнаружения -->
-            <div class="form-group row my-1" aria-required={% if form.condition.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.condition.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.condition.label }}
-                <span class="required">*</span>
-              </label>
-              <div class="col-md-8">
-                {{ form.condition }}
-                {% if form.condition.help_text %}
-                  <small id="{{ form.condition.id_for_label }}-help" class="form-text text-muted">{{ form.condition.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
+                    <!-- Присоединение -->
+                    <div hx-get="{% url 'hardware:connection-select' %}{% if defect %}?connection={{ defect.part.cabinet.hardware.connection.pk }}{% endif %}"
+                        hx-trigger="load" hx-target="#selectConnection" hx-params="none"></div>
+                    <div class="form-group row my-1" aria-required="true">
+                        <label for="selectConnection"
+                            class="col-md-4 col-form-label text-md-right">Присоединение</label>
+                        <div class="col-md-8">
+                            <select class="form-select" id="selectConnection" name="connection"
+                                hx-get="{% url 'hardware:hardware-select' %}"
+                                hx-target="#selectHardware"
+                            >
+                            </select>
+                        </div>
+                    </div>
 
-            <!-- Кнопка -->
-            <div class="d-flex justify-content-end mt-3">          
-              <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
-            </div>
-          </div>
-        </div>
+                    <!-- Оборудование -->
+                    {% if defect %}
+                        <div hx-get="{% url 'hardware:hardware-select' %}?hardware={{ defect.part.cabinet.hardware.pk }}&connection={{ defect.part.cabinet.hardware.connection.pk }}"
+                            hx-trigger="load" hx-target="#selectHardware"></div>
+                    {% endif %}
+                    <div class="form-group row my-1" aria-required="false">
+                        <label for="selectHardware" class="col-md-4 col-form-label text-md-right">Оборудование</label>
+                        <div class="col-md-8">
+                            <select class="form-select" id="selectHardware" name="hardware"
+                                hx-get="{% url 'hardware:cabinet-select' %}"
+                                hx-target="#selectCabinet"
+                            >
+                                <option value="" selected>--------------</option>
+                            </select>
+                        </div>
+                    </div>
 
-        <div class="card my-2">
-          <div class="card-header">Устранение дефекта</div>
-          <div class="card-body">
-            <!-- Технические причины -->
-            <div class="form-group row my-1" aria-required={% if form.technical_reasons.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.technical_reasons.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.technical_reasons.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.technical_reasons|addclass:"form-control" }}
-                {% if form.technical_reasons.help_text %}
-                  <small id="{{ form.technical_reasons.id_for_label }}-help" class="form-text text-muted">{{ form.technical_reasons.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
+                    <!-- Шкаф/панель -->
+                    {% if defect %}
+                        <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}&hardware={{ defect.part.cabinet.hardware.pk }}"
+                            hx-trigger="load" hx-target="#selectCabinet"></div>
+                    {% endif %}
+                    <div class="form-group row my-1" aria-required="false">
+                        <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
+                        <div class="col-md-8">
+                            <select class="form-select" id="selectCabinet" name="cabinet"
+                                hx-get="{% url 'hardware:part-select' %}"
+                                hx-target="#id_part"
+                            >
+                                <option value="" selected>--------------</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <!-- Организационные причины -->
-            <div class="form-group row my-1" aria-required={% if form.organizational_reasons.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.organizational_reasons.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.organizational_reasons.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.organizational_reasons|addclass:"form-control" }}
-                {% if form.organizational_reasons.help_text %}
-                  <small id="{{ form.organizational_reasons.id_for_label }}-help" class="form-text text-muted">{{ form.organizational_reasons.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
-          
-            <!-- Дата устранения -->
-            <div class="form-group row my-1" aria-required={% if form.repair_date.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.repair_date.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.repair_date.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.repair_date|addclass:"form-control" }}
-                {% if form.repair_date.help_text %}
-                  <small id="{{ form.repair_date.id_for_label }}-help" class="form-text text-muted">{{ form.repair_date.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
-          
-            <!-- Выполненные мероприятия -->
-            <div class="form-group row my-1" aria-required={% if form.repair.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.repair.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.repair.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.repair|addclass:"form-control" }}
-                {% if form.repair.help_text %}
-                  <small id="{{ form.repair.id_for_label }}-help" class="form-text text-muted">{{ form.repair.help_text|safe }}</small>
-                {% endif %}
-              </div>
+                    <!-- Комплектующее -->
+                    <div class="form-group row my-1" aria-required="true">
+                        <label for="id_part" class="col-md-4 col-form-label text-md-right">
+                            Комплектующее
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <select class="form-select" id="id_part" name="part" required
+                                {% if defect %}
+                                    hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
+                                    hx-trigger="load"
+                                    hx-params="none"
+                                {% endif %}
+                            >
+                                <option value="" selected>--------------</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Описание дефекта -->
+                    <div class="form-group row my-1" aria-required="{% if form.description.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.description.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.description.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.description|addclass:"form-control" }}
+                            {% if form.description.help_text %}
+                            <small id="{{ form.description.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.description.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Фото -->
+                    <div class="form-group row my-1" aria-required="{% if form.image.required %}true{% else %}false{%endif %}">
+                        <label for="{{ form.image.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.image.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.image|addclass:"form-control" }}
+                            {% if form.image.help_text %}
+                            <small id="{{ form.image.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.image.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Последствия дефекта -->
+                    <div class="form-group row my-1" aria-required="{% if form.effects.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.effects.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.effects.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.effects|addclass:"form-control" }}
+                            {% if form.effects.help_text %}
+                            <small id="{{ form.effects.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.effects.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Признаки дефекта -->
+                    <div class="form-group row my-1" aria-required="{% if form.features.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.features.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.features.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.features }}
+                            {% if form.features.help_text %}
+                            <small id="{{ form.features.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.features.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Условия обнаружения -->
+                    <div class="form-group row my-1" aria-required="{% if form.condition.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.condition.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.condition.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.condition }}
+                            {% if form.condition.help_text %}
+                            <small id="{{ form.condition.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.condition.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Кнопка -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Приложение -->
-            <div class="form-group row my-1" aria-required={% if form.attachment.required %}"true"{% else %}"false"{% endif %}>
-              <label for="{{ form.attachment_for_label }}" class="col-md-4 col-form-label text-md-right">
-                {{ form.attachment.label }}
-              </label>
-              <div class="col-md-8">
-                {{ form.attachment|addclass:"form-control" }}
-                {% if form.attachment.help_text %}
-                  <small id="{{ form.attachment.id_for_label }}-help" class="form-text text-muted">{{ form.attachment.help_text|safe }}</small>
-                {% endif %}
-              </div>
-            </div>
+            <div class="card my-2">
+                <div class="card-header">Устранение дефекта</div>
+                <div class="card-body">
+                    <!-- Технические причины -->
+                    <div class="form-group row my-1" aria-required="{% if form.technical_reasons.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.technical_reasons.id_for_label }}"
+                            class="col-md-4 col-form-label text-md-right">
+                            {{ form.technical_reasons.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.technical_reasons|addclass:"form-control" }}
+                            {% if form.technical_reasons.help_text %}
+                            <small id="{{ form.technical_reasons.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.technical_reasons.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
 
-            <!-- Кнопка -->
-            <div class="d-flex justify-content-end mt-3">          
-              <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
+                    <!-- Организационные причины -->
+                    <div class="form-group row my-1" aria-required="{% if form.organizational_reasons.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.organizational_reasons.id_for_label }}"
+                            class="col-md-4 col-form-label text-md-right">
+                            {{ form.organizational_reasons.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.organizational_reasons|addclass:"form-control" }}
+                            {% if form.organizational_reasons.help_text %}
+                            <small id="{{ form.organizational_reasons.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.organizational_reasons.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Дата устранения -->
+                    <div class="form-group row my-1" aria-required="{% if form.repair_date.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.repair_date.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.repair_date.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.repair_date|addclass:"form-control" }}
+                            {% if form.repair_date.help_text %}
+                            <small id="{{ form.repair_date.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.repair_date.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Метод устранения -->
+                    <div class="form-group row my-1" aria-required="{% if form.repair_method.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.repair_method.id_for_label }}"
+                            class="col-md-4 col-form-label text-md-right">
+                            {{ form.repair_method.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.repair_method }}
+                            {% if form.repair_method.help_text %}
+                            <small id="{{ form.repair_method.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.repair_method.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Выполненные мероприятия -->
+                    <div class="form-group row my-1" aria-required="{% if form.repair.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.repair.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.repair.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.repair|addclass:"form-control" }}
+                            {% if form.repair.help_text %}
+                            <small id="{{ form.repair.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.repair.help_text|safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Приложение -->
+                    <div class="form-group row my-1" aria-required="{% if form.attachment.required %}true{% else %}false{% endif %}">
+                        <label for="{{ form.attachment_for_label }}" class="col-md-4 col-form-label text-md-right">
+                            {{ form.attachment.label }}
+                        </label>
+                        <div class="col-md-8">
+                            {{ form.attachment|addclass:"form-control" }}
+                            {% if form.attachment.help_text %}
+                            <small id="{{ form.attachment.id_for_label }}-help" class="form-text text-muted">{{
+                                form.attachment.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Кнопка -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </form>
+        </form>
     </div>
-  </div>
-  <script>
-    const params = new Proxy(new URLSearchParams(window.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });
-
-    function createOptionElement(value, text, selected=false) {
-      let option = document.createElement("option");
-      option.value = value;
-      option.innerText = text;
-      option.selected = (selected) ? true : false;
-      return option
-    };
-
-    function updateSelectOptions(id, url, selectedValue="", firstOption="Выбрать..", key="abbreviation") {
-      fetch(url)
-        .then(function(response) {
-          return response.json()
-        }).then(function(data) {
-          let parent = document.getElementById(id);
-          let options = [];
-          options.push(createOptionElement("", firstOption, true))
-          data.forEach(obj => {
-            let selected = obj.id == selectedValue;
-            options.push(createOptionElement(obj.id, obj[key], selected));
-          });
-          parent.replaceChildren(...options);
-        }).catch(function(ex) {
-          console.log('Error: ', ex)
-        });
-    };
-
-    function updateSelectConnection() {
-      let id = "selectConnection"
-      let url = "{% url 'api:connection-list' %}"
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.hardware.connection.id }}{% endif %}"
-      let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
-    };
-
-    function updateSelectHardware() {
-      let id = "selectHardware"
-      let url = "{% url 'api:hardware-list' %}"
-      let connection = document.getElementById("selectConnection").value;
-      if (connection) url = "{% url 'api:connection-list' %}" + connection + "/hardware";
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.hardware.id }}{% endif %}"
-      let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "name");
-    };
-
-    function updateSelectCabinet() {
-      let id = "selectCabinet"
-      let url = "{% url 'api:cabinet-list' %}"
-      let hardware = document.getElementById("selectHardware").value;
-      if (hardware) url = "{% url 'api:hardware-list' %}" + hardware + "/cabinets";
-      let selectedValue = "{% if defect %}{{ defect.component.cabinet.id }}{% endif %}"
-      let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption);
-    };
-
-    function updateSelectComponent() {
-      let id = "id_component"
-      let url = "{% url 'api:component-list' %}"
-      let cabinet = document.getElementById("selectCabinet").value;
-      if (cabinet) url = "{% url 'api:cabinet-list' %}" + cabinet + "/components";
-      let selectedValue = "{% if form.component.value %}{{ form.component.value }}{% endif %}"
-      console.log(selectedValue)
-      let firstOption = "---------"
-      updateSelectOptions(id, url, selectedValue, firstOption, "name");
-    };
-
-    updateSelectConnection();
-    updateSelectHardware();
-    updateSelectCabinet();
-    updateSelectComponent();
-  </script>
+</div>
 {% endblock %}

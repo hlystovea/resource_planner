@@ -1,0 +1,37 @@
+<style>
+    tr.htmx-swapping td {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+    }
+</style>
+<div id="instrumentTable">
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Наименование</th>
+                <th scope="col">Инв. номер</th>
+                <th scope="col">Зав. номер</th>
+                <th scope="col">Подразделение</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instrument in instrument_list %}
+                {% include "warehouse/includes/instrument_row.html" with instrument=instrument %}
+            {% endfor %}
+            {% if user.is_authenticated %}
+            <form hx-post="{% url 'warehouse:instrument-create' %}" hx-target="this" hx-swap="beforebegin">
+                {% csrf_token %}
+                {% load user_filters %}
+                <tr>
+                    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.serial_number|addclass:"form-control form-control-sm" }}</td>
+                    <td><button class="btn btn-sm btn-secondary me-1" type="submit">Добавить</button></td>
+                </tr>
+            </form>
+            {% endif %}
+        </tbody>
+    </table>
+    {% include "includes/paginator.html" %}
+</div>

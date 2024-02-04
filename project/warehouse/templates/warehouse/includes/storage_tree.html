@@ -1,0 +1,15 @@
+{% load is_root %}
+<style>
+    ul {
+        list-style-type: none;
+        padding-left: 1.25rem;
+    }
+</style>
+<ul class="p-0">
+    {% for storage in storage_list|is_root %}
+        {% include 'warehouse/includes/storage_li.html' %}
+    {% endfor %}
+    {% if user.is_authenticated and user.is_superuser %}
+        {% include 'warehouse/storage_form.html' %}
+    {% endif %}
+</ul>

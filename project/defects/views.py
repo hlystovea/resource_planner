@@ -1,31 +1,50 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.functions import ExtractYear
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView,
-                                  ListView, UpdateView)
+                                  ListView, UpdateView, TemplateView)
 
+from core.utils import is_htmx
 from defects.filters import DefectFilter
 from defects.forms import DefectForm
 from defects.models import Defect
 
 
-class DefectList(ListView):
+class DefectListView(ListView):
     paginate_by = 20
     model = Defect
     queryset = Defect.objects.select_related(
-        'component__cabinet__hardware__connection__facility')
+        'part__cabinet__hardware__connection__facility',
+    )
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = DefectFilter(self.request.GET, queryset=queryset).qs
         return queryset.order_by('-date')
 
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['defects/defect_table.html']
+        return ['defects/defect_list.html']
 
-class DefectDetail(DetailView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['year_list'] = Defect.objects.dates(
+            'date',
+            'year'
+        ).values_list(
+            ExtractYear('date'),
+            flat=True
+        )
+        return context
+
+
+class DefectDetailView(DetailView):
     model = Defect
     queryset = Defect.objects.select_related(
         'employee',
         'condition',
-        'component__cabinet__hardware__connection'
+        'part__cabinet__hardware__connection'
     ).prefetch_related(
         'effects',
         'features',
@@ -37,7 +56,7 @@ class DefectDetail(DetailView):
 class DefectCreateView(LoginRequiredMixin, CreateView):
     model = Defect
     form_class = DefectForm
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,12 +71,16 @@ class DefectCreateView(LoginRequiredMixin, CreateView):
 class DefectUpdateView(LoginRequiredMixin, UpdateView):
     model = Defect
     form_class = DefectForm
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
     queryset = Defect.objects.select_related(
-        'component__cabinet__hardware__connection')
+        'part__cabinet__hardware__connection')
 
 
 class DefectDeleteView(LoginRequiredMixin, DeleteView):
     model = Defect
-    login_url = '/auth/login/'
+    login_url = reverse_lazy('login')
     success_url = reverse_lazy('defects:defect-list')
+
+
+class DefectStatisticsView(TemplateView):
+    template_name = 'defects/defect_statistics.html'

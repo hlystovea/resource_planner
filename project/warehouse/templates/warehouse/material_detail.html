@@ -26,13 +26,27 @@
               <span class="text-muted">Артикул:</span> {{ material.article_number|default:"" }}
             </p>
             <p class="mb-1">
-              <span class="text-muted">Общее кол-во:</span> {{ material.total|floatformat }} {{ material.measurement_unit }}
+              <span class="text-muted">Общее кол-во:</span> {% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit }}
             </p>
           </p>
         </div>
       </div>
     </div>
   </div>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+      <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:material-update' material.pk %}" role="button">
+        Редактировать
+      </a>
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Удалить
+      </button>
+    </div>
+    <!-- Delete modal -->
+    {% include 'warehouse/material_confirm_delete.html' %}
+  {% endif %}
+
   {% if material.amount.all %}
     <h4>Места хранения</h4>
     <table class="table table-hover">
@@ -46,9 +60,9 @@
       <tbody>
         {% for m in material.amount.all %}
           <tr>
-            <td><a href="{% url 'warehouse:storage-detail' m.storage.id %}">{{ m.storage.name }}</a></td>
+            <td><a href="{% url 'warehouse:storage-detail' m.storage.pk %}">{{ m.storage.name }}</a></td>
             <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit }}</td>
-            <td>{{ m.owner|default:"-" }}</td>
+            <td>{{ m.storage.owner|default:"-" }}</td>
           </tr>
         {% endfor %}
       </tbody>

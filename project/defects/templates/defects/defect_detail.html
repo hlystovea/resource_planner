@@ -14,7 +14,7 @@
       <div class="card my-2">
         <div class="card-header {% if defect.repair_date %}bg-success{% else %}bg-danger{% endif %}">
           <div class="d-flex justify-content-end">
-            <span class="text me-auto">Дефект #{{ defect.id }}</span>
+            <span class="text me-auto">Дефект {{ defect.part.cabinet.hardware.name }} от {{ defect.date|date:"d.m.Y" }}</span>
             {% if defect.repair_date %}Устранено{% else %}Не устранено{% endif %}
           </div>
         </div>
@@ -24,12 +24,12 @@
             <dd class="col-sm-8">{{ defect.date|date:"d.m.Y" }}</dd>
             <dt class="col-sm-4">Место неисправности</dt>
             <dd class="col-sm-8">
-              {{ defect.component.cabinet.hardware.connection.facility }} /
-              {{ defect.component.cabinet.hardware.connection.abbreviation }} /
-              {{ defect.component.cabinet.hardware.name }} /
-              {{ defect.component.cabinet }}</dt>
+              {{ defect.part.cabinet.hardware.connection.facility }} /
+              {{ defect.part.cabinet.hardware.connection.abbreviation }} /
+              {{ defect.part.cabinet.hardware.name }} /
+              {{ defect.part.cabinet }}</dt>
             <dt class="col-sm-4">Комплектующее</dt>
-            <dd class="col-sm-8">{{ defect.component }}</dd>
+            <dd class="col-sm-8"><a href="{% url 'hardware:component-detail' defect.part.component.pk %}">{{ defect.part }}</a></dd>
             <dt class="col-sm-4">Обнаруживший</dt>
             <dd class="col-sm-8">{{ defect.employee }}</dd>
             <dt class="col-sm-4">Последствия</dt>
@@ -55,12 +55,16 @@
               <dd class="col-sm-8"><ul class="list-unstyled">{% for t in defect.technical_reasons.all %}<li>{{ t }}</li>{% endfor %}</ul></dd>
               <dt class="col-sm-4">Организационные причины</dt>
               <dd class="col-sm-8"><ul class="list-unstyled">{% for o in defect.organizational_reasons.all %}<li>{{ o }}</li>{% endfor %}</ul></dd>
+              {% if defect.repair_method %}
+                <dt class="col-sm-4">Метод устранения</dt>
+                <dd class="col-sm-8">{{ defect.repair_method }}</dd>
+              {% endif %}
               <dt class="col-sm-4">Выполненные мероприятия</dt>
               <dd class="col-sm-8">{{ defect.repair }}</dd>
               {% if defect.attachment %}
-              <dt class="col-sm-4">Приложение</dt>
-              <dd class="col-sm-8"><a href="{{ defect.attachment.url }}">Открыть</a></dd>
-            {% endif %}
+                <dt class="col-sm-4">Приложение</dt>
+                <dd class="col-sm-8"><a href="{{ defect.attachment.url }}">Открыть</a></dd>
+              {% endif %}
             </dl>
           </div>
         {% endif %}

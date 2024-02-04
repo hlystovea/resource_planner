@@ -1,3 +1,4 @@
+import autocomplete_all
 from django.contrib import admin
 from django.db.models import CharField, TextField
 from django.forms import Textarea, TextInput
@@ -7,8 +8,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
 from .models import (Cabinet, Component, ComponentDesign,
-                     ComponentFunction, ComponentRepairMethod,
-                     Connection, Facility, Group, Hardware)
+                     ComponentFunction, Connection, Facility,
+                     Group, Hardware, Manufacturer, Part)
 from defects.models import Defect
 
 
@@ -34,24 +35,34 @@ class ImageTagField(admin.ModelAdmin):
         return None
 
 
-class ComponentInline(admin.TabularInline):
-    model = Component
+class PartInline(autocomplete_all.TabularInline):
+    model = Part
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
     readonly_fields = ('cabinet', )
+    autocomplete_except = ('part', )
+
+    def get_formset(self, request, obj=None, **kwargs):
+        self.parent_obj = obj
+        return super().get_formset(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'part' and self.parent_obj:
+            if self.parent_obj.__class__.__name__ == 'Cabinet':
+                kwargs['queryset'] = self.parent_obj.parts
+            if self.parent_obj.__class__.__name__ == 'Part':
+                kwargs['queryset'] = self.parent_obj.cabinet.parts
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-@admin.register(Component)
-class ComponentAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'get_design', 'get_cabinet',
-                    'get_component', 'release_year', 'launch_year')
-    list_filter = ('design', 'repair_method', 'launch_year')
-    autocomplete_fields = ('component', 'cabinet')
-    inlines = (ComponentInline, )
-
-    @admin.display(description=_('Исполнение'))
-    def get_design(self, obj):
-        return obj.design.abbreviation
+@admin.register(Part)
+class PartAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'component', 'get_cabinet',
+                    'get_part', 'release_year', 'launch_year')
+    list_filter = ('component__design', 'launch_year')
+    autocomplete_fields = ('component', )
+    readonly_fields = ('cabinet', )
+    inlines = (PartInline, )
 
     @admin.display(description=_('Шкаф/Панель'))
     def get_cabinet(self, obj):
@@ -66,16 +77,25 @@ class ComponentAdmin(MixinAdmin):
         return ''
 
     @admin.display(description=_('Комплектующее'))
-    def get_component(self, obj):
-        if obj.component:
+    def get_part(self, obj):
+        if obj.part:
             url = (
                 reverse(
-                    'admin:hardware_component_change',
-                    args=(obj.component.id, )
+                    'admin:hardware_part_change',
+                    args=(obj.part.id, )
                 )
             )
-            return format_html('<a href="{}">{}</a>', url, obj.component)
+            return format_html('<a href="{}">{}</a>', url, obj.part)
         return ''
+
+    def get_form(self, request, obj=None, **kwargs):
+        self._obj = obj
+        return super().get_form(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'part' and self._obj:
+            kwargs['queryset'] = self._obj.cabinet.parts
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def save_formset(self, request, form, formset, change) -> None:
         instances = formset.save(commit=False)
@@ -84,17 +104,41 @@ class ComponentAdmin(MixinAdmin):
             instance.save()
 
 
+@admin.register(Component)
+class ComponentAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'manufacturer', 'design',
+                    'series', 'type', 'defect_count')
+    list_filter = ('design', 'function')
+    autocomplete_fields = ('manufacturer', )
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode({'part__component__id__exact': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(part__component=obj).count()
+        )
+
+
 @admin.register(Cabinet)
 class CabinetAdmin(MixinAdmin):
     list_display = ('id', 'abbreviation', 'hardware',
                     'release_year', 'launch_year')
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
-    autocomplete_fields = ('hardware', )
-    inlines = (ComponentInline, )
+    autocomplete_fields = ('hardware', 'manufacturer')
+    inlines = (PartInline, )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('parts')
 
 
-class CabinetInline(admin.TabularInline):
+class CabinetInline(autocomplete_all.TabularInline):
     model = Cabinet
     show_change_link = True
     verbose_name_plural = _('Входящие в состав шкафы/панели')
@@ -103,26 +147,27 @@ class CabinetInline(admin.TabularInline):
 @admin.register(Hardware)
 class HardwareAdmin(MixinAdmin):
     list_display = ('id', 'facility', 'connection', 'name',
-                    'inventory_number', 'count_defects')
+                    'inventory_number', 'defect_count')
     search_fields = ('name', 'inventory_number')
-    list_filter = ('connection__facility', 'connection')
+    list_filter = ('connection__facility', 'connection', 'group')
     inlines = (CabinetInline, )
 
     @admin.display(description=_('Объект дисп.'))
     def facility(self, obj):
-        return obj.connection.facility
+        if obj.connection:
+            return obj.connection.facility
 
     @admin.display(description=_('Кол-во дефектов'))
-    def count_defects(self, obj):
+    def defect_count(self, obj):
         url = (
             reverse('admin:defects_defect_changelist')
             + '?'
-            + urlencode({'component__cabinet__hardware__id__exact': f'{obj.id}'})
+            + urlencode({'part__cabinet__hardware__id__exact': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{}</a>',
             url,
-            Defect.objects.filter(component__cabinet__hardware=obj).count()
+            Defect.objects.filter(part__cabinet__hardware=obj).count()
         )
 
 
@@ -133,10 +178,27 @@ class HardwareInline(admin.TabularInline):
 
 @admin.register(Connection)
 class ConnectionAdmin(MixinAdmin):
-    list_display = ('id', 'facility', 'name', 'abbreviation')
+    list_display = ('id', 'facility', 'name', 'abbreviation', 'defect_count')
     list_filter = ('facility', )
     autocomplete_fields = ('facility', )
     inlines = (HardwareInline, )
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__cabinet__hardware__connection__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(
+                part__cabinet__hardware__connection=obj
+            ).count()
+        )
 
 
 class ConnectionInline(admin.TabularInline):
@@ -146,27 +208,31 @@ class ConnectionInline(admin.TabularInline):
 
 @admin.register(Facility)
 class FacilityAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'abbreviation', 'count_connections')
+    list_display = ('id', 'name', 'abbreviation', 'hardware_count')
     inlines = (ConnectionInline, )
 
-    @admin.display(description=_('Кол-во присоединений'))
-    def count_connections(self, obj):
+    @admin.display(description=_('Кол-во ед. оборудования'))
+    def hardware_count(self, obj):
         url = (
-            reverse('admin:hardware_connection_changelist')
+            reverse('admin:hardware_hardware_changelist')
             + '?'
-            + urlencode({'facility__id': f'{obj.id}'})
+            + urlencode({'connection__facility__id': f'{obj.id}'})
         )
         return format_html(
-            '<a href="{}">{}</a>', url, obj.connections.count()
+            '<a href="{}">{}</a>',
+            url,
+            Hardware.objects.filter(
+                connection__facility=obj
+            ).count()
         )
 
 
 @admin.register(Group)
 class GroupAdmin(MixinAdmin):
-    list_display = ('id', 'name', 'abbreviation', 'count_hardware')
+    list_display = ('id', 'name', 'hardware_count', 'defect_count')
 
-    @admin.display(description=_('Кол-во оборудования'))
-    def count_hardware(self, obj):
+    @admin.display(description=_('Кол-во ед. оборудования'))
+    def hardware_count(self, obj):
         url = (
             reverse('admin:hardware_hardware_changelist')
             + '?'
@@ -176,17 +242,49 @@ class GroupAdmin(MixinAdmin):
             '<a href="{}">{}</a>', url, obj.hardware.count()
         )
 
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__cabinet__hardware__group__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(
+                part__cabinet__hardware__group=obj
+            ).count()
+        )
+
 
 @admin.register(ComponentDesign)
 class ComponentDesignAdmin(MixinAdmin):
     pass
 
 
-@admin.register(ComponentRepairMethod)
-class ComponentRepairMethodAdmin(MixinAdmin):
-    pass
-
-
 @admin.register(ComponentFunction)
 class ComponentFunctiondmin(MixinAdmin):
     pass
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'defect_count')
+
+    @admin.display(description=_('Кол-во дефектов'))
+    def defect_count(self, obj):
+        url = (
+            reverse('admin:defects_defect_changelist')
+            + '?'
+            + urlencode(
+                {'part__component__manufacturer__id__exact': f'{obj.id}'}
+            )
+        )
+        return format_html(
+            '<a href="{}">{}</a>',
+            url,
+            Defect.objects.filter(part__component__manufacturer=obj).count()
+        )

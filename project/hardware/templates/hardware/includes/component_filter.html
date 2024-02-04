@@ -1,0 +1,22 @@
+<div class="row justify-content-end">
+    <div hx-get="{% url 'hardware:manufacturer-options' %}?label=true" hx-trigger="load" hx-target="#selectManufacturer"></div>
+    <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept"></div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer"
+            hx-get="{% url 'hardware:component-list' %}"
+            hx-target="#componentTable"
+            hx-swap="outerHTML"
+            hx-include="[name='dept']"
+        >
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectDept" name="dept"
+            hx-get="{% url 'hardware:component-list' %}"
+            hx-target="#componentTable"
+            hx-swap="outerHTML"
+            hx-include="[name='manufacturer']"
+        >
+        </select>
+    </div>
+</div>

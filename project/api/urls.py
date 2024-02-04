@@ -3,7 +3,7 @@ from rest_framework_nested import routers
 
 from .views import (CabinetViewSet, ComponentViewSet, ConnectionViewSet,
                     DefectViewSet, FacilityViewSet, GroupViewSet,
-                    HardwareViewSet)
+                    HardwareViewSet, PartViewSet)
 
 app_name = 'api'
 
@@ -25,8 +25,11 @@ hardware_router.register(r'hardware', HardwareViewSet, basename='hardware')
 cabinet_router = routers.SimpleRouter()
 cabinet_router.register(r'cabinets', CabinetViewSet, basename='cabinet')
 
+part_router = routers.SimpleRouter()
+part_router.register(r'parts', PartViewSet, basename='part')
+
 component_router = routers.SimpleRouter()
-component_router.register(r'components', ComponentViewSet, basename='component')
+component_router.register(r'components', ComponentViewSet, basename='component')  # noqa(E501)
 
 urlpatterns = [
     path('', include(defect_router.urls)),
@@ -35,5 +38,6 @@ urlpatterns = [
     path('', include(group_router.urls)),
     path('', include(hardware_router.urls)),
     path('', include(cabinet_router.urls)),
+    path('', include(part_router.urls)),
     path('', include(component_router.urls))
 ]

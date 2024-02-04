@@ -1,0 +1,21 @@
+<option value=""
+    {% if not request.GET.facility %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Объект...
+    {% else %}
+        --------------
+    {% endif %}
+</option>
+
+{% for facility in facility_list %}
+    <option value="{{facility.pk}}"
+        {% if facility.pk|stringformat:'i' == request.GET.facility %}
+            selected
+        {% endif %}
+    >
+        {{facility.abbreviation}}
+    </option>
+{% endfor %}

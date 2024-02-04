@@ -1,73 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
-      <li class="breadcrumb-item" aria-current="page">{{ storage.name }}</a></li>
-    </ol>
-  </nav>
-  <div class="card mb-3 mt-1 shadow-sm">
-    <div class="row">
-      <div class="col">
-        <!-- Отображение текста -->
-        <div class="card-body">
-          <p class="h5 mb-3">{{ storage.name }}</p>
-          <p class="h6">
-            <p class="mb-1"><span class="text-muted">Расположение: </span>{{ storage.parent_storage|default:"" }}</p>
-            <p class="mb-1"><span class="text-muted">Кол-во мест хранения: </span>{{ storage.storage.count }}</p>
-            <p class="mb-1"><span class="text-muted">Кол-во материалов: </span>{{ storage.materials.count }}</p>
-            <p class="mb-1"><span class="text-muted">QR-код: </span>{% include "includes/new_window_link.html" with storage_id=storage.id %}</p>
-          </p>
-        </div>
-      </div>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'warehouse:storage-list' %}">Места хранения</a></li>
+            <li class="breadcrumb-item">{{ storage.name }}</li>
+        </ol>
+    </nav>
+    <div class="row mb-5">
+        <h1>Места хранения</h1>
     </div>
-  </div>
-  {% if storage.storage %}
-    <h4>Места хранения</h4>
-    <table class="table table-hover">
-      <thead class="table">
-        <tr>
-          <th scope="col">Наименование</th>
-          <th scope="col">Материалы</th>
-          <th scope="col">QR-код</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for s in storage.storage.all %}
-          <tr>
-            <td><a href="{% url 'warehouse:storage-detail' s.id %}">{{ s.name }}</a></td>
-            <td>{{ s.materials_count }} поз.</td>
-            <td>{% include "includes/new_window_link.html" with storage_id=s.id %}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <br>
-    <br>
-  {% endif %}
-  {% if storage.materials.all %}
-    <h4>Материалы</h4>
-    <table class="table table-hover">
-      <thead class="table">
-        <tr>
-          <th scope="col">Наименование</th>
-          <th scope="col">Артикул</th>
-          <th scope="col">Инв. номер</th>
-          <th scope="col">Количество</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for m in storage.materials.all %}
-          <tr>
-            <td><a href={% url 'warehouse:material-detail' m.material.id %}>{{ m.material.name }}</a></td>
-            <td>{{ m.material.article_number|default:"-" }}</td>
-            <td>{{ m.invetory_number|default:"-" }}</td>
-            <td>{{ m.amount|floatformat }} {{ m.material.measurement_unit}}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %}   
+    <div class="row mb-2">
+        <div id="storageContent">
+            {% include 'warehouse/includes/storage_content.html' %}
+        </div>
+    </div>
 {% endblock %}

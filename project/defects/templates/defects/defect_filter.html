@@ -1,179 +1,35 @@
 <div class="row justify-content-end">
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectFacility" name="facility" onchange="updateSelectConnection()">
-      <option value="" selected>Объект...</option>
-    </select>
-  </div>
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectConnection" name="connection">
-      <option value="" selected>Присоединение...</option>
-    </select>
-  </div>
-  <!--
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectHardware" name="hardware" onchange="updateSelectCabinet()">
-      <option value="" selected>Оборудование...</option>
-    </select>
-  </div>
-  -->
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectGroup" name="group">
-      <option value="" selected>Группа оборудования...</option>
-    </select>
-  </div>
-  <!--
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectCabinet" name="cabinet" onchange="redirectPage()">
-      <option value="" selected>Шкаф/панель...</option>
-    </select>
-  </div>
-  -->
-  <div class="col-sm-2">
-    <select class="form-select form-select-sm" id="selectStatus" name="status">
-      <option value="" selected>Статус...</option>
-      <option value="false">Устранено</option>
-      <option value="true">Не устранено</option>
-    </select>
-  </div>
-  <div class="col-auto">
-    <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3" onclick="redirectPage()">Показать</button>
-  </div>
+    <!-- Get options for the selectFacility on load -->
+    <div hx-get="{% url 'hardware:facility-select' %}?label=true" hx-trigger="load" hx-target="#selectFacility" hx-params="none">
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectFacility" name="facility"
+            hx-get="{% url 'hardware:connection-select' %}?label=true" hx-target="#selectConnection">
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectConnection" name="connection"
+            hx-get="{% url 'hardware:connection-select' %}?label=true" hx-trigger="load" hx-params="none">
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectGroup" name="group"
+            hx-get="{% url 'hardware:group-select' %}?label=true" hx-trigger="load" hx-params="none">
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectStatus" name="unrepaired">
+            <option value="" selected>Статус...</option>
+            <option value="false">Устранено</option>
+            <option value="true">Не устранено</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
+            hx-get="{% url 'defects:defect-list' %}"
+            hx-target="#defectTable"
+            hx-swap="outerHTML"
+            hx-include="[name='group'],[name='connection'],[name='unrepaired'],[name='facility']"
+        >Показать</button>
+    </div>
 </div>
-<div class="row">
-  <div class="col-auto" id="yearLinks">
-  </div>
-</div>
-<script>
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  });
-
-  function redirectPage(year="*") {
-    let url = "{% url 'defects:defect-list' %}?";
-    year = year || document.getElementById("selectedYear").innerText;
-    let facility = document.getElementById("selectFacility").value;
-    let connection = document.getElementById("selectConnection").value;
-    let group = document.getElementById("selectGroup").value;
-    // hardware = document.getElementById("selectHardware").value;
-    // cabinet = document.getElementById("selectCabinet").value;
-    let status = document.getElementById("selectStatus").value;
-
-    if (year !== '') url += "&year=" + year;
-    if (facility !== '') url += "&facility=" + facility;
-    if (connection !== '') url += "&connection=" + connection;
-    if (group !== '') url += "&group=" + group;
-    // if (hardware !== '') url += "&hardware=" + hardware;
-    // if (cabinet !== '') url += "&cabinet=" + cabinet;
-    if (status !== '') url += "&unrepaired=" + status;
-    window.location.replace(url);
-  };
-
-  function createOptionElement(value, text, selected=false) {
-    let option = document.createElement("option");
-    option.value = value;
-    option.innerText = text;
-    option.selected = (selected) ? true : false;
-    return option
-  };
-
-  function updateSelectOptions(id, url, selectedValue="", firstOption="Выбрать..", key="abbreviation") {
-    fetch(url)
-      .then(function(response) {
-        return response.json()
-      }).then(function(data) {
-        let parent = document.getElementById(id);
-        let options = [];
-        options.push(createOptionElement("", firstOption, true))
-        data.forEach(obj => {
-          let selected = obj.id == selectedValue;
-          options.push(createOptionElement(obj.id, obj[key], selected));
-        });
-        parent.replaceChildren(...options);
-      }).catch(function(ex) {
-        console.log('Error: ', ex)
-      });
-  };
-
-  function updateSelectFacility() {
-    let id = "selectFacility"
-    let url = "{% url 'api:facility-list' %}"
-    let selectedValue = params.facility
-    let firstOption = "Объект..."
-    updateSelectOptions(id, url, selectedValue, firstOption);
-  };
-
-  function updateSelectGroup() {
-    let id = "selectGroup"
-    let url = "{% url 'api:group-list' %}"
-    let selectedValue = params.group
-    let firstOption = "Группа оборудования..."
-    updateSelectOptions(id, url, selectedValue, firstOption, "name");
-  };
-
-  function updateSelectConnection() {
-    let id = "selectConnection"
-    let url = "{% url 'api:connection-list' %}"
-    let facility = document.getElementById("selectFacility").value;
-    if (facility) url = "{% url 'api:facility-list' %}" + facility + "/connections";
-    let selectedValue = params.connection
-    let firstOption = "Присоединение..."
-    updateSelectOptions(id, url, selectedValue, firstOption, "abbreviation_with_facility");
-  };
-
-  function updateSelectHardware() {
-    let id = "selectHardware"
-    let url = "{% url 'api:hardware-list' %}"
-    let connection = document.getElementById("selectConnection").value;
-    if (connection) url = "{% url 'api:connection-list' %}" + connection + "/hardware";
-    let selectedValue = params.hardware
-    let firstOption = "Оборудование..."
-    updateSelectOptions(id, url, selectedValue, firstOption, "name");
-  };
-
-  function updateSelectCabinet() {
-    let id = "selectCabinet"
-    let url = "{% url 'api:cabinet-list' %}"
-    let hardware = document.getElementById("selectHardware").value;
-    if (hardware) url = "{% url 'api:hardware-list' %}" + hardware + "/cabinets";
-    let selectedValue = params.cabinet
-    let firstOption = "Шкаф/панель..."
-    updateSelectOptions(id, url, selectedValue, firstOption);
-  };
-
-  function createLinkElement(value, color="secondary") {
-    let link = document.createElement("a");
-    link.innerText = value;
-    link.href = "#";
-    link.className = "text-decoration-none link-" + color;
-    if (color == "dark") {
-      link.id = "selectedYear";
-      link.className += " bg-warning";
-    }
-    link.addEventListener("click", () => redirectPage((color == "dark") ? "*" : value));
-    return link
-  };
-
-  function updateYearLinks() {
-    fetch("{% url 'api:defect-years' %}")
-      .then(function(response) {
-        return response.json()
-      }).then(function(data) {
-        let parent = document.getElementById("yearLinks");
-        let links = [];
-        links.push("Год: ")
-        data.years.forEach(year => {
-          let color = (year == params.year) ? "dark" : "secondary";
-          links.push(createLinkElement(year, color));
-          links.push(" ")
-        });
-        parent.replaceChildren(...links);
-      }).catch(function(ex) {
-        console.log('Error: ', ex)
-      });
-  };
-
-  updateYearLinks();
-  updateSelectFacility();
-  updateSelectConnection();
-  updateSelectGroup();
-</script>

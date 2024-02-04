@@ -1,0 +1,38 @@
+<style>
+    tr.htmx-swapping td {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+    }
+</style>
+<div id="materialTable">
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Наименование</th>
+                <th></th>
+                <th scope="col">Артикул</th>
+                <th scope="col">Количество</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in material_list %}
+                {% include "warehouse/includes/material_row.html" with material=material %}
+            {% endfor %}
+            {% if user.is_authenticated %}
+            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="this" hx-swap="beforebegin">
+                {% csrf_token %}
+                {% load user_filters %}
+                <tr>
+                    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>
+                    <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
+                    <td><button class="btn btn-sm btn-secondary me-1" type="submit">Добавить</button></td>
+                    <td></td>
+                </tr>
+            </form>
+            {% endif %}
+        </tbody>
+    </table>
+    {% include "includes/paginator.html" %}
+</div>

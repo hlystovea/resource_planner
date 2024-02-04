@@ -1,48 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}Дефекты{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Дефекты</li>
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'defects:defect-list' %}">Дефекты</a></li>
+        <li class="breadcrumb-item">Журнал</li>
     </ol>
-  </nav>
-  {% if user.is_authenticated %}
-  <a class="btn btn-sm btn-secondary me-auto" href="{% url 'defects:defect-create' %}" role="button">
-    Добавить новый
-  </a>
-  {% endif %}
-  <figure class="text-center">
-    <h3>Дефекты</h3>
-  </figure>
-  {% include './defect_filter.html' %}
-  <table class="table table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Дата обнаружения</th>
-        <th scope="col">Объект</th>
-        <th scope="col">Присоединение</th>
-        <th scope="col">Оборудование</th>
-        <th scope="col">Шкаф/панель</th>
-        <th scope="col">Описание дефекта</th>
-        <th scope="col">Дата устранения</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for d in defect_list %}
-          <tr>
-            <td><a href="{% url 'defects:defect-detail' d.id %}">{{ d.date|date:'d.m.Y' }}</a></td>
-            <td>{{ d.component.cabinet.hardware.connection.facility }}</td>
-            <td>{{ d.component.cabinet.hardware.connection.abbreviation }}</td>
-            <td>{{ d.component.cabinet.hardware.name }}</td>
-            <td>{{ d.component.cabinet.abbreviation }}</td>
-            <td>{{ d.description|truncatechars:30 }}</td>
-            <td>{{ d.repair_date|date:'d.m.Y' }}</td>
-          </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include 'includes/paginator.html' with page_obj=page_obj paginator=paginator is_paginated=is_paginated %}
-  {% endif %}
+</nav>
+<div class="row mb-2">
+    <h1>Журнал дефектов</h1>
+</div>
+{% if user.is_authenticated %}
+<a class="btn btn-sm btn-secondary me-auto" href="{% url 'defects:defect-create' %}" role="button">
+    Добавить
+</a>
+{% endif %}
+{% include './defect_filter.html' %}
+{% include './defect_table.html' %}
 {% endblock %}

@@ -3,8 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
-
-from core.views import IndexPageView
+from django.views.generic.base import RedirectView
 
 
 admin.site.site_title = _('Филиал')
@@ -12,13 +11,15 @@ admin.site.site_header = _('Эксплуатация')
 admin.site.index_title = _('Администрирование')
 
 urlpatterns = [
-    path('', IndexPageView.as_view(), name='index'),
+    path('', RedirectView.as_view(pattern_name='defects:defect-list'), name='index'),  # noqa (E501)
     path('admin/', admin.site.urls),
     path('auth/', include('django.contrib.auth.urls')),
     path('api/', include('api.urls', namespace='api')),
     path('warehouse/', include('warehouse.urls', namespace='warehouse')),
     path('repairs/', include('repairs.urls', namespace='repairs')),
     path('defects/', include('defects.urls', namespace='defects')),
+    path('hardware/', include('hardware.urls', namespace='hardware')),
+    path('staff/', include('staff.urls', namespace='staff')),
 ]
 
 

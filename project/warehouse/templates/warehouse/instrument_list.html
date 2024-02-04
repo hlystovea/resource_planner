@@ -1,37 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Склад{% endblock %}
 {% block content %}
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-      <li class="breadcrumb-item">Инструменты</li>
-    </ol>
-  </nav>
-  {% include "includes/select_owner.html" %}
-  <figure class="text-center">
-      <h3>Инструменты/Приборы</h3>
-  </figure>
-  <table class="table table-hover">
-    <thead class="table">
-      <tr>
-        <th scope="col">Наименование</th>
-        <th scope="col">Инв. номер</th>
-        <th scope="col">Зав. номер</th>
-        <th scope="col">Подразделение</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for i in instrument_list %}
-        <tr>
-          <td><a href={% url 'warehouse:instrument-detail' i.id %}>{{ i.name }}</a></td>
-          <td>{{ i.inventory_number|default:"-" }}</td>
-          <td>{{ i.serial_number|default:"-" }}</td>
-          <td>{{ i.owner|default:"-" }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if is_paginated %}
-    {% include "includes/paginator.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated%}
-  {% endif %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item">Инструменты</li>
+        </ol>
+    </nav>
+    <div class="row mb-5">
+        <h1>Инструменты/Приборы</h1>
+    </div>
+    {% include "warehouse/includes/instrument_filter.html" %}
+    {% include "warehouse/includes/instrument_table.html" %}
 {% endblock %}

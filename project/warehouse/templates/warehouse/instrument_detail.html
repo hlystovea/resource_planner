@@ -14,7 +14,7 @@
         <!-- Отображение картинки -->
         {% load thumbnail %}
         {% thumbnail instrument.image "200x200" crop="center" upscale=True as im %}
-          <img class="img-fluid m-1" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ material.name }}"/>
+          <img class="img-fluid m-1" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ instrument.name }}"/>
         {% endthumbnail %}
       </div>
       <div class="col">
@@ -30,4 +30,18 @@
       </div>
     </div>
   </div>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+      <a class="btn btn-sm btn-secondary me-1" href="{% url 'warehouse:instrument-update' instrument.pk %}" role="button">
+        Редактировать
+      </a>
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Удалить
+      </button>
+    </div>
+    <!-- Delete modal -->
+    {% include 'warehouse/instrument_confirm_delete.html' %}
+  {% endif %}
+
 {% endblock %}

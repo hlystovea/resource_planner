@@ -1,0 +1,15 @@
+<span>Год: </span>
+{% for year in year_list %}
+    <a href="#" class="text-decoration-none 
+        {% if year|stringformat:'i' == request.GET.year %}
+            link-dark bg-warning"
+            hx-get="{% url 'defects:defect-list' %}"
+        {% else %}
+            link-secondary"
+            hx-get="{% url 'defects:defect-list' %}?year={{ year }}"
+        {% endif %}
+        hx-target="#defectTable"
+        hx-swap="outerHTML"
+        hx-include="[name='group'],[name='connection'],[name='unrepaired'],[name='facility']"
+    >{{ year }}</a>
+{% endfor %}

@@ -1,27 +1,30 @@
 <!doctype html>
 <html lang="ru">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Главная{% endblock %} | Филиал</title>
-    <!-- Загрузка статики -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  </head>
-  <body>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <header>
-    {% include 'includes/nav.html' %}
+        {% include 'includes/nav.html' %}
     </header>
     <main>
-      <div class="container-lg">
-        <br>
-        {% block content %}
-        <!-- Содержимое страницы -->
-        {% endblock %}
-      </div>
+        <div class="container-xxxl p-3">
+            {% block content %}
+            <!-- Содержимое страницы -->
+            {% endblock %}
+        </div>
     </main>
     {% include 'includes/footer.html' %}
-  </body>
+</body>
+
 </html>

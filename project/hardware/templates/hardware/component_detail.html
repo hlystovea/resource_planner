@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
+{% block content %}
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'hardware:component-list' %}">Запчасти</a></li>
+      <li class="breadcrumb-item" aria-current="page">{{ component.name }}</a></li>
+    </ol>
+  </nav>
+  <div class="card mb-3 mt-1 shadow-sm">
+    <div class="row">
+      <div class="col">
+        <!-- Отображение текста -->
+        <div class="card-body">
+          <p class="h5 mb-3">{{ component.name }}</p>
+          <p class="h6">
+              <p class="mb-1"><span class="text-muted">Производитель:</span> {{ component.manufacturer|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Серия:</span> {{ component.series|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Тип:</span> {{ component.type|default:"" }}</p>
+              <p class="mb-1"><span class="text-muted">Назначение:</span> {{ component.function }}</p>
+              <p class="mb-1"><span class="text-muted">Исполнение:</span> {{ component.design }}</p>
+              <p class="mb-1"><span class="text-muted">Метод устранения дефекта:</span> {{ component.repair_method }}</p>
+              <p class="mb-1"><span class="text-muted">Общее кол-во:</span> {% if component.total %}{{ component.total }}{% else %}0{% endif %} шт.</p>
+              <p class="mb-1"><span class="text-muted">Кол-во дефектов:</span> {% if component.defect_count %}<a href="{% url 'defects:defect-list' %}?component={{ component.pk }}">{{ component.defect_count }}</a>{% else %}0{% endif %} шт.</p>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+      <a class="btn btn-sm btn-secondary me-1" href="{% url 'hardware:component-update' component.pk %}" role="button">
+        Редактировать
+      </a>
+      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Удалить
+      </button>
+    </div>
+    <!-- Delete modal -->
+    {% include 'hardware/component_confirm_delete.html' %}
+  {% endif %}
+
+  {% if component.amount.all %}
+    <h4>Места хранения</h4>
+    <table class="table table-hover">
+      <thead class="table">
+        <tr>
+          <th scope="col">Расположение</th>
+          <th scope="col">Количество</th>
+          <th scope="col">Подразделение</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in component.amount.all %}
+          <tr>
+            <td><a href="{% url 'warehouse:storage-detail' c.storage.pk %}">{{ c.storage.name }}</a></td>
+            <td>{{ c.amount }} шт.</td>
+            <td>{{ c.storage.owner|default:"-" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br>
+    <br>
+  {% endif %}
+{% endblock %}

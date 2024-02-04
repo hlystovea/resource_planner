@@ -1,9 +1,9 @@
-from rest_framework.serializers import (CharField, ListField,
+from rest_framework.serializers import (CharField, IntegerField, ListField,
                                         ModelSerializer, Serializer)
 
 from defects.models import Defect
 from hardware.models import (Cabinet, Component, Connection,
-                             Facility, Group, Hardware)
+                             Facility, Group, Hardware, Part)
 
 
 class DefectSerializer(ModelSerializer):
@@ -16,6 +16,11 @@ class YearSerializer(Serializer):
     years = ListField()
 
 
+class StatisticsSerializer(Serializer):
+    label = CharField()
+    value = IntegerField()
+
+
 class FacilitySerializer(ModelSerializer):
     class Meta:
         model = Facility
@@ -23,7 +28,7 @@ class FacilitySerializer(ModelSerializer):
 
 
 class ConnectionSerializer(ModelSerializer):
-    abbreviation_with_facility = CharField(read_only=True)
+    facility_with_abbreviation = CharField(read_only=True)
 
     class Meta:
         model = Connection
@@ -45,6 +50,14 @@ class HardwareSerializer(ModelSerializer):
 class CabinetSerializer(ModelSerializer):
     class Meta:
         model = Cabinet
+        fields = '__all__'
+
+
+class PartSerializer(ModelSerializer):
+    name_with_component = CharField(read_only=True)
+
+    class Meta:
+        model = Part
         fields = '__all__'
 
 
