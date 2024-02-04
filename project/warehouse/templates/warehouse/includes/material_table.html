@@ -17,12 +17,13 @@
         </thead>
         <tbody>
             {% for material in material_list %}
-                {% include "warehouse/includes/material_row.html" with material=material %}
+            {% include "warehouse/includes/material_row.html" with material=material %}
             {% endfor %}
             {% if user.is_authenticated %}
-            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="this" hx-swap="beforebegin">
+            <form id="materialForm" hx-post="{% url 'warehouse:material-create' %}" hx-target="this"
+                hx-swap="beforebegin">
                 {% csrf_token %}
-                {% load user_filters %}
+                {% load addclass %}
                 <tr>
                     <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
                     <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>

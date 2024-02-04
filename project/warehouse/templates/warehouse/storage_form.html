@@ -1,5 +1,5 @@
 {% load static %}
-{% load user_filters %}
+{% load addclass %}
 <style>
     input {
         line-height: 19px;
@@ -11,12 +11,10 @@
 <li class="mb-1">
     <form
         hx-post="{% if is_update %}{% url 'warehouse:storage-update' storage.pk %}{% else %}{% url 'warehouse:storage-create' %}{% endif %}"
-        hx-target="closest li"
-        hx-swap="{% if is_update %}outerHTML{% else %}beforebegin{% endif %}"
-    >
+        hx-target="closest li" hx-swap="{% if is_update %}outerHTML{% else %}beforebegin{% endif %}">
         {{ form.name|addclass:"py-0 px-1" }}
         {% if parent_storage %}
-            <input type="hidden" name="parent_storage" value="{{ parent_storage.pk }}">
+        <input type="hidden" name="parent_storage" value="{{ parent_storage.pk }}">
         {% endif %}
         <button class="btn btn-link p-0 pb-1">
             <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
