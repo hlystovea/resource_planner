@@ -117,9 +117,25 @@ def part_select_view(request):
     return render(request, 'hardware/includes/part_select.html', context)
 
 
+def manufacturer_options_view(request):
+    return render(
+        request,
+        'hardware/includes/manufacturer_options.html',
+        context={
+            'manufacturer_list': Manufacturer.objects.all(),
+        }
+    )
+
+
 def manufacturer_select_view(request):
-    context = {'manufacturer_list': Manufacturer.objects.all()}
-    return render(request, 'hardware/includes/manufacturer_options.html', context)
+    return render(
+        request,
+        'hardware/includes/manufacturer_select.html',
+        context={
+            'selected_manufacturer': None,
+            'manufacturer_list': Manufacturer.objects.all(),
+        }
+    )
 
 
 @login_required
@@ -131,7 +147,7 @@ def manufacturer_input_view(request):
             request,
             'hardware/includes/manufacturer_select.html',
             context={
-                'selected_manufacturer': manufacturer,
+                'selected_manufacturer': manufacturer.pk,
                 'manufacturer_list': Manufacturer.objects.all(),
             }
         )

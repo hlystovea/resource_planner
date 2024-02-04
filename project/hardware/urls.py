@@ -17,6 +17,7 @@ urlpatterns = [
     path('hardware/select/', views.hardware_select_view, name='hardware-select'),  # noqa (E501)
     path('cabinets/select/', views.cabinet_select_view, name='cabinet-select'),
     path('parts/select/', views.part_select_view, name='part-select'),
+    path('manufacturer/options/', views.manufacturer_options_view, name='manufacturer-options'),  # noqa (E501)
     path('manufacturer/select/', views.manufacturer_select_view, name='manufacturer-select'),  # noqa (E501)
     path('manufacturer/input/', views.manufacturer_input_view, name='manufacturer-input'),  # noqa (E501)
 ]

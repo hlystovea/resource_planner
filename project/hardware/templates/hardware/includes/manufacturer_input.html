@@ -1,16 +1,21 @@
 {% load static %}
 {% load user_filters %}
-<div class="input-group input-group-sm">
-    {{ form.name|addclass:"form-control" }}
-    {% if form.name.help_text %}
-        <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
-            {{ form.name.help_text|safe }}
-        </small>
-    {% endif %}
-    <button class="btn btn-outline-secondary" type="button"
-        hx-post="{% url 'hardware:manufacturer-input' %}"
-        hx-target="#manufacturer_input"
-    >
-        <img src="{% static 'icons/floppy.svg' %}" height="16" fill="currentColor" class="bi bi-floppy">
-    </button>
-</div>
+<form hx-post="{% url 'hardware:manufacturer-input' %}" hx-target="#manufacturer_input">
+    <div class="input-group input-group-sm">
+        {{ form.name|addclass:"form-control" }}
+        {% if form.name.help_text %}
+            <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                {{ form.name.help_text|safe }}
+            </small>
+        {% endif %}
+        <button class="btn btn-outline-secondary">
+            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg">
+        </button>
+        <button class="btn btn-outline-secondary"
+            hx-get="{% url 'hardware:manufacturer-select' %}"
+            hx-target="#manufacturer_input"
+        >
+            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg">
+        </button>
+    </div>
+</form>
