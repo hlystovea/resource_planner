@@ -1,155 +1,160 @@
 {% extends 'base.html' %}
 {% block title %}Склад{% endblock %}
 {% load static %}
-{% load user_filters %}
+{% load addclass %}
 {% block content %}
-    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'hardware:component-list' %}">Запчасти</a></li>
-            <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} запасную часть</li>
-        </ol>
-    </nav>
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'hardware:component-list' %}">Запчасти</a></li>
+        <li class="breadcrumb-item">{% if is_new %}Добавить{% else %}Изменить{% endif %} запасную часть</li>
+    </ol>
+</nav>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8 p-5 pt-2">
-            <div class="card">
-                <div class="card-header">Запасная часть</div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {% if form.errors %}
-                            {% if form.non_field_errors %}
-                                <div class="alert alert-danger" role="alert">
-                                    {{ form.non_field_errors }}
+<div class="row justify-content-center">
+    <div class="col-md-8 p-5 pt-2">
+        <div class="card">
+            <div class="card-header">Запасная часть</div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                    {% if field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="card my-2">
+                        <div class="card-body">
+
+                            <!-- Наименование -->
+                            <div class="form-group row my-1" aria-required="true">
+                                <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                                    {{ form.name.label }}
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.name|addclass:"form-control form-control-sm" }}
+                                    {% if form.name.help_text %}
+                                    <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.name.help_text|safe }}
+                                    </small>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
-
-                            {% for field in form %}
-                                {% if field.errors %}
-                                    <div class="alert alert-danger" role="alert">
-                                        {{ field.errors }}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-
-                        <div class="card my-2">
-                            <div class="card-body">
-
-                                <!-- Наименование -->
-                                <div class="form-group row my-1" aria-required="true">
-                                    <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.name.label }}
-                                        <span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-5">
-                                        {{ form.name|addclass:"form-control form-control-sm" }}
-                                        {% if form.name.help_text %}
-                                          <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
-                                              {{ form.name.help_text|safe }}
-                                          </small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Назначение -->
-                                <div class="form-group row my-1" aria-required="true">
-                                    <label for="{{ form.function.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.function.label }}
-                                        <span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-5">
-                                        {{ form.function|addclass:"form-control form-control-sm" }}
-                                        {% if form.function.help_text %}
-                                          <small id="{{ form.function.id_for_label }}-help" class="form-text text-muted">
-                                              {{ form.function.help_text|safe }}
-                                          </small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Исполнение -->
-                                <div class="form-group row my-1" aria-required="true">
-                                    <label for="{{ form.design.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.design.label }}
-                                        <span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-5">
-                                        {{ form.design|addclass:"form-control form-control-sm" }}
-                                        {% if form.design.help_text %}
-                                            <small id="{{ form.design.id_for_label }}-help" class="form-text text-muted">
-                                                {{ form.design.help_text|safe }}
-                                            </small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Изготовитель -->
-                                <div class="form-group row my-1" aria-required="true">
-                                    <label for="{{ form.manufacturer.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.manufacturer.label }}
-                                        <span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-5" id="manufacturer_input">
-                                        <div class="input-group input-group-sm">
-                                            {{ form.manufacturer|addclass:"form-control form-control-sm" }}
-                                            {% if form.manufacturer.help_text %}
-                                                <small id="{{ form.manufacturer.id_for_label }}-help" class="form-text text-muted">
-                                                    {{ form.manufacturer.help_text|safe }}
-                                                </small>
-                                            {% endif %}
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                hx-get="{% url 'hardware:manufacturer-input' %}"
-                                                hx-target="#manufacturer_input"
-                                            >
-                                                <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg">
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Серия -->
-                                <div class="form-group row my-1" aria-required="false">
-                                    <label for="{{ form.series.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.series.label }}
-                                    </label>
-                                    <div class="col-md-5">
-                                        {{ form.series|addclass:"form-control form-control-sm" }}
-                                        {% if form.series.help_text %}
-                                            <small id="{{ form.series.id_for_label }}-help" class="form-text text-muted">
-                                                {{ form.series.help_text|safe }}
-                                            </small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Тип -->
-                                <div class="form-group row my-1" aria-required="false">
-                                    <label for="{{ form.type.id_for_label }}" class="col-md-4 col-form-label text-md-right">
-                                        {{ form.type.label }}
-                                    </label>
-                                    <div class="col-md-5">
-                                        {{ form.type|addclass:"form-control form-control-sm" }}
-                                        {% if form.type.help_text %}
-                                            <small id="{{ form.type.id_for_label }}-help" class="form-text text-muted">
-                                                {{ form.type.help_text|safe }}
-                                            </small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
                             </div>
-                        </div>
 
-                        <!-- Кнопка -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <button type="submit" class="btn btn-sm btn-secondary">Сохранить</button>
-                        </div>
+                            <!-- Назначение -->
+                            <div class="form-group row my-1" aria-required="true">
+                                <label for="{{ form.function.id_for_label }}"
+                                    class="col-md-4 col-form-label text-md-right">
+                                    {{ form.function.label }}
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.function|addclass:"form-control form-control-sm" }}
+                                    {% if form.function.help_text %}
+                                    <small id="{{ form.function.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.function.help_text|safe }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
 
-                    </form>
-                </div>
+                            <!-- Исполнение -->
+                            <div class="form-group row my-1" aria-required="true">
+                                <label for="{{ form.design.id_for_label }}"
+                                    class="col-md-4 col-form-label text-md-right">
+                                    {{ form.design.label }}
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.design|addclass:"form-control form-control-sm" }}
+                                    {% if form.design.help_text %}
+                                    <small id="{{ form.design.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.design.help_text|safe }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Изготовитель -->
+                            <div class="form-group row my-1" aria-required="true">
+                                <label for="{{ form.manufacturer.id_for_label }}"
+                                    class="col-md-4 col-form-label text-md-right">
+                                    {{ form.manufacturer.label }}
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-5" id="manufacturer_input">
+                                    <div class="input-group input-group-sm">
+                                        {{ form.manufacturer|addclass:"form-control form-control-sm" }}
+                                        {% if form.manufacturer.help_text %}
+                                        <small id="{{ form.manufacturer.id_for_label }}-help"
+                                            class="form-text text-muted">
+                                            {{ form.manufacturer.help_text|safe }}
+                                        </small>
+                                        {% endif %}
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            hx-get="{% url 'hardware:manufacturer-input' %}"
+                                            hx-target="#manufacturer_input">
+                                            <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor"
+                                                class="bi bi-plus-lg">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Серия -->
+                            <div class="form-group row my-1" aria-required="false">
+                                <label for="{{ form.series.id_for_label }}"
+                                    class="col-md-4 col-form-label text-md-right">
+                                    {{ form.series.label }}
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.series|addclass:"form-control form-control-sm" }}
+                                    {% if form.series.help_text %}
+                                    <small id="{{ form.series.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.series.help_text|safe }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Тип -->
+                            <div class="form-group row my-1" aria-required="false">
+                                <label for="{{ form.type.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                                    {{ form.type.label }}
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.type|addclass:"form-control form-control-sm" }}
+                                    {% if form.type.help_text %}
+                                    <small id="{{ form.type.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.type.help_text|safe }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Кнопка -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-sm btn-secondary">Сохранить</button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

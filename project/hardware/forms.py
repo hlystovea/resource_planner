@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput
 
 from hardware.models import Component, Manufacturer
 
@@ -13,3 +13,11 @@ class ManufacturerForm(ModelForm):
     class Meta:
         model = Manufacturer
         fields = '__all__'
+        widgets = {
+            'name': TextInput(
+                attrs={
+                    'placeholder': 'Введите наименование..',
+                    'autofocus': '',
+                }
+            ),
+        }
