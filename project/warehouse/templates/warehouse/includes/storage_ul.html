@@ -20,7 +20,7 @@
             {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}
         {% if user.is_authenticated and user.dept == parent_storage.owner or user.is_authenticated and not parent_storage.owner %}    
-            {% include 'warehouse/includes/storage_add_form.html' %}
+            {% include 'warehouse/storage_form.html' %}
         {% endif %}
     </ul>
 </li>

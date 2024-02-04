@@ -209,36 +209,3 @@ class TestStorage:
 
         assert not queryset.exists(), \
             'Проверьте, что эксземпляр `storage` удаляется из БД'
-
-    @pytest.mark.django_db
-    def test_storage_view_add_storage(self, auto_login_user, storage_1):
-        client, user = auto_login_user()
-        url = reverse(
-            'warehouse:storage-add-storage', kwargs={'pk': storage_1.pk}
-        )
-
-        try:
-            response = client.get(url)
-        except Exception as e:
-            assert False, f'Страница работает не правильно. Ошибка: {e}'
-        assert response.status_code == 200
-
-        assert 'form' in response.context, \
-            'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], StorageForm), \
-            'Проверьте, что поле `form` содержит форму `StorageForm`'
-
-        data = {
-            'name': 'some-storage-name',
-        }
-        try:
-            response = client.post(url, follow=True, data=data)
-        except Exception as e:
-            assert False, f'Страница работает не правильно. Ошибка: {e}'
-        assert response.status_code == 200
-
-        storage = get_field_context(response.context, Storage)
-        assert storage, \
-            'Проверьте, что передали поле типа `Storage` в контекст страницы'
-        assert storage.parent_storage == storage_1, \
-            'Проверьте, что сохраненный экземпляр `storage` имеет родителя'

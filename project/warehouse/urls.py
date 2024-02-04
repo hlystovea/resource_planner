@@ -28,7 +28,6 @@ storage_urls = [
     path('storage/<int:pk>/qrcode/', views.qrcode_view, name='storage-qrcode'),
     path('storage/<int:pk>/update/', views.StorageUpdate.as_view(), name='storage-update'),  # noqa (E501)
     path('storage/<int:pk>/delete/', views.StorageDelete.as_view(), name='storage-delete'),  # noqa (E501)
-    path('storage/<int:pk>/add/', views.StorageAdd.as_view(), name='storage-add-storage'),  # noqa (E501)
     path('storage/<int:pk>/li/', views.storage_li_view, name='storage-li'),
     path('storage/create/', views.StorageCreate.as_view(), name='storage-create'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/', views.MaterialStorageDetail.as_view(), name='material-storage-detail'),  # noqa (E501)

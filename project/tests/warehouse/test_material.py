@@ -242,3 +242,11 @@ class TestMaterial:
             'Фильтр по подразделению работает не правильно'
         assert material_in_storage_dept2.material not in material_list, \
             'Фильтр по подразделению работает не правильно'
+
+        response = client.get(f'{url}?search={material_in_storage_dept1.material.name[-5:]}')
+        material_list = response.context['material_list']
+
+        assert material_in_storage_dept1.material in material_list, \
+            'Поиск по подразделению работает не правильно'
+        assert material_in_storage_dept2.material not in material_list, \
+            'Поиск по подразделению работает не правильно'

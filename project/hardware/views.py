@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm
+from hardware.forms import ComponentForm, ManufacturerForm
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
@@ -51,8 +52,8 @@ class ComponentList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['hardware/component_table.html']
-        return ['hardware/component_list.html']
+            return ['hardware/includes/component_table.html']
+        return super().get_template_names()
 
 
 class ComponentCreate(LoginRequiredMixin, CreateView):
@@ -80,42 +81,80 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
 
 def group_select_view(request):
     context = {'group_list': Group.objects.all()}
-    return render(request, 'hardware/group_select.html', context)
+    return render(request, 'hardware/includes/group_select.html', context)
 
 
 def facility_select_view(request):
     context = {'facility_list': Facility.objects.all()}
-    return render(request, 'hardware/facility_select.html', context)
+    return render(request, 'hardware/includes/facility_select.html', context)
 
 
 def connection_select_view(request):
     queryset = Connection.objects.all()
     connections = ConnectionFilter(request.GET, queryset=queryset).qs
     context = {'connection_list': connections.select_related('facility')}
-    return render(request, 'hardware/connection_select.html', context)
+    return render(request, 'hardware/includes/connection_select.html', context)
 
 
 def hardware_select_view(request):
     queryset = Hardware.objects.all()
     hardware = HardwareFilter(request.GET, queryset=queryset).qs
     context = {'hardware_list': hardware}
-    return render(request, 'hardware/hardware_select.html', context)
+    return render(request, 'hardware/includes/hardware_select.html', context)
 
 
 def cabinet_select_view(request):
     queryset = Cabinet.objects.all()
     cabinets = CabinetFilter(request.GET, queryset=queryset).qs
     context = {'cabinet_list': cabinets}
-    return render(request, 'hardware/cabinet_select.html', context)
+    return render(request, 'hardware/includes/cabinet_select.html', context)
 
 
 def part_select_view(request):
     queryset = Part.objects.all()
     parts = PartFilter(request.GET, queryset=queryset).qs
     context = {'part_list': parts.select_related('component')}
-    return render(request, 'hardware/part_select.html', context)
+    return render(request, 'hardware/includes/part_select.html', context)
+
+
+def manufacturer_options_view(request):
+    return render(
+        request,
+        'hardware/includes/manufacturer_options.html',
+        context={
+            'manufacturer_list': Manufacturer.objects.all(),
+        }
+    )
 
 
 def manufacturer_select_view(request):
-    context = {'manufacturer_list': Manufacturer.objects.all()}
-    return render(request, 'hardware/manufacturer_select.html', context)
+    return render(
+        request,
+        'hardware/includes/manufacturer_select.html',
+        context={
+            'selected_manufacturer': None,
+            'manufacturer_list': Manufacturer.objects.all(),
+        }
+    )
+
+
+@login_required
+def manufacturer_input_view(request):
+    form = ManufacturerForm(request.POST or None)
+    if form.is_valid():
+        manufacturer = form.save()
+        return render(
+            request,
+            'hardware/includes/manufacturer_select.html',
+            context={
+                'selected_manufacturer': manufacturer.pk,
+                'manufacturer_list': Manufacturer.objects.all(),
+            }
+        )
+    return render(
+        request,
+        'hardware/includes/manufacturer_input.html',
+        context={
+            'form': form,
+        }
+    )

@@ -1,5 +1,5 @@
 <div class="row justify-content-end">
-    <div hx-get="{% url 'hardware:manufacturer-select' %}?label=true" hx-trigger="load" hx-target="#selectManufacturer"></div>
+    <div hx-get="{% url 'hardware:manufacturer-options' %}?label=true" hx-trigger="load" hx-target="#selectManufacturer"></div>
     <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept"></div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer"

@@ -1,0 +1,13 @@
+@media (min-width: 1600px) {
+    .container-xxxl{
+        width:1500px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1920px) {
+    .container-xxxxl{
+        width:1740px;
+        margin: 0 auto;
+    }
+}

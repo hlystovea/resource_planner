@@ -112,6 +112,7 @@ class StorageUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_update'] = True
+        context['parent_storage'] = self.object.parent_storage
         return context
 
 
@@ -129,16 +130,6 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
             return HttpResponse()
 
         return HttpResponseRedirect(success_url)
-
-
-class StorageAdd(StorageCreate):
-    form_class = StorageForm
-    success_url = '/warehouse/storage/{id}/li/'
-
-    def form_valid(self, form):
-        parent_storage = get_object_or_404(Storage, pk=self.kwargs['pk'])
-        form.instance.parent_storage = parent_storage
-        return super().form_valid(form)
 
 
 class MaterialDetail(DetailView):
