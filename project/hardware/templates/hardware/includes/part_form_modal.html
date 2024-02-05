@@ -1,5 +1,77 @@
 <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#id_part">
-    {% include 'includes/form.html' %}
+    <div class="card my-2">
+        <div class="card-body">
+
+            <!-- Наименование -->
+            <div class="form-group row my-1" aria-required="true">
+                <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                    {{ form.name.label }}
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-5">
+                    {{ form.name|addclass:"form-control form-control-sm" }}
+                    {% if form.name.help_text %}
+                    <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                        {{ form.name.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Компонент -->
+            <div class="form-group row my-1" aria-required="true">
+                <label for="{{ form.component.id_for_label }}"
+                    class="col-md-4 col-form-label text-md-right">
+                    {{ form.component.label }}
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-5">
+                    {{ form.component|addclass:"form-control form-control-sm" }}
+                    {% if form.component.help_text %}
+                    <small id="{{ form.component.id_for_label }}-help" class="form-text text-muted">
+                        {{ form.component.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Год производства -->
+            <div class="form-group row my-1" aria-required="true">
+                <label for="{{ form.release_year.id_for_label }}"
+                    class="col-md-4 col-form-label text-md-right">
+                    {{ form.release_year.label }}
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-5">
+                    {{ form.release_year|addclass:"form-control form-control-sm" }}
+                    {% if form.release_year.help_text %}
+                    <small id="{{ form.release_year.id_for_label }}-help" class="form-text text-muted">
+                        {{ form.release_year.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Год ввода в эксплуатацию -->
+            <div class="form-group row my-1" aria-required="true">
+                <label for="{{ form.launch_year.id_for_label }}"
+                    class="col-md-4 col-form-label text-md-right">
+                    {{ form.launch_year.label }}
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-5">
+                    {{ form.launch_year|addclass:"form-control form-control-sm" }}
+                    {% if form.launch_year.help_text %}
+                    <small id="{{ form.launch_year.id_for_label }}-help" class="form-text text-muted">
+                        {{ form.launch_year.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Кабинет -->
+            <input type="hidden" name="cabinet" value="{{ cabinet.pk }}">
+
     <div class="d-flex justify-content-end mt-3">
         <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal">Сохранить</button>
     </div>
