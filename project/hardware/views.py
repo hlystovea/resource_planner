@@ -79,6 +79,22 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('hardware:component-list')
 
 
+class HardwareList(ListView):
+    paginate_by = 20
+    model = Hardware
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = HardwareFilter(self.request.GET, queryset=queryset).qs
+        queryset = queryset.select_related('connection__facility')
+        return queryset.order_by('connection', 'name')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/hardware_table.html']
+        return super().get_template_names()
+
+
 def group_select_view(request):
     context = {'group_list': Group.objects.all()}
     return render(request, 'hardware/includes/group_select.html', context)
