@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput
 
-from hardware.models import Component, Manufacturer
+from hardware.models import Component, Manufacturer, Part
 
 
 class ComponentForm(ModelForm):
@@ -21,3 +21,9 @@ class ManufacturerForm(ModelForm):
                 }
             ),
         }
+
+
+class PartForm(ModelForm):
+    class Meta:
+        model = Part
+        fields = '__all__'

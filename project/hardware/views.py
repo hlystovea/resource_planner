@@ -10,7 +10,7 @@ from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm, ManufacturerForm
+from hardware.forms import ComponentForm, ManufacturerForm, PartForm
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
@@ -170,6 +170,27 @@ def manufacturer_input_view(request):
     return render(
         request,
         'hardware/includes/manufacturer_input.html',
+        context={
+            'form': form,
+        }
+    )
+
+@login_required
+def part_create_modal(request):
+    form = PartForm(request.POST or None)
+    if form.is_valid():
+        part = form.save()
+        return render(
+            request,
+            'hardware/includes/part_select.html',
+            context={
+                'selected_part': part.pk,
+                'part_list': Part.objects.filter(cabinet=part.cabinet),
+            }
+        )
+    return render(
+        request,
+        'hardware/includes/part_form_modal.html',
         context={
             'form': form,
         }
