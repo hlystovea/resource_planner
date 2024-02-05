@@ -1,4 +1,6 @@
-<form hx-post="{% url 'hardware:part-create'%}">
-    {% include 'includes/form.html' }
-    <button class="btn btn-sm btn-secondary me-1">Сохранить</button>
+<form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#id_part">
+    {% include 'includes/form.html' %}
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal">Сохранить</button>
+    </div>
 </form>

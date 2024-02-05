@@ -12,7 +12,7 @@
 
 {% for part in part_list %}
     <option value="{{ part.pk }}"
-        {% if part.pk|stringformat:'i' == request.GET.part %}
+        {% if part.pk|stringformat:'i' == request.GET.part or part.pk == selected_part %}
             selected
         {% endif %}
     >

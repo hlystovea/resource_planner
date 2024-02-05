@@ -177,7 +177,7 @@ def manufacturer_input_view(request):
 
 @login_required
 def part_create_modal(request):
-    form = PartForm(request.POST or None)
+    form = PartForm(request.POST or request.GET or None)
     if form.is_valid():
         part = form.save()
         return render(
