@@ -107,7 +107,7 @@
                         </label>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <select id="id_part" name="part" required
+                                <select class="form-select" id="id_part" name="part" required
                                     {% if defect %}
                                         hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
                                         hx-trigger="load"
