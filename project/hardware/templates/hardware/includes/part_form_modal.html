@@ -70,7 +70,7 @@
                                 hx-get="{% url 'hardware:cabinet-select' %}"
                                 hx-target="#selectCabinetModal"
                             >
-                                <option value="" selected>--------------</option>
+                                <option value="" selected>---------</option>
                             </select>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                                 hx-get="{% url 'hardware:part-select' %}"
                                 hx-target="#selectPartModal"
                             >
-                                <option value="" selected>--------------</option>
+                                <option value="" selected>---------</option>
                             </select>
                         {% endif %}
                         {% if form.cabinet.help_text %}
@@ -122,7 +122,7 @@
                             <input name="part" value="{{ parent_part.pk }}" hidden>
                         {% else %}
                             <select class="form-control form-control-sm" id="selectPartModal" name="part">
-                                <option value="" selected>--------------</option>
+                                <option value="" selected>---------</option>
                             </select>
                         {% endif %}
                         {% if form.part.help_text %}
