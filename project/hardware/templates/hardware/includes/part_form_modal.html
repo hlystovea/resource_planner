@@ -85,9 +85,10 @@
                     </label>
                     <div class="col-md-5">
                         {% if cabinet %}
-                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" disabled>
+                            <select class="form-control form-control-sm" disabled>
                                 <option value="{{ cabinet.pk }}" selected>{{ cabinet }}</option>
                             </select>
+                            <input name="cabinet" value="{{ cabinet.pk }}" hidden>
                         {% else %}
                             <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required>
                                 <option value="" selected>--------------</option>
