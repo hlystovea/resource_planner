@@ -42,8 +42,8 @@
                 <div class="form-group row my-1" aria-required="false">
                     <label for="selectConnectionModal"
                         class="col-md-4 col-form-label text-md-right">Присоединение</label>
-                    <div class="col-md-8">
-                        <select class="form-select" id="selectConnectionModal" name="connection"
+                    <div class="col-md-5">
+                        <select class="form-select form-control-sm" id="selectConnectionModal" name="connection"
                             hx-get="{% url 'hardware:hardware-select' %}"
                             hx-target="#selectHardwareModal"
                         >
@@ -54,8 +54,8 @@
                 <!-- Оборудование -->
                 <div class="form-group row my-1" aria-required="false">
                     <label for="selectHardwareModal" class="col-md-4 col-form-label text-md-right">Оборудование</label>
-                    <div class="col-md-8">
-                        <select class="form-select" id="selectHardwareModal" name="hardware"
+                    <div class="col-md-5">
+                        <select class="form-select form-control-sm" id="selectHardwareModal" name="hardware"
                             hx-get="{% url 'hardware:cabinet-select' %}"
                             hx-target="#selectCabinetModal"
                         >
@@ -73,7 +73,7 @@
                     <span class="required">*</span>
                 </label>
                 <div class="col-md-5">
-                    <select class="form-select" id="selectCabinetModal" name="cabinet" required
+                    <select class="form-select form-control-sm" id="selectCabinetModal" name="cabinet" required
                         {% if cabinet %}
                             hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ cabinet.pk }}"
                             hx-trigger="load"
