@@ -19,6 +19,16 @@
 <div
     hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
     hx-trigger="load"
-    hx-target="id_part"
+    hx-target="#selectPart"
     hx-params="none"
 ></div>
+<div class="modal-header">
+    <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <p>Новое комплектующее {{ part }} сохранено.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal">Закрыть</button>
+    </div>
+</div>

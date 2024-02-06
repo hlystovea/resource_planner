@@ -92,7 +92,7 @@
                         <div class="col-md-8">
                             <select class="form-select" id="selectCabinet" name="cabinet" required
                                 hx-get="{% url 'hardware:part-select' %}"
-                                hx-target="#id_part"
+                                hx-target="#selectPart"
                             >
                                 <option value="" selected>--------------</option>
                             </select>
@@ -101,13 +101,13 @@
 
                     <!-- Комплектующее -->
                     <div class="form-group row my-1" aria-required="true">
-                        <label for="id_part" class="col-md-4 col-form-label text-md-right">
+                        <label for="selectPart" class="col-md-4 col-form-label text-md-right">
                             Комплектующее
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <select class="form-select" id="id_part" name="part" required
+                                <select class="form-select" id="selectPart" name="part" required
                                     {% if defect %}
                                         hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
                                         hx-trigger="load"
