@@ -84,14 +84,15 @@
                         <span class="required">*</span>
                     </label>
                     <div class="col-md-5">
-                        <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required
-                            {% if cabinet %}
-                                hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ cabinet.pk }}"
-                                hx-trigger="load"
-                            {% endif %}
-                        >
-                            <option value="" selected>--------------</option>
-                        </select>
+                        {% if cabinet %}
+                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" disabled>
+                                <option value="{{ cabinet.pk }}" selected>{{ cabinet }}</option>
+                            </select>
+                        {% else %}
+                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required>
+                                <option value="" selected>--------------</option>
+                            </select>
+                        {% endif %}
                         {% if form.cabinet.help_text %}
                             <small id="{{ form.cabinet.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.cabinet.help_text|safe }}
