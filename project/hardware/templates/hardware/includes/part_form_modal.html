@@ -88,7 +88,13 @@
                             <select class="form-control form-control-sm" disabled>
                                 <option value="{{ cabinet.pk }}" selected>{{ cabinet }}</option>
                             </select>
-                            <input name="cabinet" value="{{ cabinet.pk }}" hidden>
+                            <input name="cabinet" id="selectCabinetModal" value="{{ cabinet.pk }}" hidden>
+                            <div
+                                hx-get="{% url 'hardware:part-select' %}{% if parent_part %}?part={{ parent_part.pk }}{% endif %}"
+                                hx-trigger="load"
+                                hx-target="#selectPartModal"
+                                hx-include="[id='selectCabinetModal']"
+                            ></div>
                         {% else %}
                             <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required
                                 hx-get="{% url 'hardware:part-select' %}"
@@ -115,16 +121,9 @@
                         {{ form.part.label }}
                     </label>
                     <div class="col-md-5">
-                        {% if parent_part %}
-                            <select class="form-control form-control-sm" disabled>
-                                <option value="{{ parent_part.pk }}" selected>{{ parent_part }}</option>
-                            </select>
-                            <input name="part" value="{{ parent_part.pk }}" hidden>
-                        {% else %}
-                            <select class="form-control form-control-sm" id="selectPartModal" name="part">
-                                <option value="" selected>---------</option>
-                            </select>
-                        {% endif %}
+                        <select class="form-control form-control-sm" id="selectPartModal" name="part">
+                            <option value="" selected>---------</option>
+                        </select>
                         {% if form.part.help_text %}
                             <small id="{{ form.part.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.part.help_text|safe }}
