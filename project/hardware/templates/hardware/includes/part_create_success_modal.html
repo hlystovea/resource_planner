@@ -1,20 +1,24 @@
-<div class="modal-header">
-    <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"
-        hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
-        hx-target="id_part"
-        hx-trigger="click"
-    ></button>
-</div>
-<div class="modal-body">
-    <p>Новое комплектующее {{ part }} сохранено.</p>
-    <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal"
-            hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
-            hx-target="id_part"
-            hx-trigger="click"
-        >
-            Закрыть
-        </button>
-    </div>
-</div>
+<div
+    hx-get="{% url 'hardware:connection-select' %}?connection={{ part.cabinet.hardware.connection.pk }}"
+    hx-trigger="load"
+    hx-target="#selectConnection"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:hardware-select' %}?hardware={{ part.cabinet.hardware.pk }}&connection={{ part.cabinet.hardware.connection.pk }}"
+    hx-trigger="load"
+    hx-target="#selectHardware"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ part.cabinet.pk }}&hardware={{ part.cabinet.hardware.pk }}"
+    hx-trigger="load"
+    hx-target="#selectCabinet"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
+    hx-trigger="load"
+    hx-target="id_part"
+    hx-params="none"
+></div>
