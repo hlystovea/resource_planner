@@ -107,7 +107,7 @@
                         </label>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <select class="form-select" id="id_part" name="part" required
+                                <select id="id_part" name="part" required
                                     {% if defect %}
                                         hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
                                         hx-trigger="load"
@@ -118,7 +118,7 @@
                                 </select>
                                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
                                     hx-get="{% url 'hardware:part-create-modal' %}" 
-                                    hx-target="#partFormBody"
+                                    hx-target="#partModalContent"
                                     hx-include="[name='cabinet']"
                                 >
                                     <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
@@ -128,12 +128,7 @@
                     </div>
                     <div id="partFormModal" class="modal modal-blur fade" style="display: none" aria-hidden="false" tabindex="-1">
                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                  </div>
-                                  <div class="modal-body" id="partFormBody"></div>
+                            <div class="modal-content" id="partModalContent">
                             </div>
                         </div>
                     </div>

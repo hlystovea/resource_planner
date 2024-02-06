@@ -188,11 +188,8 @@ def part_create_modal(request):
         part = form.save()
         return render(
             request,
-            'hardware/includes/part_select.html',
-            context={
-                'selected_part': part.pk,
-                'part_list': Part.objects.filter(cabinet=part.cabinet),
-            }
+            'hardware/includes/part_create_success_modal.html',
+            context={'part': part}
         )
 
     if request.GET.get('cabinet'):
