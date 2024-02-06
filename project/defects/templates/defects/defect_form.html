@@ -87,7 +87,6 @@
                         <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}&hardware={{ defect.part.cabinet.hardware.pk }}"
                             hx-trigger="load" hx-target="#selectCabinet"></div>
                     {% endif %}
-                    <form id="cabinet_form">
                     <div class="form-group row my-1" aria-required="true">
                         <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
                         <div class="col-md-8">
@@ -99,7 +98,6 @@
                             </select>
                         </div>
                     </div>
-                    </form>
 
                     <!-- Комплектующее -->
                     <div class="form-group row my-1" aria-required="true">
@@ -118,7 +116,7 @@
                                 >
                                     <option value="" selected>--------------</option>
                                 </select>
-                                <button class="btn btn-outline-secondary" form="cabinet_form" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
                                     hx-get="{% url 'hardware:part-create-modal' %}" 
                                     hx-target="#partFormBody"
                                     hx-include="[name='cabinet']"

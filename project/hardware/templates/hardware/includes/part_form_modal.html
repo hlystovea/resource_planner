@@ -36,6 +36,60 @@
                 </div>
             </div>
 
+            {% if not cabinet %}
+                <!-- Присоединение -->
+                <div hx-get="{% url 'hardware:connection-select' %}" hx-trigger="load" hx-target="#selectConnectionModal"></div>
+                <div class="form-group row my-1" aria-required="false">
+                    <label for="selectConnectionModal"
+                        class="col-md-4 col-form-label text-md-right">Присоединение</label>
+                    <div class="col-md-8">
+                        <select class="form-select" id="selectConnectionModal" name="connection"
+                            hx-get="{% url 'hardware:hardware-select' %}"
+                            hx-target="#selectHardwareModal"
+                        >
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Оборудование -->
+                <div class="form-group row my-1" aria-required="false">
+                    <label for="selectHardwareModal" class="col-md-4 col-form-label text-md-right">Оборудование</label>
+                    <div class="col-md-8">
+                        <select class="form-select" id="selectHardwareModal" name="hardware"
+                            hx-get="{% url 'hardware:cabinet-select' %}"
+                            hx-target="#selectCabinetModal"
+                        >
+                            <option value="" selected>--------------</option>
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Шкаф/панель -->
+            <div class="form-group row my-1" aria-required="true">
+                <label for="{{ form.cabinet.id_for_label }}"
+                    class="col-md-4 col-form-label text-md-right">
+                    {{ form.cabinet.label }}
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-5">
+                    <select class="form-select" id="selectCabinetModal" name="cabinet" required
+                        {% if cabinet %}
+                            hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ cabinet.pk }}"
+                            hx-trigger="load"
+                            disabled
+                        {% endif %}
+                    >
+                        <option value="" selected>--------------</option>
+                    </select>
+                    {% if form.cabinet.help_text %}
+                    <small id="{{ form.cabinet.id_for_label }}-help" class="form-text text-muted">
+                        {{ form.cabinet.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
             <!-- Год производства -->
             <div class="form-group row my-1" aria-required="true">
                 <label for="{{ form.release_year.id_for_label }}"
@@ -69,9 +123,6 @@
                     {% endif %}
                 </div>
             </div>
-
-            <!-- Кабинет -->
-            <input type="hidden" name="cabinet" value="{{ cabinet.pk }}">
 
         </div>
     </div>

@@ -182,6 +182,7 @@ def manufacturer_input_view(request):
 @login_required
 def part_create_modal(request):
     form = PartForm(request.POST or None)
+    context = {}
 
     if form.is_valid():
         part = form.save()
@@ -196,13 +197,10 @@ def part_create_modal(request):
 
     if request.GET.get('cabinet'):
         cabinet = get_object_or_404(Cabinet, pk=request.GET.get('cabinet'))
-        return render(
-            request,
-            'hardware/includes/part_form_modal.html',
-            context={
-                'cabinet': cabinet,
-                'form': form,
-            }
-        )
+        context = {'cabinet': cabinet}
 
-    return HttpResponse('', status=HTTPStatus.BAD_REQUEST)
+    return render(
+        request,
+        'hardware/includes/part_form_modal.html',
+        context | {'form': form}
+    )
