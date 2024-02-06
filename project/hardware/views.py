@@ -191,7 +191,11 @@ def part_create_modal(request):
 
     if request.GET.get('cabinet'):
         cabinet = get_object_or_404(Cabinet, pk=request.GET.get('cabinet'))
-        context = {'cabinet': cabinet}
+        context |= {'cabinet': cabinet}
+
+    if request.GET.get('part'):
+        part = get_object_or_404(Part, pk=request.GET.get('part'))
+        context |= {'parent_part': part}
 
     return render(
         request,

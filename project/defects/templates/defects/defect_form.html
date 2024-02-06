@@ -119,7 +119,7 @@
                                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
                                     hx-get="{% url 'hardware:part-create-modal' %}" 
                                     hx-target="#partModalContent"
-                                    hx-include="[id='selectCabinet']"
+                                    hx-include="[id='selectCabinet'], [id='selectPart']"
                                 >
                                     <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
                                 </button>

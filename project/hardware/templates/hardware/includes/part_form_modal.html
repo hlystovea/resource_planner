@@ -90,7 +90,10 @@
                             </select>
                             <input name="cabinet" value="{{ cabinet.pk }}" hidden>
                         {% else %}
-                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required>
+                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required
+                                hx-get="{% url 'hardware:part-select' %}"
+                                hx-target="#selectPartModal"
+                            >
                                 <option value="" selected>--------------</option>
                             </select>
                         {% endif %}
@@ -104,7 +107,35 @@
                         {% endif %}
                     </div>
                 </div>
-            
+
+                <!-- Комплектующее -->
+                <div class="form-group row my-1" aria-required="false">
+                    <label for="{{ form.part.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.part.label }}
+                    </label>
+                    <div class="col-md-5">
+                        {% if parent_part %}
+                            <select class="form-control form-control-sm" disabled>
+                                <option value="{{ parent_part.pk }}" selected>{{ parent_part }}</option>
+                            </select>
+                            <input name="part" value="{{ parent_part.pk }}" hidden>
+                        {% else %}
+                            <select class="form-control form-control-sm" id="selectPartModal" name="part">
+                                <option value="" selected>--------------</option>
+                            </select>
+                        {% endif %}
+                        {% if form.part.help_text %}
+                            <small id="{{ form.part.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.part.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if form.part.errors %}
+                            <div class="form-text text-danger">{{ form.part.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
                 <!-- Год производства -->
                 <div class="form-group row my-1" aria-required="true">
                     <label for="{{ form.release_year.id_for_label }}"
