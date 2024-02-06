@@ -1,3 +1,4 @@
+{% load addclass %}
 <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#id_part">
     <div class="card my-2">
         <div class="card-body">
@@ -72,6 +73,8 @@
             <!-- Кабинет -->
             <input type="hidden" name="cabinet" value="{{ cabinet.pk }}">
 
+        </div>
+    </div>
     <div class="d-flex justify-content-end mt-3">
         <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal">Сохранить</button>
     </div>

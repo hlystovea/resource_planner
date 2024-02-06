@@ -1,6 +1,9 @@
+from http import HTTPStatus
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
@@ -175,10 +178,11 @@ def manufacturer_input_view(request):
         }
     )
 
+
 @login_required
 def part_create_modal(request):
-    cabinet = get_object_or_404(Cabinet, pk=request.GET.get('cabinet'))
     form = PartForm(request.POST or None)
+
     if form.is_valid():
         part = form.save()
         return render(
@@ -189,11 +193,16 @@ def part_create_modal(request):
                 'part_list': Part.objects.filter(cabinet=part.cabinet),
             }
         )
-    return render(
-        request,
-        'hardware/includes/part_form_modal.html',
-        context={
-            'cabinet': cabinet,
-            'form': form,
-        }
-    )
+
+    if request.GET.get('cabinet'):
+        cabinet = get_object_or_404(Cabinet, pk=request.GET.get('cabinet'))
+        return render(
+            request,
+            'hardware/includes/part_form_modal.html',
+            context={
+                'cabinet': cabinet,
+                'form': form,
+            }
+        )
+
+    return HttpResponse('', status=HTTPStatus.BAD_REQUEST)
