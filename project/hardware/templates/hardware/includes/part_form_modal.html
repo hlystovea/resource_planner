@@ -54,7 +54,7 @@
                         <label for="selectConnectionModal"
                             class="col-md-4 col-form-label text-md-right">Присоединение</label>
                         <div class="col-md-5">
-                            <select class="form-select form-control-sm" id="selectConnectionModal" name="connection"
+                            <select class="form-control form-control-sm" id="selectConnectionModal" name="connection"
                                 hx-get="{% url 'hardware:hardware-select' %}"
                                 hx-target="#selectHardwareModal"
                             >
@@ -66,7 +66,7 @@
                     <div class="form-group row my-1" aria-required="false">
                         <label for="selectHardwareModal" class="col-md-4 col-form-label text-md-right">Оборудование</label>
                         <div class="col-md-5">
-                            <select class="form-select form-control-sm" id="selectHardwareModal" name="hardware"
+                            <select class="form-control form-control-sm" id="selectHardwareModal" name="hardware"
                                 hx-get="{% url 'hardware:cabinet-select' %}"
                                 hx-target="#selectCabinetModal"
                             >
@@ -84,7 +84,7 @@
                         <span class="required">*</span>
                     </label>
                     <div class="col-md-5">
-                        <select class="form-select form-control-sm" id="selectCabinetModal" name="cabinet" required
+                        <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required
                             {% if cabinet %}
                                 hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ cabinet.pk }}"
                                 hx-trigger="load"
@@ -145,9 +145,9 @@
             
             </div>
         </div>
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-sm btn-success me-1" type="submit">Сохранить</button>
+            <button class="btn btn-sm btn-danger me-1" type="button" data-bs-dismiss="modal">Отмена</button>
+        </div>
     </form>
-    <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-sm btn-success me-1" form="partFormModal">Сохранить</button>
-        <button class="btn btn-sm btn-danger me-1" data-bs-dismiss="modal">Отмена</button>
-    </div>
 </div>
