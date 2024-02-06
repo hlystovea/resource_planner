@@ -3,6 +3,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"
         hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
         hx-target="id_part"
+        hx-trigger="click"
     ></button>
 </div>
 <div class="modal-body">
@@ -11,6 +12,7 @@
         <button class="btn btn-sm btn-secondary me-1" data-bs-dismiss="modal"
             hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
             hx-target="id_part"
+            hx-trigger="click"
         >
             Закрыть
         </button>

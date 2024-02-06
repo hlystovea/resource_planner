@@ -4,7 +4,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
 </div>
 <div class="modal-body">
-    <form hx-post="{% url 'hardware:part-create-modal'%}" id="partFormModal">
+    <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#partModalContent">
         <div class="card my-2">
             <div class="card-body">
             
