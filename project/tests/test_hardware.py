@@ -3,8 +3,8 @@ import pytest
 from django.db.models import fields
 from django.urls import reverse
 
-from hardware.forms import ComponentForm
-from hardware.models import Component
+from hardware.forms import ComponentForm, PartForm
+from hardware.models import Component, Part
 from tests.common import get_field_context, search_field
 from warehouse.models import ComponentStorage
 
@@ -260,3 +260,56 @@ class TestComponent:
         assert component.defect_count == 2, \
             'Проверьте, что объект Component содержит поле defect_count ' \
             'с количеством дефектов'
+
+
+class TestPart:
+    @pytest.mark.django_db
+    def test_part_create_modal(self, component_1, cabinet, auto_login_user):
+        client, user = auto_login_user()
+        url = reverse('hardware:part-create-modal')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], PartForm), \
+            'Проверьте, что поле `form` содержит объект класса `PartForm`'
+        assert response.templates[0].name == 'hardware/includes/part_form_modal.html', \
+            'Проверьте, что используете шаблон part_form_modal.html в ответе'
+
+        data = {
+            'name': 'some',
+            'component': component_1.pk,
+            'cabinet': cabinet.pk,
+            'release_year': 2000,
+            'launch_year': 2000,
+        }
+        try:
+            response = client.post(url, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        
+
+        assert 'part' in response.context, \
+            'Проверьте, что передали поле `part` в контекст страницы'
+        assert isinstance(response.context['part'], Part), \
+            'Проверьте, что поле `part` содержит эксземпляр класса `Part`'
+
+        part = response.context['part']
+    
+        assert response.templates[0].name == 'hardware/includes/part_create_success_modal.html', \
+            'Проверьте, что используете шаблон part_create_success_modal.html в ответе'
+        assert part is not None, \
+            'Проверьте, что передали поле типа `Part` в контекст страницы'
+        assert data['name'] == part.name, \
+            'Проверьте, что сохраненный экземпляр `part` содержит ' \
+            'соответствующее поле `name`'
+        assert data['cabinet'] == part.cabinet.pk, \
+            'Проверьте, что сохраненный экземпляр `part` содержит ' \
+            'соответствующее поле `cabinet`'
