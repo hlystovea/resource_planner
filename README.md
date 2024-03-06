@@ -67,4 +67,7 @@
 
 ```http://127.0.0.1:8001/admin```
 
+## Поддержка
+Если у вас возникли сложности или вопросы по использованию проекта, создайте 
+[обсуждение](https://github.com/hlystovea/resource_planner/issues/new/choose) в данном репозитории или напишите в [Telegram](https://t.me/hlystovea).
 
