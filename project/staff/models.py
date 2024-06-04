@@ -49,6 +49,22 @@ class Dept(models.Model):
         return self.abbreviation
 
 
+class Position(models.Model):
+    name = models.CharField(
+        verbose_name=_('Название'),
+        max_length=200,
+        unique=True
+    )
+
+    class Meta:
+        ordering = ('name', )
+        verbose_name = _('Должность')
+        verbose_name_plural = _('Должности')
+
+    def __str__(self):
+        return self.name
+
+
 class Employee(AbstractUser):
     patronymic = models.CharField(
         verbose_name=_('Отчество'),
@@ -65,6 +81,13 @@ class Employee(AbstractUser):
     is_chief = models.BooleanField(
         verbose_name=_('Руководитель подразделения'),
         default=False
+    )
+    position = models.ForeignKey(
+        Position,
+        verbose_name=_('Должность'),
+        on_delete=models.PROTECT,
+        related_name='employees',
+        null=True
     )
 
     def __str__(self):

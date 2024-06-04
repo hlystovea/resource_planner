@@ -304,7 +304,7 @@
             <tbody>
                 {% for signer in protocole2.signers.all %}
                 <tr>
-                    <td>Инженер уч.ТАиВ</td>
+                    <td>{{ signer.position|capfirst }} уч. {{ signer.dept }}</td>
                     <td></td>
                     <td>{{ signer }}</td>
                 </tr>
@@ -315,7 +315,7 @@
             <caption>Протокол проверил:</caption>
             <tbody>
                 <tr>
-                    <td>Начальник уч.ТАиВ</td>
+                    <td>{{ protocole2.supervisor.position|capfirst }} уч. {{ protocole2.supervisor.dept }}</td>
                     <td></td>
                     <td>{{ protocole2.supervisor }}</td>
                 </tr>
