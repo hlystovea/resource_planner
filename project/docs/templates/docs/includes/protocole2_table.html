@@ -1,0 +1,27 @@
+<div id="protocolTable">
+    <div class="row">
+        <div class="col-auto">
+            {% include './protocole2_years.html' %}
+        </div>
+    </div>
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Дата проверки</th>
+                <th scope="col">Присоединение</th>
+                <th scope="col">Выполнили</th>
+                <th scope="col">Проверил</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for protocol in protocole2_list %}
+            <tr>
+                <td><a href="{% url 'docs:protocol_e2-detail' protocol.pk %}">{{ protocol.date|date:'d.m.Y' }}</a></td>
+                <td>{{ protocol.connection.abbreviation }}</td>
+                <td>{{ protocol.signers.all|join:", " }}</td>
+                <td>{{ protocol.supervisor }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

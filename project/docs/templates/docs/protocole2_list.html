@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Документы{% endblock %}
+{% block content %}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item">Документы</li>
+        <li class="breadcrumb-item">Протоколы Э2</li>
+    </ol>
+</nav>
+<div class="row mb-2">
+    <h1>Протоколы Э2</h1>
+</div>
+{% if user.is_authenticated %}
+<a class="btn btn-sm btn-secondary me-auto" href="{% url 'docs:protocol_e2-create' %}" role="button">
+    Добавить
+</a>
+{% endif %}
+{% include './includes/protocole2_table.html' %}
+{% endblock %}
