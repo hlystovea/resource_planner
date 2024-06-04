@@ -11,16 +11,20 @@
                 <th scope="col">Присоединение</th>
                 <th scope="col">Выполнили</th>
                 <th scope="col">Проверил</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             {% for protocol in protocole2_list %}
-            <tr>
-                <td><a href="{% url 'docs:protocol_e2-detail' protocol.pk %}">{{ protocol.date|date:'d.m.Y' }}</a></td>
-                <td>{{ protocol.connection.abbreviation }}</td>
-                <td>{{ protocol.signers.all|join:", " }}</td>
-                <td>{{ protocol.supervisor }}</td>
-            </tr>
+                {% with url=protocol.get_absolute_url %}
+                    <tr>
+                        <td><a href="{{ url }}">{{ protocol.date|date:'d.m.Y' }}</a></td>
+                        <td>{{ protocol.connection.abbreviation }}</td>
+                        <td>{{ protocol.signers.all|join:", " }}</td>
+                        <td>{{ protocol.supervisor }}</td>
+                        <td>{% include './print_button.html' with url=url %}</td>
+                    </tr>
+                {% endwith %}
             {% endfor %}
         </tbody>
     </table>
