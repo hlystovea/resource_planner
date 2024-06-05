@@ -17,22 +17,7 @@
         </thead>
         <tbody>
             {% for protocol in protocole2_list %}
-                {% with url=protocol.get_absolute_url %}
-                    <tr>
-                        <td><a href="{{ url }}">{{ protocol.date|date:'d.m.Y' }}</a></td>
-                        <td>{{ protocol.connection.abbreviation }}</td>
-                        <td>{{ protocol.signers.all|join:", " }}</td>
-                        <td>{{ protocol.supervisor }}</td>
-                            <td>
-                                {% if user.is_authenticated %}
-                                <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'docs:protocol_e2-update' protocol.pk %}">
-                                    <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-                                </a>
-                                {% endif %}
-                                {% include './print_button.html' with url=url %}
-                            </td>
-                    </tr>
-                {% endwith %}
+                {% include './protocole2_row.html' with protocol=protocol %}
             {% endfor %}
         </tbody>
     </table>
