@@ -266,7 +266,6 @@
                             <th>№</th>
                             <th>Наименование</th>
                             <th>Серийный номер</th>
-                            <th>Тип</th>
                             <th>Дата последней калибровки</th>
                             <th>Дата следующей калибровки</th>
                         </tr>
@@ -277,9 +276,8 @@
                             <td>{{ forloop.counter }}</td>
                             <td>{{ instrument.name }}</td>
                             <td>{{ instrument.serial_number|default_if_none:"-" }}</td>
-                            <td>-</td>
-                            <td>IV кв. 2023 г.</td>
-                            <td>IV кв. 2023 г.</td>
+                            <td>{{ instrument.last_verification|date:"d.m.Y" }} г.</td>
+                            <td>{{ instrument.next_verification|date:"d.m.Y" }} г.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
