@@ -47,19 +47,19 @@ class ProtocolE2(models.Model):
         upload_to='protocols/e2/'
     )
     file_5 = models.FileField(
-        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1'),
+        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1 в режиме (Ug)'),
         upload_to='protocols/e2/'
     )
     file_6 = models.FileField(
-        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2'),
+        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2 в режиме (Ug)'),
         upload_to='protocols/e2/'
     )
     file_7 = models.FileField(
-        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1'),
+        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1 в режиме (If)'),
         upload_to='protocols/e2/'
     )
     file_8 = models.FileField(
-        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2'),
+        verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2 в режиме (If)'),
         upload_to='protocols/e2/'
     )
     file_9 = models.FileField(
