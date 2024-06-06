@@ -42,6 +42,11 @@ class ProtocolE2ListView(ListView):
 
 class ProtocolE2DetailView(DetailView):
     model = ProtocolE2
+    queryset = ProtocolE2.objects.select_related(
+        'connection', 'supervisor__dept__service'
+    ).prefetch_related(
+        'signers__dept__service'
+    )
 
 
 class ProtocolE2CreateView(LoginRequiredMixin, CreateView):

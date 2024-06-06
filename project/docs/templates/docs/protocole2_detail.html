@@ -290,7 +290,7 @@
                 <p>
                     Выполнен периодический технический контроль системы возбуждения {{ protocole2.connection.abbreviation }}
                     СШГЭС на холостом ходу генератора по типу Э2. По результатам
-                    проверки системы возбуждения {{ protocole2.connection.abbreviation }} СШГЭС исправна, соответствует
+                    проверки система возбуждения {{ protocole2.connection.abbreviation }} СШГЭС исправна, соответствует
                     требованиям заводской и нормативной документации и пригодна
                     для дальнейшей эксплуатации.
                 </p>
@@ -304,7 +304,7 @@
             <tbody>
                 {% for signer in protocole2.signers.all %}
                 <tr>
-                    <td>{{ signer.position|capfirst }} уч. {{ signer.dept }}</td>
+                    <td>{{ signer.position|capfirst }} уч. {{ signer.dept }} {{ signer.dept.service }}</td>
                     <td></td>
                     <td>{{ signer }}</td>
                 </tr>
@@ -315,7 +315,7 @@
             <caption>Протокол проверил:</caption>
             <tbody>
                 <tr>
-                    <td>{{ protocole2.supervisor.position|capfirst }} уч. {{ protocole2.supervisor.dept }}</td>
+                    <td>{{ protocole2.supervisor.position|capfirst }} уч. {{ protocole2.supervisor.dept }} {{ protocole2.supervisor.dept.service }}</td>
                     <td></td>
                     <td>{{ protocole2.supervisor }}</td>
                 </tr>
