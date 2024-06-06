@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
@@ -32,43 +33,53 @@ class ProtocolE2(models.Model):
     )
     file_1 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ВГ на АРВ1'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_2 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ВГ на АРВ2'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_3 = models.FileField(
         verbose_name=_('Осциллограмма процесса гашения ТП ВГ на АРВ1'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_4 = models.FileField(
         verbose_name=_('Осциллограмма процесса гашения ТП ВГ на АРВ2'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_5 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1 в режиме (Ug)'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_6 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2 в режиме (Ug)'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_7 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ1 в режиме (If)'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_8 = models.FileField(
         verbose_name=_('Осциллограмма процесса возбуждения ГГ на АРВ2 в режиме (If)'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_9 = models.FileField(
         verbose_name=_('Осциллограмма процесса гашения ГГ на АРВ1'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
     file_10 = models.FileField(
         verbose_name=_('Осциллограмма процесса гашения ГГ на АРВ2'),
-        upload_to='protocols/e2/'
+        upload_to='protocols/e2/',
+        validators=[FileExtensionValidator(('png', 'jpg', 'csv'))],
     )
 
     class Meta:
