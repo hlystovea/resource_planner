@@ -90,6 +90,11 @@ class Employee(AbstractUser):
         null=True
     )
 
+    class Meta:
+        ordering = ('last_name', )
+        verbose_name = _('Сотрудник')
+        verbose_name_plural = _('Сотрудники')
+
     def __str__(self):
         if self.last_name:
             return f'{self.last_name} {self.first_name[:1]}.{self.patronymic[:1]}.'  # noqa(E501)
