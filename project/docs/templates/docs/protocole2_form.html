@@ -5,8 +5,8 @@
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-        <li class="breadcrumb-item">Документы</li>
-        <li class="breadcrumb-item">Протоколы Э2</li>
+        <li class="breadcrumb-item"><a href="{% url 'docs:protocol_e2-list' %}">Документы</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'docs:protocol_e2-list' %}">Протоколы Э2</a></li>
     </ol>
 </nav>
 
