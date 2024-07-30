@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Дефекты{% endblock %}
+{% load static %}
 {% load addclass %}
 {% block content %}
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -76,7 +77,7 @@
                                 hx-get="{% url 'hardware:cabinet-select' %}"
                                 hx-target="#selectCabinet"
                             >
-                                <option value="" selected>--------------</option>
+                                <option value="" selected>---------</option>
                             </select>
                         </div>
                     </div>
@@ -86,34 +87,49 @@
                         <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}&hardware={{ defect.part.cabinet.hardware.pk }}"
                             hx-trigger="load" hx-target="#selectCabinet"></div>
                     {% endif %}
-                    <div class="form-group row my-1" aria-required="false">
+                    <div class="form-group row my-1" aria-required="true">
                         <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
                         <div class="col-md-8">
-                            <select class="form-select" id="selectCabinet" name="cabinet"
+                            <select class="form-select" id="selectCabinet" name="cabinet" required
                                 hx-get="{% url 'hardware:part-select' %}"
-                                hx-target="#id_part"
+                                hx-target="#selectPart"
                             >
-                                <option value="" selected>--------------</option>
+                                <option value="" selected>---------</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Комплектующее -->
                     <div class="form-group row my-1" aria-required="true">
-                        <label for="id_part" class="col-md-4 col-form-label text-md-right">
+                        <label for="selectPart" class="col-md-4 col-form-label text-md-right">
                             Комплектующее
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            <select class="form-select" id="id_part" name="part" required
-                                {% if defect %}
-                                    hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
-                                    hx-trigger="load"
-                                    hx-params="none"
-                                {% endif %}
-                            >
-                                <option value="" selected>--------------</option>
-                            </select>
+                            <div class="input-group">
+                                <select class="form-select" id="selectPart" name="part" required
+                                    {% if defect %}
+                                        hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
+                                        hx-trigger="load"
+                                        hx-params="none"
+                                    {% endif %}
+                                >
+                                    <option value="" selected>---------</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
+                                    hx-get="{% url 'hardware:part-create-modal' %}" 
+                                    hx-target="#partModalContent"
+                                    hx-include="[id='selectCabinet'], [id='selectPart']"
+                                >
+                                    <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="partFormModal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content" id="partModalContent">
+                            </div>
                         </div>
                     </div>
 

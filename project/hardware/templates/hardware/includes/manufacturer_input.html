@@ -3,24 +3,24 @@
 <form hx-post="{% url 'hardware:manufacturer-input' %}" hx-target="#manufacturer_input">
     <div class="input-group input-group-sm">
         {% if form.name.errors %}
-        {{ form.name|addclass:"form-control is-invalid" }}
+            {{ form.name|addclass:"form-control is-invalid" }}
         {% else %}
-        {{ form.name|addclass:"form-control" }}
+            {{ form.name|addclass:"form-control" }}
         {% endif %}
         {% if form.name.help_text %}
-        <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
-            {{ form.name.help_text|safe }}
-        </small>
+            <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                {{ form.name.help_text|safe }}
+            </small>
         {% endif %}
         <button class="btn btn-outline-secondary">
-            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg">
+            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
         </button>
         <button class="btn btn-outline-secondary" hx-get="{% url 'hardware:manufacturer-select' %}"
             hx-target="#manufacturer_input">
-            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg">
+            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
         </button>
     </div>
     {% if form.name.errors %}
-    <div class="form-text text-danger">{{ form.name.errors }}</div>
+        <div class="form-text text-danger">{{ form.name.errors }}</div>
     {% endif %}
 </form>

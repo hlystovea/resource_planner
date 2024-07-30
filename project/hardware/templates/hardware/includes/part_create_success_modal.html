@@ -1,0 +1,34 @@
+<div
+    hx-get="{% url 'hardware:connection-select' %}?connection={{ part.cabinet.hardware.connection.pk }}"
+    hx-trigger="load"
+    hx-target="#selectConnection"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:hardware-select' %}?hardware={{ part.cabinet.hardware.pk }}&connection={{ part.cabinet.hardware.connection.pk }}"
+    hx-trigger="load"
+    hx-target="#selectHardware"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ part.cabinet.pk }}&hardware={{ part.cabinet.hardware.pk }}"
+    hx-trigger="load"
+    hx-target="#selectCabinet"
+    hx-params="none"
+></div>
+<div
+    hx-get="{% url 'hardware:part-select' %}?part={{ part.pk }}&cabinet={{ part.cabinet.pk }}"
+    hx-trigger="load"
+    hx-target="#selectPart"
+    hx-params="none"
+></div>
+<div class="modal-header">
+    <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
+    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <p>Новое комплектующее <em>{{ part }}</em> сохранено.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-secondary me-1" type="button" data-bs-dismiss="modal">Закрыть</button>
+    </div>
+</div>

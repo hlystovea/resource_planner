@@ -18,9 +18,11 @@ class ConnectionFilter(FilterSet):
 
 
 class HardwareFilter(FilterSet):
+    facility = NumberFilter(field_name='connection', lookup_expr='facility')
+
     class Meta:
         model = Hardware
-        fields = ['connection']
+        fields = ['connection', 'group']
 
 
 class CabinetFilter(FilterSet):

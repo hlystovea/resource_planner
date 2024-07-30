@@ -9,11 +9,11 @@
         <button class="btn btn-sm btn-success me-1" hx-post="{% url 'warehouse:material-update' material.pk %}"
             hx-target="closest tr" hx-swap="outerHTML" hx-include="closest tr">
 
-            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg">
+            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
         </button>
         <button class="btn btn-sm btn-secondary me-1" hx-get="{% url 'warehouse:material-detail' material.pk %}"
             hx-target="closest tr" hx-swap="outerHTML">
-            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg">
+            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
         </button>
     </td>
 </tr>

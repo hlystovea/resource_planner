@@ -10,7 +10,7 @@
                 hx-target="closest tr"
                 hx-swap="outerHTML"
             >
-                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
             </button>
             <button class="btn btn-sm btn-danger my-0" type="submit"
                 hx-delete="{% url 'warehouse:material-delete' material.pk %}"
@@ -18,7 +18,7 @@
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить материал?"
             >
-                <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket">
+                <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
             </button>
         {% endif %}
     </td>
