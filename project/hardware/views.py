@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.urls import reverse_lazy
@@ -10,7 +10,7 @@ from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm, ManufacturerForm
+from hardware.forms import ComponentForm, ManufacturerForm, PartForm
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
@@ -77,6 +77,22 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     model = Component
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('hardware:component-list')
+
+
+class HardwareList(ListView):
+    paginate_by = 20
+    model = Hardware
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = HardwareFilter(self.request.GET, queryset=queryset).qs
+        queryset = queryset.select_related('connection__facility')
+        return queryset.order_by('connection', 'name')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/hardware_table.html']
+        return super().get_template_names()
 
 
 def group_select_view(request):
@@ -157,4 +173,32 @@ def manufacturer_input_view(request):
         context={
             'form': form,
         }
+    )
+
+
+@login_required
+def part_create_modal(request):
+    form = PartForm(request.POST or None)
+    context = {}
+
+    if form.is_valid():
+        part = form.save()
+        return render(
+            request,
+            'hardware/includes/part_create_success_modal.html',
+            context={'part': part}
+        )
+
+    if request.GET.get('cabinet'):
+        cabinet = get_object_or_404(Cabinet, pk=request.GET.get('cabinet'))
+        context |= {'cabinet': cabinet}
+
+    if request.GET.get('part'):
+        part = get_object_or_404(Part, pk=request.GET.get('part'))
+        context |= {'parent_part': part}
+
+    return render(
+        request,
+        'hardware/includes/part_form_modal.html',
+        context | {'form': form}
     )

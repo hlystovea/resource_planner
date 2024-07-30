@@ -1,0 +1,185 @@
+{% load addclass %}
+<div class="modal-header">
+    <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#partModalContent">
+        <div class="card my-2">
+            <div class="card-body">
+            
+                <!-- Наименование -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                        {{ form.name.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {{ form.name|addclass:"form-control form-control-sm" }}
+                        {% if form.name.help_text %}
+                        <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                            {{ form.name.help_text|safe }}
+                        </small>
+                        {% endif %}
+                        {% if form.name.errors %}
+                            <div class="form-text text-danger">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <!-- Компонент -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.component.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.component.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {{ form.component|addclass:"form-control form-control-sm" }}
+                        {% if form.component.help_text %}
+                        <small id="{{ form.component.id_for_label }}-help" class="form-text text-muted">
+                            {{ form.component.help_text|safe }}
+                        </small>
+                        {% endif %}
+                        {% if form.component.errors %}
+                            <div class="form-text text-danger">{{ form.component.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                {% if not cabinet %}
+                    <!-- Присоединение -->
+                    <div hx-get="{% url 'hardware:connection-select' %}" hx-trigger="load" hx-target="#selectConnectionModal"></div>
+                    <div class="form-group row my-1" aria-required="false">
+                        <label for="selectConnectionModal"
+                            class="col-md-4 col-form-label text-md-right">Присоединение</label>
+                        <div class="col-md-5">
+                            <select class="form-control form-control-sm" id="selectConnectionModal" name="connection"
+                                hx-get="{% url 'hardware:hardware-select' %}"
+                                hx-target="#selectHardwareModal"
+                            >
+                            </select>
+                        </div>
+                    </div>
+                
+                    <!-- Оборудование -->
+                    <div class="form-group row my-1" aria-required="false">
+                        <label for="selectHardwareModal" class="col-md-4 col-form-label text-md-right">Оборудование</label>
+                        <div class="col-md-5">
+                            <select class="form-control form-control-sm" id="selectHardwareModal" name="hardware"
+                                hx-get="{% url 'hardware:cabinet-select' %}"
+                                hx-target="#selectCabinetModal"
+                            >
+                                <option value="" selected>---------</option>
+                            </select>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Шкаф/панель -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.cabinet.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.cabinet.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {% if cabinet %}
+                            <select class="form-control form-control-sm" disabled>
+                                <option value="{{ cabinet.pk }}" selected>{{ cabinet }}</option>
+                            </select>
+                            <input name="cabinet" id="selectCabinetModal" value="{{ cabinet.pk }}" hidden>
+                            <div
+                                hx-get="{% url 'hardware:part-select' %}{% if parent_part %}?part={{ parent_part.pk }}{% endif %}"
+                                hx-trigger="load"
+                                hx-target="#selectPartModal"
+                                hx-include="[id='selectCabinetModal']"
+                            ></div>
+                        {% else %}
+                            <select class="form-control form-control-sm" id="selectCabinetModal" name="cabinet" required
+                                hx-get="{% url 'hardware:part-select' %}"
+                                hx-target="#selectPartModal"
+                            >
+                                <option value="" selected>---------</option>
+                            </select>
+                        {% endif %}
+                        {% if form.cabinet.help_text %}
+                            <small id="{{ form.cabinet.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.cabinet.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if form.cabinet.errors %}
+                            <div class="form-text text-danger">{{ form.cabinet.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Комплектующее -->
+                <div class="form-group row my-1" aria-required="false">
+                    <label for="{{ form.part.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.part.label }}
+                    </label>
+                    <div class="col-md-5">
+                        <select class="form-control form-control-sm" id="selectPartModal" name="part">
+                            <option value="" selected>---------</option>
+                        </select>
+                        {% if form.part.help_text %}
+                            <small id="{{ form.part.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.part.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if form.part.errors %}
+                            <div class="form-text text-danger">{{ form.part.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Год производства -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.release_year.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.release_year.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {{ form.release_year|addclass:"form-control form-control-sm" }}
+                        {% if form.release_year.help_text %}
+                            <small id="{{ form.release_year.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.release_year.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if form.release_year.errors %}
+                            <div class="form-text text-danger">{{ form.release_year.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <!-- Год ввода в эксплуатацию -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.launch_year.id_for_label }}"
+                        class="col-md-4 col-form-label text-md-right">
+                        {{ form.launch_year.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {{ form.launch_year|addclass:"form-control form-control-sm" }}
+                        {% if form.launch_year.help_text %}
+                            <small id="{{ form.launch_year.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.launch_year.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if form.launch_year.errors %}
+                            <div class="form-text text-danger">{{ form.launch_year.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-sm btn-success me-1" type="submit">Сохранить</button>
+            <button class="btn btn-sm btn-danger me-1" type="button" data-bs-dismiss="modal">Отмена</button>
+        </div>
+    </form>
+</div>

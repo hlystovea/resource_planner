@@ -1,0 +1,32 @@
+<div class="row justify-content-end">
+    <div hx-get="{% url 'hardware:facility-select' %}?label=true" hx-trigger="load" hx-target="#selectFacility"></div>
+    <div hx-get="{% url 'hardware:connection-select' %}?label=true" hx-trigger="load" hx-target="#selectConnection"></div>
+    <div hx-get="{% url 'hardware:group-select' %}?label=true" hx-trigger="load" hx-target="#selectGroup"></div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectFacility" name="facility"
+            hx-get="{% url 'hardware:hardware-list' %}"
+            hx-target="#hardwareTable"
+            hx-swap="outerHTML"
+            hx-include="[name='connection'],[name='group']"
+        >
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectConnection" name="connection"
+            hx-get="{% url 'hardware:hardware-list' %}"
+            hx-target="#hardwareTable"
+            hx-swap="outerHTML"
+            hx-include="[name='facility'],[name='group']"
+        >
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-select form-select-sm" id="selectGroup" name="group"
+            hx-get="{% url 'hardware:hardware-list' %}"
+            hx-target="#hardwareTable"
+            hx-swap="outerHTML"
+            hx-include="[name='connection'],[name='facility']"
+        >
+        </select>
+    </div>
+</div>
