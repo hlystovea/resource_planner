@@ -1,3 +1,5 @@
+from dateutil.relativedelta import relativedelta as rd
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -114,6 +116,12 @@ class Instrument(models.Model):
         verbose_name=_('Наименование'),
         max_length=200,
     )
+    type = models.CharField(
+        verbose_name=_('Тип'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
     inventory_number = models.CharField(
         verbose_name=_('Инв. номер'),
         max_length=50,
@@ -140,11 +148,27 @@ class Instrument(models.Model):
         null=True,
         size=[1280, 720],
     )
+    last_verification = models.DateField(
+        verbose_name=_('Дата последней проверки'),
+        null=True,
+        blank=True,
+    )
+    verification_period = models.PositiveSmallIntegerField(
+        verbose_name=_('Период проверки (месяцев)'),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ('name', )
         verbose_name = _('Инструмент/прибор')
         verbose_name_plural = _('Инструмент/приборы')
+
+    @property
+    def next_verification(self):
+        if not (self.last_verification and self.verification_period):
+            return None
+        return self.last_verification + rd(months=self.verification_period)
 
     def get_absolute_url(self):
         return reverse('warehouse:instrument-detail', kwargs={'pk': self.pk})

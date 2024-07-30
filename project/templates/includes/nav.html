@@ -22,7 +22,13 @@
               <li><a class="dropdown-item" href="{% url 'defects:defect-statistics' %}">Статистика</a></li>
             </ul>
           </li>
-        </ul> 
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Документы</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'docs:protocol_e2-list' %}">Протоколы Э2</a></li>
+            </ul>
+          </li>
+        </ul>
         <ul class="navbar-nav">
           {% if user.is_authenticated %}
             <span class="navbar-text">Пользователь: <span style="color:#eee;">{{ user.username }}</span></span>

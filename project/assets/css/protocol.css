@@ -1,0 +1,113 @@
+body {
+    width: 21cm;
+}
+
+main {
+    padding: 0.2cm;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+table caption {
+    text-align: left;
+    margin-top: 0.2cm;
+}
+
+.header {
+    border: 5px double black;
+}
+
+.header td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.header__organization {
+    width: 5.5cm;
+}
+
+.header__type {
+    width: 5cm;
+}
+
+.header__hardware {
+    width: 1cm;
+}
+
+.capitilize {
+    text-transform: uppercase;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+    text-indent: 1cm;
+    text-align: justify;
+}
+
+li p {
+    margin: 0;
+}
+
+.instruments {
+    border: 1px solid black;
+}
+
+.instruments th {
+    border: 1px solid black;
+    background-color: lightgray;
+    height: 1.2cm;
+    padding: 0.1cm;
+}
+
+.instruments td {
+    border: 1px solid black;
+    min-width: 1.5cm;
+    padding: 0.1cm;
+}
+
+main > ul > li {
+    margin-bottom: 0.2cm;
+}
+
+.signatures {
+    text-align: left;
+    margin-top: 0.5cm;
+}
+
+.signatures td {
+    padding-left: 1cm;
+    padding-top: 0.5cm;
+}
+
+.signatures td:first-child {
+    width: 10cm;
+}
+
+.signatures td:nth-child(2) {
+    width: 3cm;
+    border-bottom: 1px solid black;
+}
+
+.signatures td:nth-child(2)::after {
+    content: "(подпись)";
+    font-size: 0.75rem;
+    position: relative;
+    bottom: -20px;
+    left: 0.4cm;
+}
+
+img {
+    width: 16cm;
+}
+
+figcaption {
+    text-align: center;
+}

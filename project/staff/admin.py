@@ -8,7 +8,7 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
-from .models import Dept, Service
+from .models import Dept, Service, Position
 
 User = get_user_model()
 
@@ -31,6 +31,24 @@ class MixinAdmin(admin.ModelAdmin):
         CharField: {'widget': TextInput(attrs={'size': 80})},
         TextField: {'widget': Textarea(attrs={'rows': 8, 'cols': 80})},
     }
+
+
+@admin.register(Position)
+class PositionAdmin(MixinAdmin):
+    list_display = ('id', 'name', 'headcount')
+    search_fields = ('name', )
+
+    @admin.display(description=_('Кол-во работников'))
+    def headcount(self, obj):
+        headcount = obj.employees.count()
+        url = (
+            reverse('admin:staff_employee_changelist')
+            + '?'
+            + urlencode({'position__id': f'{obj.id}'})
+        )
+        return format_html(
+            '<a href="{}">{} чел.</a>', url, headcount or 0
+        )
 
 
 @admin.register(Service)
@@ -101,7 +119,7 @@ class EmployeeAdmin(UserAdmin):
     list_display = ('id', 'last_name', 'first_name',
                     'patronymic', 'dept', 'is_chief')
     search_fields = ('username', 'email', 'first_name', 'last_name')
-    list_filter = ('dept', 'dept__service', 'is_chief',
+    list_filter = ('dept', 'dept__service', 'position', 'is_chief',
                    'is_staff', 'is_active', 'is_superuser')
     autocomplete_fields = ('dept', )
     readonly_fields = ('date_joined', 'last_login')
@@ -112,7 +130,10 @@ class EmployeeAdmin(UserAdmin):
         }),
         (_('Персональная информация'), {
             'fields': (
-                ('first_name', 'last_name', 'patronymic'), 'email', 'dept'
+                ('first_name', 'last_name', 'patronymic'),
+                'email',
+                'dept',
+                'position',
             )
         }),
         (_('Права доступа'), {
