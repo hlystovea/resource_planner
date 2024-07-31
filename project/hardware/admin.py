@@ -58,7 +58,8 @@ class PartInline(autocomplete_all.TabularInline):
 @admin.register(Part)
 class PartAdmin(MixinAdmin):
     list_display = ('id', 'name', 'component', 'get_cabinet',
-                    'get_part', 'release_year', 'launch_year')
+                    'get_part', 'release_year', 'launch_year',
+                    'comment')
     list_filter = ('component__design', 'launch_year')
     autocomplete_fields = ('component', )
     readonly_fields = ('cabinet', )
