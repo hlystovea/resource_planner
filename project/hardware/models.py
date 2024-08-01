@@ -231,7 +231,7 @@ class Part(models.Model):
         blank=True,
         null=True,
     )
-    comment = models.TextField(
+    comment = models.CharField(
         verbose_name=_('Комментарий'),
         max_length=500,
         blank=True,
