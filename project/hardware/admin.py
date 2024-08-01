@@ -128,10 +128,11 @@ class ComponentAdmin(MixinAdmin):
 
 @admin.register(Cabinet)
 class CabinetAdmin(MixinAdmin):
-    list_display = ('id', 'abbreviation', 'hardware',
+    list_display = ('id', 'abbreviation', 'name', 'hardware',
                     'release_year', 'launch_year')
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
+    list_editable = ('hardware', 'release_year', 'launch_year')
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
 
