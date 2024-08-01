@@ -215,6 +215,9 @@
                     <!-- Кнопка -->
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
+                        {% if not is_new %}
+                            <button type="submit" formaction="/defects/create" class="btn btn-sm btn-secondary me-1">Сохранить как новый</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -317,6 +320,9 @@
                     <!-- Кнопка -->
                     <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-sm btn-secondary me-1">Сохранить</button>
+                        {% if not is_new %}
+                            <button type="submit" formaction="/defects/create" class="btn btn-sm btn-secondary me-1">Сохранить как новый</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
