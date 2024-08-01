@@ -39,20 +39,7 @@ class PartInline(autocomplete_all.TabularInline):
     model = Part
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
-    readonly_fields = ('cabinet', )
-    autocomplete_except = ('part', )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        self.parent_obj = obj
-        return super().get_formset(request, obj, **kwargs)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and self.parent_obj:
-            if self.parent_obj.__class__.__name__ == 'Cabinet':
-                kwargs['queryset'] = self.parent_obj.parts
-            if self.parent_obj.__class__.__name__ == 'Part':
-                kwargs['queryset'] = self.parent_obj.cabinet.parts
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    readonly_fields = ('cabinet', 'part')
 
 
 @admin.register(Part)
