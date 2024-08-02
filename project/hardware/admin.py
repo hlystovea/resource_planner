@@ -39,26 +39,14 @@ class PartInline(autocomplete_all.TabularInline):
     model = Part
     show_change_link = True
     verbose_name_plural = _('Входящие в состав комплектующие')
-    readonly_fields = ('cabinet', )
-    autocomplete_except = ('part', )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        self.parent_obj = obj
-        return super().get_formset(request, obj, **kwargs)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'part' and self.parent_obj:
-            if self.parent_obj.__class__.__name__ == 'Cabinet':
-                kwargs['queryset'] = self.parent_obj.parts
-            if self.parent_obj.__class__.__name__ == 'Part':
-                kwargs['queryset'] = self.parent_obj.cabinet.parts
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    readonly_fields = ('cabinet', 'part')
 
 
 @admin.register(Part)
 class PartAdmin(MixinAdmin):
     list_display = ('id', 'name', 'component', 'get_cabinet',
-                    'get_part', 'release_year', 'launch_year')
+                    'get_part', 'release_year', 'launch_year',
+                    'comment')
     list_filter = ('component__design', 'launch_year')
     autocomplete_fields = ('component', )
     readonly_fields = ('cabinet', )
@@ -127,10 +115,11 @@ class ComponentAdmin(MixinAdmin):
 
 @admin.register(Cabinet)
 class CabinetAdmin(MixinAdmin):
-    list_display = ('id', 'abbreviation', 'hardware',
+    list_display = ('id', 'abbreviation', 'name', 'hardware',
                     'release_year', 'launch_year')
     list_filter = ('hardware__connection__facility',
                    'hardware__connection', 'launch_year')
+    list_editable = ('hardware', 'release_year', 'launch_year')
     autocomplete_fields = ('hardware', 'manufacturer')
     inlines = (PartInline, )
 

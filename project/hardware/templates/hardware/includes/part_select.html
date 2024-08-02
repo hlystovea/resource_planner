@@ -16,6 +16,6 @@
             selected
         {% endif %}
     >
-        {{ part.name }} {{ part.component.name }}
+        {{ part.name }} {{ part.component.name }} {% if part.comment %}({{ part.comment|truncatechars:10 }}){% endif %}
     </option>
 {% endfor %}
