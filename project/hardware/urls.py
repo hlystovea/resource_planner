@@ -57,5 +57,12 @@ part_urls = [
     path('parts/<int:pk>/ul/', views.PartPartUlView.as_view(), name='part-part-ul'),  # noqa (E501)
 ]
 
-urlpatterns = component_urls + facility_urls + connection_urls + \
-    hardware_urls + manufacturer_urls + cabinet_urls + part_urls
+urlpatterns = (
+    component_urls
+    + facility_urls
+    + connection_urls
+    + hardware_urls
+    + manufacturer_urls
+    + cabinet_urls
+    + part_urls
+)
