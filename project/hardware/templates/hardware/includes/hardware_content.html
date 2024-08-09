@@ -4,6 +4,7 @@
         transition: opacity 1s ease-out;
     }
 </style>
+
 <div class="row justify-content-left">
     <div class="col me-auto">
         <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
@@ -11,5 +12,39 @@
         >
             <h3>{{ hardware.name }}</h3>
         </a>
+        <a class="link-secondary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            href="{% url 'hardware:connection-detail' hardware.connection.pk %}">
+            <small>{{ hardware.connection.abbreviation }}</small>
+        </a>
     </div>
 </div>
+
+<div class="row mt-5">
+    <h5>Шкафы/Устройства</h5>
+</div>
+<table class="table table-sm table-hover">
+    <thead class="table">
+        <tr>
+            <th scope="col">Оперативное наименование</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">Производитель</th>
+            <th scope="col">Серия</th>
+            <th scope="col">Тип</th>
+            <th scope="col">Год выпуска</th>
+            <th scope="col">Год ввода в эксплуатацию</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cabinet in hardware.cabinets.all %}
+        <tr>
+            <td><a href="{% url 'hardware:cabinet-detail' cabinet.pk %}">{{ cabinet.abbreviation }}</a></td>
+            <td>{{ cabinet.name }}</td>
+            <td>{{ cabinet.manufacturer|default:"-" }}</td>
+            <td>{{ cabinet.series|default:"-" }}</td>
+            <td>{{ cabinet.type|default:"-" }}</td>
+            <td>{{ cabinet.release_year }}</td>
+            <td>{{ cabinet.launch_year }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

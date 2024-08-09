@@ -90,7 +90,7 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
 
 
 class FacilityDetail(DetailView):
-    model = Facility
+    queryset = Facility.objects.prefetch_related('connections')
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -103,7 +103,8 @@ class FacilityLiView(LiViewMixin, DetailView):
 
 
 class ConnectionDetail(DetailView):
-    model = Connection
+    queryset = Connection.objects.select_related(
+        'facility').prefetch_related('hardware')
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -127,7 +128,8 @@ class ConnectionUlView(UlViewMixin, DetailView):
 
 
 class HardwareDetail(DetailView):
-    model = Hardware
+    queryset = Hardware.objects.select_related(
+        'connection__facility').prefetch_related('cabinets')
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -159,7 +161,11 @@ class HardwareUlView(UlViewMixin, DetailView):
 
 
 class CabinetDetail(DetailView):
-    model = Cabinet
+    queryset = Cabinet.objects.select_related(
+        'hardware__connection__facility'
+    ).prefetch_related(
+        'parts__component'
+    )
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -183,7 +189,12 @@ class CabinetUlView(UlViewMixin, DetailView):
 
 
 class PartDetail(DetailView):
-    model = Part
+    queryset = Part.objects.select_related(
+        'cabinet__hardware__connection__facility',
+        'component'
+    ).prefetch_related(
+        'parts__component'
+    )
 
     def get_template_names(self):
         if is_htmx(self.request):
