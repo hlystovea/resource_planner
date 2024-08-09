@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import (CreateView, DeleteView,
-                                  DetailView, ListView, UpdateView)
+from django.views.generic import (CreateView, DeleteView, DetailView,
+                                  ListView, TemplateView, UpdateView)
 from django.urls import reverse_lazy
 
 from core.utils import is_htmx
@@ -14,6 +14,16 @@ from hardware.forms import ComponentForm, ManufacturerForm, PartForm
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
+
+
+class LiViewMixin:
+    context_object_name = 'object'
+    template_name = 'hardware/includes/menu_li.html'
+
+
+class UlViewMixin:
+    context_object_name = 'object'
+    template_name = 'hardware/includes/menu_ul.html'
 
 
 class ComponentDetail(DetailView):
@@ -79,20 +89,147 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('hardware:component-list')
 
 
-class HardwareList(ListView):
-    paginate_by = 20
-    model = Hardware
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = HardwareFilter(self.request.GET, queryset=queryset).qs
-        queryset = queryset.select_related('connection__facility')
-        return queryset.order_by('connection', 'name')
+class FacilityDetail(DetailView):
+    queryset = Facility.objects.prefetch_related('connections')
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['hardware/includes/hardware_table.html']
+            return ['hardware/includes/facility_content.html']
         return super().get_template_names()
+
+
+class FacilityLiView(LiViewMixin, DetailView):
+    queryset = Facility.objects.annotate(child_count=Count('connections'))
+
+
+class ConnectionDetail(DetailView):
+    queryset = Connection.objects.select_related(
+        'facility').prefetch_related('hardware')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/connection_content.html']
+        return super().get_template_names()
+
+
+class ConnectionLiView(LiViewMixin, DetailView):
+    queryset = Connection.objects.annotate(child_count=Count('hardware'))
+
+
+class ConnectionUlView(UlViewMixin, DetailView):
+    queryset = Facility.objects.prefetch_related('connections')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.connections.annotate(child_count=Count('hardware'))
+        context['object_list'] = objects.order_by('abbreviation')
+        return context
+
+
+class HardwareDetail(DetailView):
+    queryset = Hardware.objects.select_related(
+        'connection__facility').prefetch_related('cabinets')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/hardware_content.html']
+        return super().get_template_names()
+
+
+class HardwareList(TemplateView):
+    template_name = 'hardware/hardware_list.html'
+
+    def get_context_data(self):
+        objects = Facility.objects.annotate(child_count=Count('connections'))
+        return {'object_list': objects.order_by('name')}
+
+
+class HardwareLiView(LiViewMixin, DetailView):
+    queryset = Hardware.objects.annotate(child_count=Count('cabinets'))
+
+
+class HardwareUlView(UlViewMixin, DetailView):
+    queryset = Connection.objects.prefetch_related('hardware')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.hardware.annotate(child_count=Count('cabinets'))
+        context['object_list'] = objects.order_by('name')
+        return context
+
+
+class CabinetDetail(DetailView):
+    queryset = Cabinet.objects.select_related(
+        'hardware__connection__facility'
+    ).prefetch_related(
+        'parts__component'
+    )
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/cabinet_content.html']
+        return super().get_template_names()
+
+
+class CabinetLiView(LiViewMixin, DetailView):
+    queryset = Cabinet.objects.annotate(child_count=Count('parts'))
+
+
+class CabinetUlView(UlViewMixin, DetailView):
+    queryset = Hardware.objects.prefetch_related('cabinets')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.cabinets.annotate(child_count=Count('parts'))
+        context['object_list'] = objects.order_by('abbreviation')
+        return context
+
+
+class PartDetail(DetailView):
+    queryset = Part.objects.select_related(
+        'cabinet__hardware__connection__facility',
+        'component'
+    ).prefetch_related(
+        'parts__component'
+    )
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/part_content.html']
+        return super().get_template_names()
+
+
+class PartLiView(LiViewMixin, DetailView):
+    queryset = Part.objects.annotate(child_count=Count('parts'))
+
+
+class PartUlView(UlViewMixin, DetailView):
+    queryset = Cabinet.objects.prefetch_related('parts')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.parts.filter(
+            part__isnull=True
+        ).annotate(
+            child_count=Count('parts')
+        )
+        context['object_list'] = objects.order_by('name')
+        return context
+
+
+class PartPartUlView(UlViewMixin, DetailView):
+    queryset = Part.objects.prefetch_related('parts')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.parts.annotate(child_count=Count('parts'))
+        context['object_list'] = objects.order_by('name')
+        return context
 
 
 def group_select_view(request):

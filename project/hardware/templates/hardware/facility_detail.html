@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Оборудование{% endblock %}
+{% block content %}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'hardware:hardware-list' %}">Оборудование</a></li>
+        <li class="breadcrumb-item">{{ facility.abbreviation }}</li>
+    </ol>
+</nav>
+<div class="row mb-5">
+    <h1>Объекты диспетчеризации</h1>
+</div>
+<div class="row mb-2">
+    <div id="content">
+        {% include 'hardware/includes/facility_content.html' %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load static %}
+<li>
+    <a class="icon-link align-middle" role="button"
+        hx-get="{% url 'hardware:hardware-li' hardware.pk %}"
+        hx-target="closest li"
+        hx-swap="outerHTML"
+    >
+        <img src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" class="bi bi-dash-square">
+    </a>
+    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+        role="button"
+        hx-get="{% url 'hardware:hardware-detail' hardware.pk %}"
+        hx-target="#content"
+    >
+        {{ hardware.name }}
+    </a>
+
+    <ul class="list">
+        {% for cabinet in hardware.cabinets.all %}
+            {% include 'hardware/includes/cabinet_li.html' %}
+        {% endfor %}
+    </ul>
+</li>

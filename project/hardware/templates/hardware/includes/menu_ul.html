@@ -1,0 +1,27 @@
+{% load static %}
+<li>
+    <a class="icon-link align-middle" role="button"
+        hx-get="{{ object.get_menu_collapse_url }}"
+        hx-target="closest li"
+        hx-swap="outerHTML"
+    >
+        <img class="bi bi-dash-square" src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" alt="-">
+    </a>
+    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+        role="button"
+        hx-get="{{ object.get_absolute_url }}"
+        hx-target="#content"
+    >
+        {% if object.abbreviation %}
+            {{ object.abbreviation }}
+        {% else %}
+            {{ object.name }}
+        {% endif %}
+    </a>
+
+    <ul class="list">
+        {% for object in object_list %}
+            {% include 'hardware/includes/menu_li.html' %}
+        {% endfor %}
+    </ul>
+</li>
