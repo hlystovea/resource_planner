@@ -1,0 +1,42 @@
+<style>
+    tr.htmx-swapping td {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+    }
+</style>
+
+<div class="row justify-content-left">
+    <div class="col me-auto">
+        <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            href="{% url 'hardware:connection-detail' connection.pk %}"
+        >
+            <h3>{{ connection.name }}</h3>
+        </a>
+        <a class="link-secondary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            href="{% url 'hardware:facility-detail' connection.facility.pk %}">
+            <small>{{ connection.facility.abbreviation }}</small>
+        </a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <h5>Оборудование</h5>
+</div>
+<table class="table table-sm table-hover">
+    <thead class="table">
+        <tr>
+            <th scope="col">Наименование</th>
+            <th scope="col">Инв. номер</th>
+            <th scope="col">Группа</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for hardware in connection.hardware.all %}
+        <tr>
+            <td><a href="{% url 'hardware:hardware-detail' hardware.pk %}">{{ hardware.name }}</a></td>
+            <td>{{ hardware.inventory_number }}</td>
+            <td>{{ hardware.group|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

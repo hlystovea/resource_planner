@@ -22,6 +22,15 @@ class Facility(models.Model):
         verbose_name = _('Объект диспетчеризации')
         verbose_name_plural = _('Объекты диспетчеризации')
 
+    def get_absolute_url(self):
+        return reverse('hardware:facility-detail', kwargs={'pk': self.pk})
+
+    def get_menu_open_url(self):
+        return reverse('hardware:connection-ul', kwargs={'pk': self.pk})
+
+    def get_menu_collapse_url(self):
+        return reverse('hardware:facility-li', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.abbreviation
 
@@ -56,6 +65,15 @@ class Connection(models.Model):
                 name='abbreviation_facility_uniquetogether',
             )
         ]
+
+    def get_absolute_url(self):
+        return reverse('hardware:connection-detail', kwargs={'pk': self.pk})
+
+    def get_menu_open_url(self):
+        return reverse('hardware:hardware-ul', kwargs={'pk': self.pk})
+
+    def get_menu_collapse_url(self):
+        return reverse('hardware:connection-li', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.facility} {self.abbreviation}'
@@ -111,6 +129,15 @@ class Hardware(models.Model):
                 name='name_connection_uniquetogether',
             )
         ]
+
+    def get_absolute_url(self):
+        return reverse('hardware:hardware-detail', kwargs={'pk': self.pk})
+
+    def get_menu_open_url(self):
+        return reverse('hardware:cabinet-ul', kwargs={'pk': self.pk})
+
+    def get_menu_collapse_url(self):
+        return reverse('hardware:hardware-li', kwargs={'pk': self.pk})
 
     def __str__(self):
         if self.connection:
@@ -188,6 +215,15 @@ class Cabinet(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    def get_absolute_url(self):
+        return reverse('hardware:cabinet-detail', kwargs={'pk': self.pk})
+
+    def get_menu_open_url(self):
+        return reverse('hardware:part-ul', kwargs={'pk': self.pk})
+
+    def get_menu_collapse_url(self):
+        return reverse('hardware:cabinet-li', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.abbreviation
 
@@ -258,6 +294,15 @@ class Part(models.Model):
                 )
         if errors:
             raise ValidationError(errors)
+
+    def get_absolute_url(self):
+        return reverse('hardware:part-detail', kwargs={'pk': self.pk})
+
+    def get_menu_open_url(self):
+        return reverse('hardware:part-part-ul', kwargs={'pk': self.pk})
+
+    def get_menu_collapse_url(self):
+        return reverse('hardware:part-li', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.name} - {self.component.name}'
