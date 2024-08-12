@@ -32,4 +32,4 @@ class PartForm(ModelForm):
 class CabinetForm(ModelForm):
     class Meta:
         model = Cabinet
-        exclude = ('hardware', )
+        fields = '__all__'

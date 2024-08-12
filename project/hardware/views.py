@@ -191,17 +191,6 @@ class CabinetCreate(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     success_url = '/hardware/cabinets/{id}/inline/'
 
-    def form_valid(self, form):
-        if (
-            not hasattr(form.instance, 'hardware')
-            and self.request.GET.get('hardware')
-        ):
-            hardware = get_object_or_404(
-                Hardware, pk=self.request.GET['hardware'])
-            form.instance.hardware = hardware
-
-        return super().form_valid(form)
-
 
 class CabinetUpdate(LoginRequiredMixin, UpdateView):
     model = Cabinet

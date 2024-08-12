@@ -10,6 +10,7 @@
     <td>{{ form.launch_year|addclass:"form-control form-control-sm" }}</td>
     <td>
         {% if is_update %}
+            <input name="hardware" type="hidden" value="{{ cabinet.hardware.pk }}">
             <button class="btn btn-sm btn-success me-1"
                 hx-post="{% url 'hardware:cabinet-update' cabinet.pk %}"
                 hx-target="closest tr"
@@ -26,8 +27,9 @@
                 <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
             </button>
         {% else %}
+            <input name="hardware" type="hidden" value="{{ hardware.pk }}">
             <button class="btn btn-sm btn-secondary me-1"
-                hx-post="{% url 'hardware:cabinet-create' %}?hardware={{ hardware.pk }}"
+                hx-post="{% url 'hardware:cabinet-create' %}"
                 hx-target="closest tr"
                 hx-include="closest tr"
                 hx-swap="beforebegin"
