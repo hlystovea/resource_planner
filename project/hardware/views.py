@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import (CreateView, DeleteView, DetailView,
                                   ListView, TemplateView, UpdateView)
@@ -10,7 +11,8 @@ from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm, ManufacturerForm, PartForm
+from hardware.forms import (CabinetForm, ComponentForm,
+                            ManufacturerForm, PartForm)
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
@@ -136,6 +138,11 @@ class HardwareDetail(DetailView):
             return ['hardware/includes/hardware_content.html']
         return super().get_template_names()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cabinet_form'] = CabinetForm()
+        return context
+
 
 class HardwareList(TemplateView):
     template_name = 'hardware/hardware_list.html'
@@ -173,6 +180,51 @@ class CabinetDetail(DetailView):
         return super().get_template_names()
 
 
+class CabinetCreate(LoginRequiredMixin, CreateView):
+    model = Cabinet
+    form_class = CabinetForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/cabinets/{id}/inline/'
+
+    def form_valid(self, form):
+        if (
+            not hasattr(form.instance, 'hardware')
+            and self.request.GET.get('hardware')
+        ):
+            hardware = get_object_or_404(
+                Hardware, pk=self.request.GET['hardware'])
+            form.instance.hardware = hardware
+
+        return super().form_valid(form)
+
+
+class CabinetUpdate(LoginRequiredMixin, UpdateView):
+    model = Cabinet
+    form_class = CabinetForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/cabinets/{id}/inline/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
+
+
+class CabinetDelete(LoginRequiredMixin, DeleteView):
+    model = Cabinet
+    login_url = reverse_lazy('login')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
+
+class CabinetInlineView(DetailView):
+    queryset = Cabinet.objects.select_related('manufacturer')
+    template_name = 'hardware/includes/cabinet_inline.html'
+
+
 class CabinetLiView(LiViewMixin, DetailView):
     queryset = Cabinet.objects.annotate(child_count=Count('parts'))
 
@@ -185,6 +237,7 @@ class CabinetUlView(UlViewMixin, DetailView):
         object = self.get_object()
         objects = object.cabinets.annotate(child_count=Count('parts'))
         context['object_list'] = objects.order_by('abbreviation')
+        context['cabinet_form'] = CabinetForm()
         return context
 
 

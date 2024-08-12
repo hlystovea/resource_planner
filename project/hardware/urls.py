@@ -29,7 +29,6 @@ connection_urls = [
 
 hardware_urls = [
     path('groups/select/', views.group_select_view, name='group-select'),
-    path('cabinets/select/', views.cabinet_select_view, name='cabinet-select'),  # noqa (E501)
     path('hardware/', views.HardwareList.as_view(), name='hardware-list'),
     path('hardware/select/', views.hardware_select_view, name='hardware-select'),  # noqa (E501)
     path('hardware/<int:pk>/', views.HardwareDetail.as_view(), name='hardware-detail'),  # noqa (E501)
@@ -38,7 +37,12 @@ hardware_urls = [
 ]
 
 cabinet_urls = [
+    path('cabinets/select/', views.cabinet_select_view, name='cabinet-select'),
+    path('cabinets/create/', views.CabinetCreate.as_view(), name='cabinet-create'),  # noqa (E501)
     path('cabinets/<int:pk>/', views.CabinetDetail.as_view(), name='cabinet-detail'),  # noqa (E501)
+    path('cabinets/<int:pk>/update/', views.CabinetUpdate.as_view(), name='cabinet-update'),  # noqa (E501)
+    path('cabinets/<int:pk>/delete/', views.CabinetDelete.as_view(), name='cabinet-delete'),  # noqa (E501)
+    path('cabinets/<int:pk>/inline/', views.CabinetInlineView.as_view(), name='cabinet-inline'),  # noqa (E501)
     path('cabinets/<int:pk>/li/', views.CabinetLiView.as_view(), name='cabinet-li'),  # noqa (E501)
     path('cabinets/<int:pk>/ul/', views.PartUlView.as_view(), name='part-ul'),
 ]
