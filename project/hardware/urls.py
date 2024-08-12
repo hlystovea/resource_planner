@@ -55,8 +55,12 @@ manufacturer_urls = [
 
 part_urls = [
     path('parts/select/', views.part_select_view, name='part-select'),
+    path('parts/create/', views.PartCreate.as_view(), name='part-create'),  # noqa (E501)
     path('parts/create/modal/', views.part_create_modal, name='part-create-modal'),  # noqa (E501)
     path('parts/<int:pk>/', views.PartDetail.as_view(), name='part-detail'),
+    path('parts/<int:pk>/update/', views.PartUpdate.as_view(), name='part-update'),  # noqa (E501)
+    path('parts/<int:pk>/delete/', views.PartDelete.as_view(), name='part-delete'),  # noqa (E501)
+    path('parts/<int:pk>/inline/', views.PartInlineView.as_view(), name='part-inline'),  # noqa (E501)
     path('parts/<int:pk>/li/', views.PartLiView.as_view(), name='part-li'),
     path('parts/<int:pk>/ul/', views.PartPartUlView.as_view(), name='part-part-ul'),  # noqa (E501)
 ]

@@ -179,6 +179,11 @@ class CabinetDetail(DetailView):
             return ['hardware/includes/cabinet_content.html']
         return super().get_template_names()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['part_form'] = PartForm()
+        return context
+
 
 class CabinetCreate(LoginRequiredMixin, CreateView):
     model = Cabinet
@@ -253,6 +258,40 @@ class PartDetail(DetailView):
         if is_htmx(self.request):
             return ['hardware/includes/part_content.html']
         return super().get_template_names()
+
+
+class PartCreate(LoginRequiredMixin, CreateView):
+    model = Part
+    form_class = PartForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/parts/{id}/inline/'
+
+
+class PartUpdate(LoginRequiredMixin, UpdateView):
+    model = Part
+    form_class = PartForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/parts/{id}/inline/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
+
+
+class PartDelete(LoginRequiredMixin, DeleteView):
+    model = Part
+    login_url = reverse_lazy('login')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
+
+class PartInlineView(DetailView):
+    queryset = Part.objects.select_related('component')
+    template_name = 'hardware/includes/part_inline.html'
 
 
 class PartLiView(LiViewMixin, DetailView):
