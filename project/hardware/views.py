@@ -168,11 +168,19 @@ class HardwareUlView(UlViewMixin, DetailView):
 
 
 class CabinetDetail(DetailView):
-    queryset = Cabinet.objects.select_related(
-        'hardware__connection__facility'
-    ).prefetch_related(
-        'parts__component'
-    )
+    model = Cabinet
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        parts = Part.objects.filter(
+            part__isnull=True).select_related('component')
+
+        return queryset.select_related(
+            'hardware__connection__facility'
+        ).prefetch_related(
+            Prefetch('parts', queryset=parts),
+        )
 
     def get_template_names(self):
         if is_htmx(self.request):
