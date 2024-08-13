@@ -101,7 +101,7 @@ class FacilityDetail(DetailView):
 
 
 class FacilityLiView(LiViewMixin, DetailView):
-    queryset = Facility.objects.annotate(child_count=Count('connections'))
+    model = Facility
 
 
 class ConnectionDetail(DetailView):
@@ -115,18 +115,11 @@ class ConnectionDetail(DetailView):
 
 
 class ConnectionLiView(LiViewMixin, DetailView):
-    queryset = Connection.objects.annotate(child_count=Count('hardware'))
+    model = Connection
 
 
 class ConnectionUlView(UlViewMixin, DetailView):
     queryset = Facility.objects.prefetch_related('connections')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object = self.get_object()
-        objects = object.connections.annotate(child_count=Count('hardware'))
-        context['object_list'] = objects.order_by('abbreviation')
-        return context
 
 
 class HardwareDetail(DetailView):
@@ -148,23 +141,15 @@ class HardwareList(TemplateView):
     template_name = 'hardware/hardware_list.html'
 
     def get_context_data(self):
-        objects = Facility.objects.annotate(child_count=Count('connections'))
-        return {'object_list': objects.order_by('name')}
+        return {'object_list': Facility.objects.order_by('name')}
 
 
 class HardwareLiView(LiViewMixin, DetailView):
-    queryset = Hardware.objects.annotate(child_count=Count('cabinets'))
+    model = Hardware
 
 
 class HardwareUlView(UlViewMixin, DetailView):
     queryset = Connection.objects.prefetch_related('hardware')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object = self.get_object()
-        objects = object.hardware.annotate(child_count=Count('cabinets'))
-        context['object_list'] = objects.order_by('name')
-        return context
 
 
 class CabinetDetail(DetailView):
@@ -228,19 +213,11 @@ class CabinetInlineView(DetailView):
 
 
 class CabinetLiView(LiViewMixin, DetailView):
-    queryset = Cabinet.objects.annotate(child_count=Count('parts'))
+    model = Cabinet
 
 
 class CabinetUlView(UlViewMixin, DetailView):
     queryset = Hardware.objects.prefetch_related('cabinets')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object = self.get_object()
-        objects = object.cabinets.annotate(child_count=Count('parts'))
-        context['object_list'] = objects.order_by('abbreviation')
-        context['cabinet_form'] = CabinetForm()
-        return context
 
 
 class PartDetail(DetailView):
@@ -297,22 +274,11 @@ class PartInlineView(DetailView):
 
 
 class PartLiView(LiViewMixin, DetailView):
-    queryset = Part.objects.annotate(child_count=Count('parts'))
+    model = Part
 
 
 class PartUlView(UlViewMixin, DetailView):
     queryset = Cabinet.objects.prefetch_related('parts')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object = self.get_object()
-        objects = object.parts.filter(
-            part__isnull=True
-        ).annotate(
-            child_count=Count('parts')
-        )
-        context['object_list'] = objects.order_by('name')
-        return context
 
 
 class PartPartUlView(UlViewMixin, DetailView):
@@ -321,8 +287,8 @@ class PartPartUlView(UlViewMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         object = self.get_object()
-        objects = object.parts.annotate(child_count=Count('parts'))
-        context['object_list'] = objects.order_by('name')
+        objects = object.parts.order_by('name')
+        context['object_list'] = objects
         return context
 
 
