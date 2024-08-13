@@ -1,0 +1,45 @@
+{% load static %}
+{% load addclass %}
+<tr>
+    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.component|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.release_year|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.launch_year|addclass:"form-control form-control-sm" }}</td>
+    <td>{{ form.comment|addclass:"form-control form-control-sm" }}</td>
+    <td>
+        {% if is_update %}
+            <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
+            <input name="part" type="hidden" value="{{ part.part.pk }}">
+            <button class="btn btn-sm btn-success me-1"
+                hx-post="{% url 'hardware:part-update' part.pk %}"
+                hx-target="closest tr"
+                hx-include="closest tr"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-secondary me-1"
+                hx-get="{% url 'hardware:part-inline' part.pk %}"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
+            </button>
+        {% else %}
+            {% if part %}
+                <input name="part" type="hidden" value="{{ part.pk }}">
+                <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
+            {% else %}
+                <input name="cabinet" type="hidden" value="{{ cabinet.pk }}">
+            {% endif %}
+            <button class="btn btn-sm btn-secondary me-1"
+                hx-post="{% url 'hardware:part-create' %}"
+                hx-target="closest tr"
+                hx-include="closest tr"
+                hx-swap="beforebegin"
+            >
+                Добавить
+            </button>
+        {% endif %}
+    </td>
+</tr>

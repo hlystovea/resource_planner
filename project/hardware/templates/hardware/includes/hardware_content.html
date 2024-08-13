@@ -31,20 +31,15 @@
             <th scope="col">Серия</th>
             <th scope="col">Тип</th>
             <th scope="col">Год выпуска</th>
-            <th scope="col">Год ввода в эксплуатацию</th>
+            <th scope="col">Год ввода</th>
         </tr>
     </thead>
     <tbody>
         {% for cabinet in hardware.cabinets.all %}
-        <tr>
-            <td><a href="{% url 'hardware:cabinet-detail' cabinet.pk %}">{{ cabinet.abbreviation }}</a></td>
-            <td>{{ cabinet.name }}</td>
-            <td>{{ cabinet.manufacturer|default:"-" }}</td>
-            <td>{{ cabinet.series|default:"-" }}</td>
-            <td>{{ cabinet.type|default:"-" }}</td>
-            <td>{{ cabinet.release_year }}</td>
-            <td>{{ cabinet.launch_year }}</td>
-        </tr>
+            {% include "hardware/includes/cabinet_inline.html" %}
         {% endfor %}
+        {% if user.is_authenticated %}
+            {% include "hardware/cabinet_form.html" with form=cabinet_form %}
+        {% endif %}
     </tbody>
 </table>

@@ -40,13 +40,10 @@
     </thead>
     <tbody>
         {% for p in part.parts.all %}
-        <tr>
-            <td><a href="{% url 'hardware:part-detail' p.pk %}">{{ p.name }}</a></td>
-            <td><a href="{% url 'hardware:component-detail' p.component.pk %}">{{ p.component }}</a></td>
-            <td>{{ p.release_year }}</td>
-            <td>{{ p.launch_year }}</td>
-            <td>{{ p.comment|default:"" }}</td>
-        </tr>
+            {% include 'hardware/includes/part_inline.html' with part=p %}
         {% endfor %}
+        {% if user.is_authenticated %}
+            {% include 'hardware/part_form.html' with form=part_form %}
+        {% endif %}
     </tbody>
 </table>
