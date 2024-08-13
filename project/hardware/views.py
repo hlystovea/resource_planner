@@ -248,6 +248,11 @@ class PartDetail(DetailView):
             return ['hardware/includes/part_content.html']
         return super().get_template_names()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['part_form'] = PartForm()
+        return context
+
 
 class PartCreate(LoginRequiredMixin, CreateView):
     model = Part

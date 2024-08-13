@@ -9,6 +9,7 @@
     <td>
         {% if is_update %}
             <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
+            <input name="part" type="hidden" value="{{ part.part.pk }}">
             <button class="btn btn-sm btn-success me-1"
                 hx-post="{% url 'hardware:part-update' part.pk %}"
                 hx-target="closest tr"
@@ -25,7 +26,12 @@
                 <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
             </button>
         {% else %}
-            <input name="cabinet" type="hidden" value="{{ cabinet.pk }}">
+            {% if part %}
+                <input name="part" type="hidden" value="{{ part.pk }}">
+                <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
+            {% else %}
+                <input name="cabinet" type="hidden" value="{{ cabinet.pk }}">
+            {% endif %}
             <button class="btn btn-sm btn-secondary me-1"
                 hx-post="{% url 'hardware:part-create' %}"
                 hx-target="closest tr"
