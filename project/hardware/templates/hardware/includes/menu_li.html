@@ -1,7 +1,7 @@
 {% load static %}
 <li>
     <a class="icon-link align-middle" role="button"
-        {% if object.child_count < 1 %}
+        {% if object.children.count < 1 %}
             style="visibility: hidden;"
         {% endif %}
         hx-get="{{ object.get_menu_open_url }}"
