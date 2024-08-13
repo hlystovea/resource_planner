@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput
 
-from hardware.models import Component, Manufacturer, Part
+from hardware.models import Cabinet, Component, Manufacturer, Part
 
 
 class ComponentForm(ModelForm):
@@ -26,4 +26,10 @@ class ManufacturerForm(ModelForm):
 class PartForm(ModelForm):
     class Meta:
         model = Part
+        fields = '__all__'
+
+
+class CabinetForm(ModelForm):
+    class Meta:
+        model = Cabinet
         fields = '__all__'

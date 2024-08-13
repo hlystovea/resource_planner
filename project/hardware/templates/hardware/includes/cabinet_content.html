@@ -38,17 +38,15 @@
             <th scope="col">Год выпуска</th>
             <th scope="col">Год ввода</th>
             <th scope="col">Комментарий</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for part in cabinet.parts.all %}
-        <tr>
-            <td><a href="{% url 'hardware:part-detail' part.pk %}">{{ part.name }}</a></td>
-            <td><a href="{% url 'hardware:component-detail' part.component.pk %}">{{ part.component }}</a></td>
-            <td>{{ part.release_year }}</td>
-            <td>{{ part.launch_year }}</td>
-            <td>{{ part.comment|default:"" }}</td>
-        </tr>
+            {% include 'hardware/includes/part_inline.html' %}
         {% endfor %}
+        {% if user.is_authenticated %}
+            {% include 'hardware/part_form.html' with form=part_form %}
+        {% endif %}
     </tbody>
 </table>
