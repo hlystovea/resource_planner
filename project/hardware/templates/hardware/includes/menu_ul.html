@@ -20,7 +20,7 @@
     </a>
 
     <ul class="list">
-        {% for object in object_list %}
+        {% for object in object.children.all %}
             {% include 'hardware/includes/menu_li.html' %}
         {% endfor %}
     </ul>

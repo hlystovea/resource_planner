@@ -31,6 +31,10 @@ class Facility(models.Model):
     def get_menu_collapse_url(self):
         return reverse('hardware:facility-li', kwargs={'pk': self.pk})
 
+    @property
+    def children(self):
+        return self.connections
+
     def __str__(self):
         return self.abbreviation
 
@@ -75,6 +79,10 @@ class Connection(models.Model):
     def get_menu_collapse_url(self):
         return reverse('hardware:connection-li', kwargs={'pk': self.pk})
 
+    @property
+    def children(self):
+        return self.hardware
+
     def __str__(self):
         return f'{self.facility} {self.abbreviation}'
 
@@ -90,6 +98,10 @@ class Group(models.Model):
         ordering = ('name', )
         verbose_name = _('Группа оборудования')
         verbose_name_plural = _('Группы оборудования')
+
+    @property
+    def children(self):
+        return self.hardware
 
     def __str__(self):
         return self.name
@@ -138,6 +150,10 @@ class Hardware(models.Model):
 
     def get_menu_collapse_url(self):
         return reverse('hardware:hardware-li', kwargs={'pk': self.pk})
+
+    @property
+    def children(self):
+        return self.cabinets
 
     def __str__(self):
         if self.connection:
@@ -224,6 +240,10 @@ class Cabinet(models.Model):
     def get_menu_collapse_url(self):
         return reverse('hardware:cabinet-li', kwargs={'pk': self.pk})
 
+    @property
+    def children(self):
+        return self.parts.filter(part__isnull=True)
+
     def __str__(self):
         return self.abbreviation
 
@@ -303,6 +323,10 @@ class Part(models.Model):
 
     def get_menu_collapse_url(self):
         return reverse('hardware:part-li', kwargs={'pk': self.pk})
+
+    @property
+    def children(self):
+        return self.parts
 
     def __str__(self):
         return f'{self.name} - {self.component.name}'

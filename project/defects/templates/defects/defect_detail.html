@@ -24,10 +24,11 @@
             <dd class="col-sm-8">{{ defect.date|date:"d.m.Y" }}</dd>
             <dt class="col-sm-4">Место неисправности</dt>
             <dd class="col-sm-8">
-              {{ defect.part.cabinet.hardware.connection.facility }} /
-              {{ defect.part.cabinet.hardware.connection.abbreviation }} /
-              {{ defect.part.cabinet.hardware.name }} /
-              {{ defect.part.cabinet }}</dt>
+              <a href="{% url 'hardware:facility-detail' defect.part.cabinet.hardware.connection.facility.pk %}">{{ defect.part.cabinet.hardware.connection.facility }}</a> /
+              <a href="{% url 'hardware:connection-detail' defect.part.cabinet.hardware.connection.pk %}">{{ defect.part.cabinet.hardware.connection.abbreviation }}</a> /
+              <a href="{% url 'hardware:hardware-detail' defect.part.cabinet.hardware.pk %}">{{ defect.part.cabinet.hardware.name }}</a> /
+              <a href="{% url 'hardware:cabinet-detail' defect.part.cabinet.pk %}">{{ defect.part.cabinet }}</a>
+            </dt>
             <dt class="col-sm-4">Комплектующее</dt>
             <dd class="col-sm-8"><a href="{% url 'hardware:component-detail' defect.part.component.pk %}">{{ defect.part }}</a></dd>
             <dt class="col-sm-4">Обнаруживший</dt>
