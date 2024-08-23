@@ -1,0 +1,27 @@
+{% load static %}
+<div class="cnt-table-row">
+    <div class="cnt-table-cell"><a href="{% url 'hardware:part-detail' part.pk %}">{{ part.name }}</a></div>
+    <div class="cnt-table-cell"><a href="{% url 'hardware:component-detail' part.component.pk %}">{{ part.component }}</a></div>
+    <div class="cnt-table-cell">{{ part.release_year }}</div>
+    <div class="cnt-table-cell">{{ part.launch_year }}</div>
+    <div class="cnt-table-cell">{{ part.comment|default:"" }}</div>
+    {% if user.is_authenticated %}
+        <div class="cnt-table-cell">
+            <button class="btn btn-sm btn-secondary me-1 my-0"
+                hx-get="{% url 'hardware:part-update' part.pk %}"
+                hx-target="closest .cnt-table-row"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-danger me-1 my-0"
+                hx-delete="{% url 'hardware:part-delete' part.pk %}"
+                hx-target="closest .cnt-table-row"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить комплектующее?"
+            >
+                <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
+            </button>
+        </div>
+    {% endif %}
+</div>

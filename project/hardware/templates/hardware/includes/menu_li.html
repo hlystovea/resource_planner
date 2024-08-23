@@ -1,0 +1,24 @@
+{% load static %}
+<li>
+    <a class="icon-link align-middle" role="button"
+        {% if object.children.count < 1 %}
+            style="visibility: hidden;"
+        {% endif %}
+        hx-get="{{ object.get_menu_open_url }}"
+        hx-target="closest li"
+        hx-swap="outerHTML"
+    >
+        <img class="bi bi-plus-square" src="{% static 'icons/plus-square.svg' %}" height="16" fill="currentColor" alt="+">
+    </a>
+    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+        role="button"
+        hx-get="{{ object.get_absolute_url }}"
+        hx-target="#content"
+    >
+        {% if object.abbreviation %}
+            {{ object.abbreviation }}
+        {% else %}
+            {{ object.name }}
+        {% endif %}
+    </a>
+</li>

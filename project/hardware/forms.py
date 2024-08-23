@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput
 
-from hardware.models import Component, Manufacturer, Part
+from hardware.models import Cabinet, Component, Manufacturer, Part
 
 
 class ComponentForm(ModelForm):
@@ -27,3 +27,34 @@ class PartForm(ModelForm):
     class Meta:
         model = Part
         fields = '__all__'
+        widgets = {
+            'part': TextInput(
+                attrs={'type': 'hidden'}
+            ),
+            'cabinet': TextInput(
+                attrs={'type': 'hidden'}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['aria-describedby'] = f'validation-{self[field_name].id_for_label}'  # noqa (E501)
+
+
+class CabinetForm(ModelForm):
+    field_order = ['abbreviation', 'name']
+
+    class Meta:
+        model = Cabinet
+        fields = '__all__'
+        widgets = {
+            'hardware': TextInput(
+                attrs={'type': 'hidden'}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['aria-describedby'] = f'validation-{self[field_name].id_for_label}'  # noqa (E501)

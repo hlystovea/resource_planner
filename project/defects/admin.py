@@ -46,6 +46,7 @@ class ExportCsvMixin(admin.ModelAdmin):
 
 class MixinAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
+    list_per_page = 1000
     empty_value_display = _('-пусто-')
     formfield_overrides = {
         CharField: {'widget': TextInput(attrs={'size': 80})},
@@ -72,10 +73,12 @@ class DefectAdmin(ImageTagField, MixinAdmin, ExportCsvMixin):
                     'hardware_name', 'defect_description', 'defect_repair',
                     'format_date', 'format_repair_date', 'image_tag')
     search_fields = ('description', 'repair')
-    list_filter = ('date', 'technical_reasons',
-                   'organizational_reasons', 'repair_method',
+    list_filter = ('date',
+                   'part__cabinet__hardware__connection__facility',
+                   'part__cabinet__hardware__connection',
                    'part__cabinet__hardware__group',
-                   'part__cabinet__hardware__connection')
+                   'technical_reasons', 'organizational_reasons',
+                   'repair_method')
     autocomplete_fields = ('part', )
     date_hierarchy = 'date'
     readonly_fields = ('employee', )

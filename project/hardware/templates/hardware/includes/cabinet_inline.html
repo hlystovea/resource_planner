@@ -1,0 +1,29 @@
+{% load static %}
+<div class="cnt-table-row">
+    <div class="cnt-table-cell"><a href="{% url 'hardware:cabinet-detail' cabinet.pk %}">{{ cabinet.abbreviation }}</a></div>
+    <div class="cnt-table-cell">{{ cabinet.name }}</div>
+    <div class="cnt-table-cell">{{ cabinet.manufacturer|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ cabinet.series|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ cabinet.type|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ cabinet.release_year }}</div>
+    <div class="cnt-table-cell">{{ cabinet.launch_year }}</div>
+    {% if user.is_authenticated %}
+        <div class="cnt-table-cell">
+            <button class="btn btn-sm btn-secondary me-1 my-0"
+                hx-get="{% url 'hardware:cabinet-update' cabinet.pk %}"
+                hx-target="closest .cnt-table-row"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-danger me-1 my-0"
+                hx-delete="{% url 'hardware:cabinet-delete' cabinet.pk %}"
+                hx-target="closest .cnt-table-row"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить шкаф/устройство?"
+            >
+                <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
+            </button>
+        </div>
+    {% endif %}
+</div>

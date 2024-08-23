@@ -1,0 +1,26 @@
+<div class="row justify-content-left">
+    <div class="col me-auto">
+        <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            href="{% url 'hardware:facility-detail' facility.pk %}"
+        >
+            <h3>{{ facility.name }}</h3>
+        </a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <h5>Присоединения</h5>
+</div>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Аббревиатура</div>
+            <div class="cnt-table-cell">Наименование</div>
+        </div>
+    </div>
+    <div class="cnt-table-group">
+        {% for connection in facility.connections.all %}
+            {% include 'hardware/includes/connection_inline.html' %}
+        {% endfor %}
+    </div>
+</div>

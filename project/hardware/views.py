@@ -1,19 +1,31 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import (CreateView, DeleteView,
-                                  DetailView, ListView, UpdateView)
+from django.views.generic import (CreateView, DeleteView, DetailView,
+                                  ListView, TemplateView, UpdateView)
 from django.urls import reverse_lazy
 
 from core.utils import is_htmx
 from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
-from hardware.forms import ComponentForm, ManufacturerForm, PartForm
+from hardware.forms import (CabinetForm, ComponentForm,
+                            ManufacturerForm, PartForm)
 from hardware.models import (Cabinet, Component, Connection, Group,
                              Facility, Hardware, Manufacturer, Part)
 from warehouse.models import ComponentStorage
+
+
+class LiViewMixin:
+    context_object_name = 'object'
+    template_name = 'hardware/includes/menu_li.html'
+
+
+class UlViewMixin:
+    context_object_name = 'object'
+    template_name = 'hardware/includes/menu_ul.html'
 
 
 class ComponentDetail(DetailView):
@@ -79,20 +91,205 @@ class ComponentDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('hardware:component-list')
 
 
-class HardwareList(ListView):
-    paginate_by = 20
-    model = Hardware
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = HardwareFilter(self.request.GET, queryset=queryset).qs
-        queryset = queryset.select_related('connection__facility')
-        return queryset.order_by('connection', 'name')
+class FacilityDetail(DetailView):
+    queryset = Facility.objects.prefetch_related('connections')
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['hardware/includes/hardware_table.html']
+            return ['hardware/includes/facility_content.html']
         return super().get_template_names()
+
+
+class FacilityLiView(LiViewMixin, DetailView):
+    model = Facility
+
+
+class ConnectionDetail(DetailView):
+    queryset = Connection.objects.select_related(
+        'facility').prefetch_related('hardware')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/connection_content.html']
+        return super().get_template_names()
+
+
+class ConnectionLiView(LiViewMixin, DetailView):
+    model = Connection
+
+
+class ConnectionUlView(UlViewMixin, DetailView):
+    queryset = Facility.objects.prefetch_related('connections')
+
+
+class HardwareDetail(DetailView):
+    queryset = Hardware.objects.select_related(
+        'connection__facility').prefetch_related('cabinets')
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/hardware_content.html']
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cabinet_form'] = CabinetForm()
+        return context
+
+
+class HardwareList(TemplateView):
+    template_name = 'hardware/hardware_list.html'
+
+    def get_context_data(self):
+        return {'object_list': Facility.objects.order_by('name')}
+
+
+class HardwareLiView(LiViewMixin, DetailView):
+    model = Hardware
+
+
+class HardwareUlView(UlViewMixin, DetailView):
+    queryset = Connection.objects.prefetch_related('hardware')
+
+
+class CabinetDetail(DetailView):
+    model = Cabinet
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        parts = Part.objects.filter(
+            part__isnull=True).select_related('component')
+
+        return queryset.select_related(
+            'hardware__connection__facility'
+        ).prefetch_related(
+            Prefetch('parts', queryset=parts),
+        )
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/cabinet_content.html']
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['part_form'] = PartForm()
+        return context
+
+
+class CabinetCreate(LoginRequiredMixin, CreateView):
+    model = Cabinet
+    form_class = CabinetForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/cabinets/{id}/inline/'
+
+
+class CabinetUpdate(LoginRequiredMixin, UpdateView):
+    model = Cabinet
+    form_class = CabinetForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/cabinets/{id}/inline/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
+
+
+class CabinetDelete(LoginRequiredMixin, DeleteView):
+    model = Cabinet
+    login_url = reverse_lazy('login')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
+
+class CabinetInlineView(DetailView):
+    queryset = Cabinet.objects.select_related('manufacturer')
+    template_name = 'hardware/includes/cabinet_inline.html'
+
+
+class CabinetLiView(LiViewMixin, DetailView):
+    model = Cabinet
+
+
+class CabinetUlView(UlViewMixin, DetailView):
+    queryset = Hardware.objects.prefetch_related('cabinets')
+
+
+class PartDetail(DetailView):
+    queryset = Part.objects.select_related(
+        'cabinet__hardware__connection__facility',
+        'component'
+    ).prefetch_related(
+        'parts__component'
+    )
+
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['hardware/includes/part_content.html']
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['part_form'] = PartForm()
+        return context
+
+
+class PartCreate(LoginRequiredMixin, CreateView):
+    model = Part
+    form_class = PartForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/parts/{id}/inline/'
+
+
+class PartUpdate(LoginRequiredMixin, UpdateView):
+    model = Part
+    form_class = PartForm
+    login_url = reverse_lazy('login')
+    success_url = '/hardware/parts/{id}/inline/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
+
+
+class PartDelete(LoginRequiredMixin, DeleteView):
+    model = Part
+    login_url = reverse_lazy('login')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse()
+
+
+class PartInlineView(DetailView):
+    queryset = Part.objects.select_related('component')
+    template_name = 'hardware/includes/part_inline.html'
+
+
+class PartLiView(LiViewMixin, DetailView):
+    model = Part
+
+
+class PartUlView(UlViewMixin, DetailView):
+    queryset = Cabinet.objects.prefetch_related('parts')
+
+
+class PartPartUlView(UlViewMixin, DetailView):
+    queryset = Part.objects.prefetch_related('parts')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        objects = object.parts.order_by('name')
+        context['object_list'] = objects
+        return context
 
 
 def group_select_view(request):
