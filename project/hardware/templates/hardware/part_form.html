@@ -2,23 +2,37 @@
 {% load addclass %}
 <form class="cnt-table-row"
     {% if is_update %}
+        id="part-form-{{ part.pk }}"
         hx-post="{% url 'hardware:part-update' part.pk %}"
         hx-swap="outerHTML"
     {% else %}
+        id="part-form"
         hx-post="{% url 'hardware:part-create' %}"
-        hx-swap="beforebegin"
+        hx-target="#part-table"
+        hx-swap="beforeend"
+        hx-swap-oob="true"
     {% endif %}
-    hx-target="this"
 >
-    <div class="cnt-table-cell">{{ form.name|addclass:"form-control form-control-sm" }}</div>
-    <div class="cnt-table-cell">{{ form.component|addclass:"form-control form-control-sm" }}</div>
-    <div class="cnt-table-cell">{{ form.release_year|addclass:"form-control form-control-sm" }}</div>
-    <div class="cnt-table-cell">{{ form.launch_year|addclass:"form-control form-control-sm" }}</div>
-    <div class="cnt-table-cell">{{ form.comment|addclass:"form-control form-control-sm" }}</div>
+    {% for field in form %}
+        {% if not field.is_hidden %}
+            <div class="cnt-table-cell">
+                {% if field.errors %}
+                    {{ field|addclass:"form-control form-control-sm is-invalid" }}
+                {% else %}
+                    {{ field|addclass:"form-control form-control-sm" }}
+                {% endif %}
+                {% if field.errors %}
+                    <div id="validation-{{ field.id_for_label }}" class="invalid-feedback">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
     <div class="cnt-table-cell">
         {% if is_update %}
-            <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
-            <input name="part" type="hidden" value="{{ part.part.pk }}">
+            <input name="cabinet" type="hidden" value="{% firstof part.cabinet.pk form.cabinet.value %}">
+            <input name="part" type="hidden" value="{% firstof part.part.pk form.part.value %}">
             <button class="btn btn-sm btn-success me-1">
                 <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
             </button>
@@ -30,15 +44,20 @@
                 <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
             </button>
         {% else %}
-            {% if part %}
-                <input name="part" type="hidden" value="{{ part.pk }}">
-                <input name="cabinet" type="hidden" value="{{ part.cabinet.pk }}">
-            {% else %}
-                <input name="cabinet" type="hidden" value="{{ cabinet.pk }}">
-            {% endif %}
+            <input name="part" type="hidden" value="{% firstof part.pk form.part.value %}">
+            <input name="cabinet" type="hidden" value="{% firstof cabinet.pk part.cabinet.pk form.cabinet.value %}">
             <button class="btn btn-sm btn-secondary me-1">
                 Добавить
             </button>
         {% endif %}
     </div>
+</form>
+
+{% if form.non_field_errors %}
+<div id="content" hx-swap-oob="beforeend:#content">
+    <div id="alert" class="alert alert-danger alert-dismissible w-75 fade show fixed-top mt-2 mx-auto" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ form.non_field_errors }}
+    </div>
 </div>
+{% endif %}

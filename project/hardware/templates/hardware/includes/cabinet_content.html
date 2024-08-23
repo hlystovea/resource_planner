@@ -36,7 +36,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="cnt-table-group">
+    <div id="part-table" class="cnt-table-group">
         {% for part in cabinet.parts.all %}
             {% include 'hardware/includes/part_inline.html' %}
         {% endfor %}
