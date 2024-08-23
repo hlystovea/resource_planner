@@ -1,10 +1,3 @@
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 1s ease-out;
-    }
-</style>
-
 <div class="row justify-content-left">
     <div class="col me-auto">
         <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
@@ -22,24 +15,29 @@
 <div class="row mt-5">
     <h5>Шкафы/Устройства</h5>
 </div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Оперативное наименование</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Производитель</th>
-            <th scope="col">Серия</th>
-            <th scope="col">Тип</th>
-            <th scope="col">Год выпуска</th>
-            <th scope="col">Год ввода</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Оперативное наименование</div>
+            <div class="cnt-table-cell">Наименование</div>
+            <div class="cnt-table-cell">Производитель</div>
+            <div class="cnt-table-cell">Серия</div>
+            <div class="cnt-table-cell">Тип</div>
+            <div class="cnt-table-cell">Год выпуска</div>
+            <div class="cnt-table-cell">Год ввода</div>
+            {% if user.is_authenticated %}
+                <div class="cnt-table-cell">{# space for buttons #}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="cabinet-table" class="cnt-table-group">
         {% for cabinet in hardware.cabinets.all %}
             {% include "hardware/includes/cabinet_inline.html" %}
         {% endfor %}
-        {% if user.is_authenticated %}
+    </div>
+    {% if user.is_authenticated %}
+        <div class="cnt-table-footer">
             {% include "hardware/cabinet_form.html" with form=cabinet_form %}
-        {% endif %}
-    </tbody>
-</table>
+        </div>
+    {% endif %}
+</div>

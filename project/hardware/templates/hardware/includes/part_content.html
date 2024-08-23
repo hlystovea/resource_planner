@@ -1,10 +1,3 @@
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 1s ease-out;
-    }
-</style>
-
 <div class="row justify-content-left">
     <div class="col me-auto">
         <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
@@ -28,22 +21,27 @@
 <div class="row mt-5">
     <h5>Компектующие/Детали</h5>
 </div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Условное обозначение</th>
-            <th scope="col">Компонент/Запчасть</th>
-            <th scope="col">Год выпуска</th>
-            <th scope="col">Год ввода</th>
-            <th scope="col">Комментарий</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Условное обозначение</div>
+            <div class="cnt-table-cell">Компонент/Запчасть</div>
+            <div class="cnt-table-cell">Год выпуска</div>
+            <div class="cnt-table-cell">Год ввода</div>
+            <div class="cnt-table-cell">Комментарий</div>
+            {% if user.is_authenticated %}
+                <div class="cnt-table-cell">{# space for buttons #}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="part-table" class="cnt-table-group">
         {% for p in part.parts.all %}
             {% include 'hardware/includes/part_inline.html' with part=p %}
         {% endfor %}
-        {% if user.is_authenticated %}
-            {% include 'hardware/part_form.html' with form=part_form %}
-        {% endif %}
-    </tbody>
-</table>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="cnt-table-footer">
+        {% include 'hardware/part_form.html' with form=part_form %}
+    </div>
+    {% endif %}
+</div>
