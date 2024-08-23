@@ -43,6 +43,8 @@ class PartForm(ModelForm):
 
 
 class CabinetForm(ModelForm):
+    field_order = ['abbreviation', 'name']
+
     class Meta:
         model = Cabinet
         fields = '__all__'
