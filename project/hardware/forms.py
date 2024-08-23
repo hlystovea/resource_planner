@@ -33,3 +33,13 @@ class CabinetForm(ModelForm):
     class Meta:
         model = Cabinet
         fields = '__all__'
+        widgets = {
+            'hardware': TextInput(
+                attrs={'type': 'hidden'}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['aria-describedby'] = f'validation-{self[field_name].id_for_label}'  # noqa (E501)
