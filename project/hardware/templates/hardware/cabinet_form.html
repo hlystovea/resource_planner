@@ -43,9 +43,7 @@
                 <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
             </button>
         {% else %}
-            <input name="hardware" type="hidden"
-                value="{% if hardware %}{{ hardware.pk }}{% else %}{{ form.hardware.value }}{% endif %}"
-            >
+            <input name="hardware" type="hidden" value="{% firstof hardware.pk form.hardware.value %}">
             <button class="btn btn-sm btn-secondary me-1">
                 Добавить
             </button>
