@@ -330,6 +330,12 @@ def part_select_view(request):
     return render(request, 'hardware/includes/part_select.html', context)
 
 
+def component_select_view(request):
+    queryset = Component.objects.all()
+    context = {'component_list': queryset.select_related('manufacturer')}
+    return render(request, 'hardware/includes/component_select.html', context)
+
+
 def manufacturer_options_view(request):
     return render(
         request,
@@ -397,5 +403,25 @@ def part_create_modal(request):
     return render(
         request,
         'hardware/includes/part_form_modal.html',
+        context | {'form': form}
+    )
+
+
+@login_required
+def component_create_modal(request):
+    form = ComponentForm(request.POST or None)
+    context = {}
+
+    if form.is_valid():
+        component = form.save()
+        return render(
+            request,
+            'hardware/includes/component_create_success_modal.html',
+            context={'component': component}
+        )
+
+    return render(
+        request,
+        'hardware/includes/component_form_modal.html',
         context | {'form': form}
     )

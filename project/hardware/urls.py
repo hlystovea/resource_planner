@@ -7,7 +7,9 @@ app_name = 'hardware'
 
 component_urls = [
     path('components/', views.ComponentList.as_view(), name='component-list'),
+    path('components/select/', views.component_select_view, name='component-select'),
     path('components/create/', views.ComponentCreate.as_view(), name='component-create'),  # noqa (E501)
+    path('components/create/modal/', views.component_create_modal, name='component-create-modal'),  # noqa (E501)
     path('components/<int:pk>/', views.ComponentDetail.as_view(), name='component-detail'),  # noqa (E501)
     path('components/<int:pk>/update/', views.ComponentUpdate.as_view(), name='component-update'),  # noqa (E501)
     path('components/<int:pk>/delete/', views.ComponentDelete.as_view(), name='component-delete'),  # noqa (E501)
