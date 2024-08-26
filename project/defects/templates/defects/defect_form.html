@@ -116,9 +116,9 @@
                                 >
                                     <option value="" selected>---------</option>
                                 </select>
-                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#partFormModal"
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#part-form-modal"
                                     hx-get="{% url 'hardware:part-create-modal' %}" 
-                                    hx-target="#partModalContent"
+                                    hx-target="#part-modal-content"
                                     hx-include="[id='selectCabinet'], [id='selectPart']"
                                 >
                                     <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
@@ -126,9 +126,19 @@
                             </div>
                         </div>
                     </div>
-                    <div id="partFormModal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
+
+                    <!-- Модальное окно создания комплектующего -->
+                    <div id="part-form-modal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content" id="partModalContent">
+                            <div class="modal-content" id="part-modal-content">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно создания компонента -->
+                    <div id="component-form-modal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content" id="component-modal-content">
                             </div>
                         </div>
                     </div>
