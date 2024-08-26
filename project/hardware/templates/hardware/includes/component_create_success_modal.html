@@ -1,0 +1,16 @@
+<div
+    hx-get="{% url 'hardware:component-select' %}?component={{ component.pk }}"
+    hx-trigger="load"
+    hx-target="#id_component"
+    hx-params="none"
+></div>
+<div class="modal-header">
+    <h5 class="modal-title" id="deleteModalLabel">Компонент</h5>
+    <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#part-form-modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <p>Новый компонент <em>{{ component }}</em> сохранён.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-secondary me-1" type="button" data-bs-toggle="modal" data-bs-target="#part-form-modal">Закрыть</button>
+    </div>
+</div>

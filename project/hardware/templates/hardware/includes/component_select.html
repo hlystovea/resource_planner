@@ -1,0 +1,21 @@
+<option value=""
+    {% if not request.GET.component %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Компонент...
+    {% else %}
+        ---------
+    {% endif %}
+</option>
+
+{% for component in component_list %}
+    <option value="{{ component.pk }}"
+        {% if component.pk|stringformat:'i' == request.GET.component or component.pk == selected_component %}
+            selected
+        {% endif %}
+    >
+        {{ component.manufacturer.name }} {{ component.name }} {{ component.type }}
+    </option>
+{% endfor %}

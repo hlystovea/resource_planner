@@ -1,10 +1,11 @@
+{% load static %}
 {% load addclass %}
 <div class="modal-header">
     <h5 class="modal-title" id="deleteModalLabel">Комплектующее</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
 </div>
 <div class="modal-body">
-    <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#partModalContent">
+    <form hx-post="{% url 'hardware:part-create-modal'%}" hx-target="#part-modal-content">
         <div class="card my-2">
             <div class="card-body">
             
@@ -35,15 +36,23 @@
                         <span class="required">*</span>
                     </label>
                     <div class="col-md-5">
-                        {{ form.component|addclass:"form-control form-control-sm" }}
-                        {% if form.component.help_text %}
-                        <small id="{{ form.component.id_for_label }}-help" class="form-text text-muted">
-                            {{ form.component.help_text|safe }}
-                        </small>
-                        {% endif %}
-                        {% if form.component.errors %}
-                            <div class="form-text text-danger">{{ form.component.errors }}</div>
-                        {% endif %}
+                        <div class="input-group input-group-sm">
+                            {{ form.component|addclass:"form-control form-control-sm" }}
+                            {% if form.component.help_text %}
+                            <small id="{{ form.component.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.component.help_text|safe }}
+                            </small>
+                            {% endif %}
+                            {% if form.component.errors %}
+                                <div class="form-text text-danger">{{ form.component.errors }}</div>
+                            {% endif %}
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#component-form-modal"
+                                hx-get="{% url 'hardware:component-create-modal' %}" 
+                                hx-target="#component-modal-content"
+                            >
+                                <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
+                            </button>
+                        </div>
                     </div>
                 </div>
             
