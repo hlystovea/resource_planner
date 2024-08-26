@@ -1,10 +1,11 @@
-from django_filters import FilterSet, NumberFilter
+from django_filters import FilterSet, NumberFilter, CharFilter
 
 from hardware.models import Cabinet, Component, Connection, Hardware, Part
 
 
 class ComponentFilter(FilterSet):
     dept = NumberFilter(field_name='amount', lookup_expr='storage__owner')
+    search = CharFilter(field_name='name', lookup_expr='icontains')
 
     class Meta:
         model = Component
