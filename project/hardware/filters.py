@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import FilterSet, NumberFilter, CharFilter
 
 from hardware.models import Cabinet, Component, Connection, Hardware, Part
@@ -5,11 +6,18 @@ from hardware.models import Cabinet, Component, Connection, Hardware, Part
 
 class ComponentFilter(FilterSet):
     dept = NumberFilter(field_name='amount', lookup_expr='storage__owner')
-    search = CharFilter(field_name='name', lookup_expr='icontains')
+    search = CharFilter(method='search_filter')
 
     class Meta:
         model = Component
         fields = ['amount', 'manufacturer']
+
+    def search_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(name__icontains=value)
+            | Q(manufacturer__name__icontains=value)
+            | Q(type__icontains=value)
+        )
 
 
 class ConnectionFilter(FilterSet):
