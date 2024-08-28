@@ -1,35 +1,36 @@
-<div class="row justify-content-end">
+<div class="row justify-content-end mt-4">
     <!-- Get options for the selectFacility on load -->
     <div hx-get="{% url 'hardware:facility-select' %}?label=true" hx-trigger="load" hx-target="#selectFacility" hx-params="none">
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-2 px-2">
         <select class="form-select form-select-sm" id="selectFacility" name="facility"
             hx-get="{% url 'hardware:connection-select' %}?label=true" hx-target="#selectConnection">
         </select>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-2 px-2">
         <select class="form-select form-select-sm" id="selectConnection" name="connection"
             hx-get="{% url 'hardware:connection-select' %}?label=true" hx-trigger="load" hx-params="none">
         </select>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-2 px-2">
         <select class="form-select form-select-sm" id="selectGroup" name="group"
             hx-get="{% url 'hardware:group-select' %}?label=true" hx-trigger="load" hx-params="none">
         </select>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-2 px-2">
         <select class="form-select form-select-sm" id="selectStatus" name="unrepaired">
             <option value="" selected>Статус...</option>
             <option value="false">Устранено</option>
             <option value="true">Не устранено</option>
         </select>
     </div>
-    <div class="col-auto">
+    <div class="col-auto px-2">
         <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
             hx-get="{% url 'defects:defect-list' %}"
+            hx-push-url="true"
             hx-target="#defectTable"
             hx-swap="outerHTML"
-            hx-include="[name='group'],[name='connection'],[name='unrepaired'],[name='facility']"
+            hx-include="*"
         >Показать</button>
     </div>
 </div>
