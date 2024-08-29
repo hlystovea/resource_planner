@@ -4,16 +4,125 @@
             {% include './defect_years.html' %}
         </div>
     </div>
+    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
     <table class="table table-sm table-hover">
         <thead class="table">
             <tr>
-                <th scope="col">Дата обнаружения</th>
-                <th scope="col">Объект</th>
-                <th scope="col">Присоединение</th>
-                <th scope="col">Оборудование</th>
-                <th scope="col">Шкаф/панель</th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'date' %}-date{% else %}date{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Дата обнаружения
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'date' %}
+                            ↓
+                        {% elif request.GET.sort == '-date' %}
+                            ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'part__cabinet__hardware__connection__facility__abbreviation' %}-part__cabinet__hardware__connection__facility__abbreviation{% else %}part__cabinet__hardware__connection__facility__abbreviation{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Объект
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'part__cabinet__hardware__connection__facility__abbreviation' %}
+                        ↓
+                        {% elif request.GET.sort == '-part__cabinet__hardware__connection__facility__abbreviation' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'part__cabinet__hardware__connection__abbreviation' %}-part__cabinet__hardware__connection__abbreviation{% else %}part__cabinet__hardware__connection__abbreviation{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Присоединение
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'part__cabinet__hardware__connection__abbreviation' %}
+                        ↓
+                        {% elif request.GET.sort == '-part__cabinet__hardware__connection__abbreviation' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'part__cabinet__hardware__name' %}-part__cabinet__hardware__name{% else %}part__cabinet__hardware__name{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Оборудование
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'part__cabinet__hardware__name' %}
+                        ↓
+                        {% elif request.GET.sort == '-part__cabinet__hardware__name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'part__cabinet__abbreviation' %}-part__cabinet__abbreviation{% else %}part__cabinet__abbreviation{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Шкаф/панель
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'part__cabinet__abbreviation' %}
+                        ↓
+                        {% elif request.GET.sort == '-part__cabinet__abbreviation' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
                 <th scope="col">Описание дефекта</th>
-                <th scope="col">Дата устранения</th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'repair_date' %}-repair_date{% else %}repair_date{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Дата устранения
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'repair_date' %}
+                        ↓
+                        {% elif request.GET.sort == '-repair_date' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
             </tr>
         </thead>
         <tbody>
