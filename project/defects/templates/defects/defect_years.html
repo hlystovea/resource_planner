@@ -1,3 +1,4 @@
+<input type="hidden" name="year" value="{{ request.GET.year }}">
 <span>Год: </span>
 {% for year in year_list %}
     <a href="#" class="text-decoration-none 
@@ -8,8 +9,10 @@
             link-secondary"
             hx-get="{% url 'defects:defect-list' %}?year={{ year }}"
         {% endif %}
+        hx-push-url="true"
         hx-target="#defectTable"
         hx-swap="outerHTML"
-        hx-include="[name='group'],[name='connection'],[name='unrepaired'],[name='facility']"
+        hx-include="*"
+        hx-params="not year"
     >{{ year }}</a>
 {% endfor %}

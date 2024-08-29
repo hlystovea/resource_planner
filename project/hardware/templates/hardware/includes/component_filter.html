@@ -1,7 +1,8 @@
 <div class="row justify-content-center">
     <div class="col-sm-4">
-        <input class="form-control mb-3" type="text" name="search" placeholder="Поиск..."
+        <input class="form-control mb-4 mt-2" type="text" name="search" placeholder="Поиск..."
             hx-get="{% url 'hardware:component-list' %}"
+            hx-push-url="true"
             hx-trigger="keyup changed delay:500ms"
             hx-target="#componentTable"
             hx-swap="outerHTML"

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import FieldError
 from django.db.models.functions import ExtractYear
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView,
@@ -11,16 +12,21 @@ from defects.models import Defect
 
 
 class DefectListView(ListView):
-    paginate_by = 20
+    paginate_by = 50
     model = Defect
-    queryset = Defect.objects.select_related(
-        'part__cabinet__hardware__connection__facility',
-    )
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = DefectFilter(self.request.GET, queryset=queryset).qs
-        return queryset.order_by('-date')
+        queryset = queryset.select_related(
+            'part__cabinet__hardware__connection__facility'
+        )
+
+        try:
+            return queryset.order_by(self.request.GET.get('sort'))
+
+        except FieldError:
+            return queryset.order_by('-date')
 
     def get_template_names(self):
         if is_htmx(self.request):

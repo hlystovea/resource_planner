@@ -1,23 +1,22 @@
-<div class="row justify-content-between">
-    <div class="col me-auto">
-        <form class="row m-0" hx-get="{% url 'warehouse:instrument-list' %}"
+<div class="row justify-content-center">
+    <div class="col-sm-4">
+        <input class="form-control mb-4 mt-2" type="text" name="search" placeholder="Поиск..."
+            hx-get="{% url 'warehouse:instrument-list' %}"
+            hx-push-url="true"
+            hx-trigger="keyup changed delay:500ms"
             hx-target="#instrumentTable"
             hx-swap="outerHTML"
             hx-include="[name='dept']"
         >
-            <div class="col-auto px-0">
-                <input class="form-control form-control-sm" type="text" name="search" placeholder="Поиск..">
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-sm btn-secondary">Найти</button>
-            </div>
-        </form>
     </div>
+</div>
+<div class="row justify-content-end">
     <div class="col-auto">
         <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept">
         </div>
         <select class="form-select form-select-sm" id="selectDept" name="dept"
             hx-get="{% url 'warehouse:instrument-list' %}"
+            hx-push-url="true"
             hx-target="#instrumentTable"
             hx-swap="outerHTML"
             hx-include="[name='search']"

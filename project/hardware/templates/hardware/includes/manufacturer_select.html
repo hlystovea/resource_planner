@@ -5,7 +5,9 @@
     </select>
     <button class="btn btn-outline-secondary" type="button"
         hx-get="{% url 'hardware:manufacturer-input' %}"
-        hx-target="#manufacturer_input"
+        hx-target="closest #manufacturer_input"
+        hx-swap="innerHTML"
+        hx-include="previous [name='manufacturer']"
     >
         <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg align-text-bottom">
     </button>

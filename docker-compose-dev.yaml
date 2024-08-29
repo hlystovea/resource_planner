@@ -23,6 +23,8 @@ services:
       - db
     env_file:
       - ./.env
+    environment:
+      - DEBUG=true
     develop:
       watch: 
         - path: ./requirements.txt

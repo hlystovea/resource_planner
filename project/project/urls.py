@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.conf.urls import handler400, handler403, handler404, handler500
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
@@ -6,9 +7,16 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import RedirectView
 
 
+handler400 = 'core.views.error_400_handler'  # noqa (F811)
+handler403 = 'core.views.error_403_handler'  # noqa (F811)
+handler404 = 'core.views.error_404_handler'  # noqa (F811)
+handler500 = 'core.views.error_500_handler'  # noqa (F811)
+
+
 admin.site.site_title = _('Филиал')
 admin.site.site_header = _('Эксплуатация')
 admin.site.index_title = _('Администрирование')
+
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='defects:defect-list'), name='index'),  # noqa (E501)
