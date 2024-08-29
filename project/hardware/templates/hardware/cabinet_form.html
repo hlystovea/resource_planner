@@ -15,7 +15,10 @@
 >
     {% for field in form %}
         {% if not field.is_hidden %}
-            <div class="cnt-table-cell">
+            <div class="cnt-table-cell" {% if field.name == 'manufacturer' %}id="manufacturer_input"{% endif %}>
+                {% if field.name == 'manufacturer' %}
+                    <div class="input-group input-group-sm">
+                {% endif %}
                 {% if field.errors %}
                     {{ field|addclass:"form-control form-control-sm is-invalid" }}
                 {% else %}
@@ -24,6 +27,17 @@
                 {% if field.errors %}
                     <div id="validation-{{ field.id_for_label }}" class="invalid-feedback">
                         {{ field.errors }}
+                    </div>
+                {% endif %}
+                {% if field.name == 'manufacturer' %}
+                    <button class="btn btn-outline-secondary" type="button"
+                        hx-get="{% url 'hardware:manufacturer-input' %}"
+                        hx-target="closest #manufacturer_input"
+                        hx-swap="innerHTML"
+                        hx-include="previous [name='manufacturer']"
+                    >
+                        <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor" class="bi bi-plus-lg  align-text-bottom">
+                    </button>
                     </div>
                 {% endif %}
             </div>

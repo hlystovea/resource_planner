@@ -1,6 +1,7 @@
 {% load static %}
 {% load addclass %}
-<form hx-post="{% url 'hardware:manufacturer-input' %}" hx-target="#manufacturer_input">
+<input type="hidden" name="manufacturer" value="{{ request.GET.manufacturer }}">
+<form hx-post="{% url 'hardware:manufacturer-input' %}" hx-target="#manufacturer_input" hx-swap="innerHTML">
     <div class="input-group input-group-sm">
         {% if form.name.errors %}
             {{ form.name|addclass:"form-control is-invalid" }}
@@ -15,8 +16,12 @@
         <button class="btn btn-outline-secondary">
             <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
         </button>
-        <button class="btn btn-outline-secondary" hx-get="{% url 'hardware:manufacturer-select' %}"
-            hx-target="#manufacturer_input">
+        <button class="btn btn-outline-secondary"
+            hx-get="{% url 'hardware:manufacturer-select' %}"
+            hx-target="closest #manufacturer_input"
+            hx-include="previous [name='manufacturer']"
+            hx-swap="innerHTML"
+        >
             <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
         </button>
     </div>
