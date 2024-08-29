@@ -16,6 +16,9 @@
     {% for field in form %}
         {% if not field.is_hidden %}
             <div class="cnt-table-cell">
+                {% if field.name == 'component' %}
+                    <div class="input-group input-group-sm">
+                {% endif %}
                 {% if field.errors %}
                     {{ field|addclass:"form-control form-control-sm is-invalid" }}
                 {% else %}
@@ -24,6 +27,24 @@
                 {% if field.errors %}
                     <div id="validation-{{ field.id_for_label }}" class="invalid-feedback">
                         {{ field.errors }}
+                    </div>
+                {% endif %}
+                {% if field.name == 'component' %}
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#component-form-modal"
+                        hx-get="{% url 'hardware:component-create-modal' %}"
+                        hx-target="next #component-modal-content"
+                        hx-swap="innerHTML"
+                    >
+                        <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor"
+                            class="bi bi-plus-lg  align-text-bottom">
+                    </button>
+                    </div>
+                    <!-- Модальное окно создания компонента -->
+                    <div id="component-form-modal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content" id="component-modal-content">
+                            </div>
+                        </div>
                     </div>
                 {% endif %}
             </div>

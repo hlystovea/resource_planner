@@ -5,7 +5,11 @@
     <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#part-form-modal" aria-label="Закрыть" ></button>
 </div>
 <div class="modal-body">
-    <form hx-post="{% url 'hardware:component-create-modal'%}" hx-target="#component-modal-content">
+    <form
+        hx-post="{% url 'hardware:component-create-modal'%}"
+        hx-target="closest .modal-content"
+        hx-swap="innerHTML"
+    >
         <div class="card my-2">
             <div class="card-body">
                 {% if form.errors %}

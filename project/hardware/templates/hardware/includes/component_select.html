@@ -16,6 +16,6 @@
             selected
         {% endif %}
     >
-        {{ component.manufacturer.name }} {{ component.name }} {{ component.type }}
+        {{ component.manufacturer.name }} {{ component.name }}{% if component.type %} {{ component.type }}{% endif %}
     </option>
 {% endfor %}

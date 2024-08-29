@@ -1,8 +1,9 @@
 <div
     hx-get="{% url 'hardware:component-select' %}?component={{ component.pk }}"
     hx-trigger="load"
-    hx-target="#id_component"
+    hx-target="previous #id_component"
     hx-params="none"
+    hx-swap="innerHTML"
 ></div>
 <div class="modal-header">
     <h5 class="modal-title" id="deleteModalLabel">Компонент</h5>
