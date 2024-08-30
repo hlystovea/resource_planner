@@ -12,7 +12,7 @@
 </nav>
 
 <div class="row justify-content-center">
-    <div class="col-md-8 p-5 pt-2">
+    <div class="col-md-6 p-5 pt-2">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if form.errors %}
@@ -41,7 +41,7 @@
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            {{ form.date|addclass:"form-control" }}
+                            {{ form.date|addclass:"form-control form-control-sm" }}
                             {% if form.date.help_text %}
                             <small id="{{ form.date.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.date.help_text|safe }}
@@ -57,7 +57,7 @@
                         <label for="selectConnection"
                             class="col-md-4 col-form-label text-md-right">Присоединение</label>
                         <div class="col-md-8">
-                            <select class="form-select" id="selectConnection" name="connection"
+                            <select class="form-select form-select-sm" id="selectConnection" name="connection"
                                 hx-get="{% url 'hardware:hardware-select' %}"
                                 hx-target="#selectHardware"
                             >
@@ -73,7 +73,7 @@
                     <div class="form-group row my-1" aria-required="false">
                         <label for="selectHardware" class="col-md-4 col-form-label text-md-right">Оборудование</label>
                         <div class="col-md-8">
-                            <select class="form-select" id="selectHardware" name="hardware"
+                            <select class="form-select form-select-sm" id="selectHardware" name="hardware"
                                 hx-get="{% url 'hardware:cabinet-select' %}"
                                 hx-target="#selectCabinet"
                             >
@@ -82,15 +82,15 @@
                         </div>
                     </div>
 
-                    <!-- Шкаф/панель -->
+                    <!-- Шкаф/устройство -->
                     {% if defect %}
                         <div hx-get="{% url 'hardware:cabinet-select' %}?cabinet={{ defect.part.cabinet.pk }}&hardware={{ defect.part.cabinet.hardware.pk }}"
                             hx-trigger="load" hx-target="#selectCabinet"></div>
                     {% endif %}
                     <div class="form-group row my-1" aria-required="true">
-                        <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/Панель</label>
+                        <label for="selectCabinet" class="col-md-4 col-form-label text-md-right">Шкаф/устройство</label>
                         <div class="col-md-8">
-                            <select class="form-select" id="selectCabinet" name="cabinet" required
+                            <select class="form-select form-select-sm" id="selectCabinet" name="cabinet" required
                                 hx-get="{% url 'hardware:part-select' %}"
                                 hx-target="#selectPart"
                             >
@@ -106,8 +106,8 @@
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            <div class="input-group">
-                                <select class="form-select" id="selectPart" name="part" required
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" id="selectPart" name="part" required
                                     {% if defect %}
                                         hx-get="{% url 'hardware:part-select' %}?part={{ defect.part.pk }}&cabinet={{ defect.part.cabinet.pk }}"
                                         hx-trigger="load"
@@ -150,7 +150,7 @@
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            {{ form.description|addclass:"form-control" }}
+                            {{ form.description|addclass:"form-control form-control-sm" }}
                             {% if form.description.help_text %}
                             <small id="{{ form.description.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.description.help_text|safe }}
@@ -165,7 +165,7 @@
                             {{ form.image.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.image|addclass:"form-control" }}
+                            {{ form.image|addclass:"form-control form-control-sm" }}
                             {% if form.image.help_text %}
                             <small id="{{ form.image.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.image.help_text|safe }}
@@ -181,7 +181,7 @@
                             <span class="required">*</span>
                         </label>
                         <div class="col-md-8">
-                            {{ form.effects|addclass:"form-control" }}
+                            {{ form.effects|addclass:"form-control form-control-sm" }}
                             {% if form.effects.help_text %}
                             <small id="{{ form.effects.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.effects.help_text|safe }}
@@ -242,7 +242,7 @@
                             {{ form.technical_reasons.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.technical_reasons|addclass:"form-control" }}
+                            {{ form.technical_reasons|addclass:"form-control form-control-sm" }}
                             {% if form.technical_reasons.help_text %}
                             <small id="{{ form.technical_reasons.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.technical_reasons.help_text|safe }}
@@ -258,7 +258,7 @@
                             {{ form.organizational_reasons.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.organizational_reasons|addclass:"form-control" }}
+                            {{ form.organizational_reasons|addclass:"form-control form-control-sm" }}
                             {% if form.organizational_reasons.help_text %}
                             <small id="{{ form.organizational_reasons.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.organizational_reasons.help_text|safe }}
@@ -273,7 +273,7 @@
                             {{ form.repair_date.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.repair_date|addclass:"form-control" }}
+                            {{ form.repair_date|addclass:"form-control form-control-sm" }}
                             {% if form.repair_date.help_text %}
                             <small id="{{ form.repair_date.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.repair_date.help_text|safe }}
@@ -304,7 +304,7 @@
                             {{ form.repair.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.repair|addclass:"form-control" }}
+                            {{ form.repair|addclass:"form-control form-control-sm" }}
                             {% if form.repair.help_text %}
                             <small id="{{ form.repair.id_for_label }}-help" class="form-text text-muted">
                                 {{ form.repair.help_text|safe }}
@@ -319,7 +319,7 @@
                             {{ form.attachment.label }}
                         </label>
                         <div class="col-md-8">
-                            {{ form.attachment|addclass:"form-control" }}
+                            {{ form.attachment|addclass:"form-control form-control-sm" }}
                             {% if form.attachment.help_text %}
                             <small id="{{ form.attachment.id_for_label }}-help" class="form-text text-muted">{{
                                 form.attachment.help_text|safe }}</small>
