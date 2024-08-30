@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput
+from django.forms import ModelForm, NumberInput, TextInput
 
 from hardware.models import Cabinet, Component, Manufacturer, Part
 
@@ -28,12 +28,12 @@ class PartForm(ModelForm):
         model = Part
         fields = '__all__'
         widgets = {
-            'part': TextInput(
-                attrs={'type': 'hidden'}
-            ),
-            'cabinet': TextInput(
-                attrs={'type': 'hidden'}
-            ),
+            'name': TextInput(attrs={'placeholder': 'Услов. обозначение'}),
+            'part': TextInput(attrs={'type': 'hidden'}),
+            'cabinet': TextInput(attrs={'type': 'hidden'}),
+            'release_year': NumberInput(attrs={'placeholder': 'Год выпуска'}),
+            'launch_year': NumberInput(attrs={'placeholder': 'Год ввода'}),
+            'comment': TextInput(attrs={'placeholder': 'Комментарий'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -49,9 +49,13 @@ class CabinetForm(ModelForm):
         model = Cabinet
         fields = '__all__'
         widgets = {
-            'hardware': TextInput(
-                attrs={'type': 'hidden'}
-            ),
+            'name': TextInput(attrs={'placeholder': 'Наименование'}),
+            'abbreviation': TextInput(attrs={'placeholder': 'Опер. наименование'}),  # noqa (E501)
+            'hardware': TextInput(attrs={'type': 'hidden'}),
+            'series': TextInput(attrs={'placeholder': 'Серия'}),
+            'type': TextInput(attrs={'placeholder': 'Тип'}),
+            'release_year': NumberInput(attrs={'placeholder': 'Год выпуска'}),
+            'launch_year': NumberInput(attrs={'placeholder': 'Год ввода'}),
         }
 
     def __init__(self, *args, **kwargs):
