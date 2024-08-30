@@ -93,7 +93,7 @@
                         hx-include="*"
                         hx-params="not sort"
                     >
-                        Шкаф/панель
+                        Шкаф/устройство
                     </a>
                     <span class="py-0">
                         {% if request.GET.sort == 'part__cabinet__abbreviation' %}
@@ -103,7 +103,25 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">Описание дефекта</th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'part__name' %}-part__name{% else %}part__name{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#defectTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                    Комплектующее
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'part__name' %}
+                        ↓
+                        {% elif request.GET.sort == '-part__name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
                 <th scope="col">
                     <a class="p-0" href="#"
                         hx-get="{% url 'defects:defect-list' %}?sort={% if request.GET.sort == 'repair_date' %}-repair_date{% else %}repair_date{% endif %}"
@@ -133,7 +151,7 @@
                 <td>{{ d.part.cabinet.hardware.connection.abbreviation }}</td>
                 <td>{{ d.part.cabinet.hardware.name }}</td>
                 <td>{{ d.part.cabinet.abbreviation }}</td>
-                <td>{{ d.description|truncatechars:30 }}</td>
+                <td>{{ d.part|truncatechars:30 }}</td>
                 <td>{{ d.repair_date|date:'d.m.Y' }}</td>
             </tr>
             {% endfor %}
