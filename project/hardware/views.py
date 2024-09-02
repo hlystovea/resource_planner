@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum
+from django.core.exceptions import FieldError
+from django.db.models import Count, Prefetch, Sum, Value
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import (CreateView, DeleteView, DetailView,
@@ -8,7 +10,6 @@ from django.views.generic import (CreateView, DeleteView, DetailView,
 from django.urls import reverse_lazy
 
 from core.utils import is_htmx
-from defects.models import Defect
 from hardware.filters import (CabinetFilter, ComponentFilter, ConnectionFilter,
                               HardwareFilter, PartFilter)
 from hardware.forms import (CabinetForm, ComponentForm,
@@ -34,33 +35,39 @@ class ComponentDetail(DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        defects = Defect.objects.filter(part__component=OuterRef('pk'))
-        count = defects.values('part__component').annotate(count=Count('pk'))
         amount = ComponentStorage.objects.select_related('storage__owner')
+        parts = Part.objects.select_related('cabinet__hardware__connection__facility')  # noqa (E501)
 
         queryset = queryset.annotate(
-            defect_count=Subquery(count.values('count')),
-            total=Sum('amount__amount')
+            defect_count=Coalesce(Count('parts__defects', distinct=True), Value(0)),  # noqa (E501)
+            in_storage=Coalesce(Sum('amount__amount', distinct=True), Value(0)),  # noqa (E501)
+            in_hardware=Coalesce(Count('parts', distinct=True), Value(0))
         )
-        return queryset.prefetch_related(Prefetch('amount', queryset=amount))
+
+        return queryset.prefetch_related(
+            Prefetch('amount', queryset=amount),
+            Prefetch('parts', queryset=parts)
+        )
 
 
 class ComponentList(ListView):
-    paginate_by = 20
+    paginate_by = 50
     model = Component
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = ComponentFilter(self.request.GET, queryset=queryset).qs
 
-        defects = Defect.objects.filter(part__component=OuterRef('pk'))
-        count = defects.values('part__component').annotate(count=Count('pk'))
-
         queryset = queryset.annotate(
-            defect_count=Subquery(count.values('count')),
-            total=Sum('amount__amount')
+            defect_count=Coalesce(Count('parts__defects', distinct=True), Value(0)),  # noqa (E501)
+            in_storage=Coalesce(Sum('amount__amount', distinct=True), Value(0)),  # noqa (E501)
+            in_hardware=Coalesce(Count('parts', distinct=True), Value(0))
         )
-        return queryset.order_by('manufacturer', 'name')
+
+        try:
+            return queryset.order_by(self.request.GET.get('sort'))
+        except FieldError:
+            return queryset.order_by('manufacturer', 'name')
 
     def get_template_names(self):
         if is_htmx(self.request):

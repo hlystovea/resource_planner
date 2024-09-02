@@ -2,20 +2,150 @@
     <table class="table table-hover">
         <thead class="table">
             <tr>
-                <th scope="col">Производитель</th>
-                <th scope="col">Наименование</th>
-                <th scope="col">Тип</th>
-                <th scope="col">Количество</th>
-                <th scope="col">Дефекты</th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'manufacturer__name' %}-manufacturer__name{% else %}manufacturer__name{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Производитель
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'manufacturer__name' %}
+                        ↓
+                        {% elif request.GET.sort == '-manufacturer__name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'name' %}-name{% else %}name{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Наименование
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'name' %}
+                        ↓
+                        {% elif request.GET.sort == '-name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'series' %}-series{% else %}series{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Серия
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'series' %}
+                        ↓
+                        {% elif request.GET.sort == '-series' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'type' %}-type{% else %}type{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Тип
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'type' %}
+                        ↓
+                        {% elif request.GET.sort == '-type' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'in_hardware' %}-in_hardware{% else %}in_hardware{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        В оборудовании
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'in_hardware' %}
+                        ↓
+                        {% elif request.GET.sort == '-in_hardware' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'in_storage' %}-in_storage{% else %}in_storage{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        На хранении
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'in_storage' %}
+                        ↓
+                        {% elif request.GET.sort == '-in_storage' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'defect_count' %}-defect_count{% else %}defect_count{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Дефекты
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'defect_count' %}
+                        ↓
+                        {% elif request.GET.sort == '-defect_count' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
             </tr>
         </thead>
         <tbody>
             {% for c in component_list %}
                 <tr>
                     <td>{{ c.manufacturer|default:"-" }}</td>
-                    <td><a href="{% url 'hardware:component-detail' c.pk %}">{{ c.name }}</a></td>
+                    <td><a href="{% url 'hardware:component-detail' c.pk %}">{{ c.name|truncatechars:45 }}</a></td>
+                    <td>{{ c.series|default:"-" }}</td>
                     <td>{{ c.type|default:"-" }}</td>
-                    <td>{% if c.total %}{{ c.total }}{% else %}0{% endif %} шт.</td>
+                    <td>{% if c.in_hardware %}{{ c.in_hardware }}{% else %}0{% endif %} шт.</td>
+                    <td>{% if c.in_storage %}{{ c.in_storage }}{% else %}0{% endif %} шт.</td>
                     <td>{% if c.defect_count %}<a href="{% url 'defects:defect-list' %}?component={{ c.pk }}">{{ c.defect_count }}</a>{% else %}0{% endif %} шт.</td>
                 </tr>
             {% endfor %}
