@@ -98,9 +98,13 @@ class TestComponent:
             'Проверьте, что вместе с объектом Component передали поле ' \
             'типа ComponentStorage в контекст страницы'
 
-        assert component.total == component_in_storage_dept1.amount, \
-            'Проверьте, что объект Component содержит поле total ' \
+        assert component.in_storage == component_in_storage_dept1.amount, \
+            'Проверьте, что объект Component содержит поле in_storage ' \
             'с общим количеством материала'
+
+        assert component.in_hardware == component_in_storage_dept1.component.parts.count(), \
+            'Проверьте, что объект Component содержит поле in_hardware ' \
+            'с общим количеством оборудования'
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
