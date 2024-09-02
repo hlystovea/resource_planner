@@ -26,26 +26,26 @@
 <div class="row mt-5">
     <h5>Запасные части</h5>
 </div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Производитель</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Тип</th>
-            <th scope="col">Инв. номер</th>
-            <th scope="col">Количество</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Запчасть</div>
+            <div class="cnt-table-cell">Инв. номер</div>
+            <div class="cnt-table-cell">Количество</div>
+            <div class="cnt-table-cell"></div>
+        </div>
+    </div>
+    <div id="component-table" class="cnt-table-group">
         {% for componentstorage in storage.components.all %}
             {% include "warehouse/componentstorage_detail.html" %}
         {% endfor %}
-        {% if user.is_authenticated and storage.owner == user.dept %}
+    </div>
+    {% if user.is_authenticated and storage.owner == user.dept %}
+        <div class="cnt-table-footer">
             {% include "warehouse/componentstorage_form.html" with form=componentstorage_form %}
-        {% endif %}
-    </tbody>
-</table>
+        </div>
+    {% endif %}
+</div>
 <div class="row mt-5">
     <h5>Расходные материалы</h5>
 </div>

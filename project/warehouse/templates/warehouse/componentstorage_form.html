@@ -1,27 +1,96 @@
 {% load static %}
 {% load addclass %}
-<tr>
-    <td colspan="3">{{ form.component|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.amount|addclass:"form-control form-control-sm" }}</td>
-    <td>
-        {% if is_update %}
-        <button class="btn btn-sm btn-success me-1"
-            hx-post="{% url 'warehouse:component-storage-update' componentstorage.storage.pk componentstorage.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML" hx-include="closest tr">
-            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
-        </button>
-        <button class="btn btn-sm btn-secondary me-1"
-            hx-get="{% url 'warehouse:component-storage-detail' componentstorage.storage.pk componentstorage.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML">
-            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
-        </button>
+<form class="cnt-table-row"
+    {% if is_update %}
+        id="component-form-{{ component.pk }}"
+        hx-post="{% url 'warehouse:component-storage-update' componentstorage.storage.pk componentstorage.pk %}"
+        hx-swap="outerHTML"
+    {% else %}
+        id="component-form"
+        hx-post="{% url 'warehouse:component-storage-create' storage.pk %}"
+        hx-target="#component-table"
+        hx-swap="beforeend"
+        hx-swap-oob="true"
+    {% endif %}
+>
+    <div class="cnt-table-cell">
+        <div class="input-group input-group-sm">
+                {% if form.component.errors %}
+                    {{ form.component|addclass:"form-control form-control-sm is-invalid" }}
+                {% else %}
+                    {{ form.component|addclass:"form-control form-control-sm" }}
+                {% endif %}
+                {% if form.component.errors %}
+                    <div id="validation-{{ form.inventory_number.id_for_label }}" class="invalid-feedback">
+                        {{ form.component.errors }}
+                    </div>
+                {% endif %}
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#component-form-modal"
+                hx-get="{% url 'hardware:component-create-modal' %}"
+                hx-target="next #component-modal-content"
+                hx-swap="innerHTML"
+            >
+                <img src="{% static 'icons/plus-lg.svg' %}" height="16" fill="currentColor"
+                    class="bi bi-plus-lg  align-text-bottom">
+            </button>
+        </div>
+        <!-- Модальное окно создания компонента -->
+        <div id="component-form-modal" class="modal modal-blur" style="display: none" aria-hidden="false" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content" id="component-modal-content">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.inventory_number.errors %}
+            {{ form.inventory_number|addclass:"form-control form-control-sm is-invalid" }}
         {% else %}
-        <button class="btn btn-sm btn-secondary me-1"
-            hx-post="{% url 'warehouse:component-storage-create' storage.pk %}" hx-target="closest tr"
-            hx-swap="beforebegin" hx-include="closest tr">
-            Добавить
-        </button>
+            {{ form.inventory_number|addclass:"form-control form-control-sm" }}
         {% endif %}
-    </td>
-</tr>
+        {% if form.inventory_number.errors %}
+            <div id="validation-{{ form.inventory_number.id_for_label }}" class="invalid-feedback">
+                {{ form.inventory_number.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.amount.errors %}
+            {{ form.amount|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.amount|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.amount.errors %}
+            <div id="validation-{{ form.amount.id_for_label }}" class="invalid-feedback">
+                {{ form.amount.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if is_update %}
+            <button class="btn btn-sm btn-success me-1">
+                <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-secondary me-1"
+                hx-get="{% url 'warehouse:component-storage-detail' componentstorage.storage.pk componentstorage.pk %}"
+                hx-target="closest form"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
+            </button>
+        {% else %}
+            <button class="btn btn-sm btn-secondary me-1">
+                Добавить
+            </button>
+        {% endif %}
+    </div>
+</form>
+
+{% if form.non_field_errors %}
+    <div id="content" hx-swap-oob="beforeend:#content">
+        <div id="alert" class="alert alert-danger alert-dismissible w-75 fade show fixed-top mt-2 mx-auto" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ form.non_field_errors }}
+        </div>
+    </div>
+{% endif %}

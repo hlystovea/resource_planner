@@ -1,31 +1,29 @@
 {% load static %}
-<tr>
-    <td>{{ componentstorage.component.manufacturer|default:"-" }}</td>
-    <td>
+<div class="cnt-table-row">
+    <div class="cnt-table-cell">
         <a href="{% url 'hardware:component-detail' componentstorage.component.pk %}">
-            {{ componentstorage.component.name}}
+            {{ componentstorage.component.manufacturer }} {{ componentstorage.component.name }} {{ componentstorage.component.type|default:"-" }}
         </a>
-    </td>
-    <td>{{ componentstorage.component.type|default:"-" }}</td>
-    <td>{{ componentstorage.inventory_number|default:"-" }}</td>
-    <td>{{ componentstorage.amount }} шт.</td>
-    <td>
+    </div>
+    <div class="cnt-table-cell">{{ componentstorage.inventory_number|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ componentstorage.amount }} шт.</div>
+    <div class="cnt-table-cell">
         {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == componentstorage.storage.owner %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:component-storage-update' componentstorage.storage.pk componentstorage.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML"
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
             </button>
             <button class="btn btn-sm btn-danger me-1 my-0"
                 hx-delete="{% url 'warehouse:component-storage-delete' componentstorage.storage.pk componentstorage.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить хранящуюся запчасть?"
             >
                 <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
             </button>
         {% endif %}
-    </td>
-</tr>
+    </div>
+</div>
