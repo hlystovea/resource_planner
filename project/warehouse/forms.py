@@ -1,4 +1,4 @@
-from django.forms import ChoiceField, Form, ModelForm, TextInput
+from django.forms import ChoiceField, Form, ModelForm, NumberInput, TextInput
 
 from staff.models import Dept
 from warehouse.models import (ComponentStorage, Instrument, Material,
@@ -53,12 +53,20 @@ class MaterialStorageForm(ModelForm):
     class Meta:
         model = MaterialStorage
         exclude = ('storage', )
+        widgets = {
+            'inventory_number': TextInput(attrs={'placeholder': 'Инв. номер'}),
+            'amount': NumberInput(attrs={'placeholder': 'Количество'}),
+        }
 
 
 class ComponentStorageForm(ModelForm):
     class Meta:
         model = ComponentStorage
         exclude = ('storage', )
+        widgets = {
+            'inventory_number': TextInput(attrs={'placeholder': 'Инв. номер'}),
+            'amount': NumberInput(attrs={'placeholder': 'Количество'}),
+        }
 
 
 class StorageForm(ModelForm):

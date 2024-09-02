@@ -16,6 +16,7 @@
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer"
             hx-get="{% url 'hardware:component-list' %}"
+            hx-push-url="true"
             hx-target="#componentTable"
             hx-swap="outerHTML"
             hx-include="[name='dept'],[name='search']"
@@ -25,6 +26,7 @@
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectDept" name="dept"
             hx-get="{% url 'hardware:component-list' %}"
+            hx-push-url="true"
             hx-target="#componentTable"
             hx-swap="outerHTML"
             hx-include="[name='manufacturer'],[name='search']"
