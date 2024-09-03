@@ -11,9 +11,8 @@ from qr_code.qrcode.utils import QRCodeOptions
 from core.utils import is_htmx
 from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
-                             InstrumentInlineForm, MaterialForm,
-                             MaterialInlineForm, MaterialStorageForm,
-                             StorageForm)
+                             MaterialForm, MaterialInlineForm,
+                             MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -231,12 +230,12 @@ class InstrumentList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/includes/instrument_table.html']
+            return ['warehouse/includes/instrument_content.html']
         return ['warehouse/instrument_list.html']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = InstrumentInlineForm()
+        context['form'] = InstrumentForm()
         return context
 
 
@@ -245,10 +244,10 @@ class InstrumentCreate(LoginRequiredMixin, CreateView):
     form_class = InstrumentForm
     login_url = reverse_lazy('login')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_new'] = True
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/includes/instrument_inline_form.html']
+        return super().get_template_names()
 
     def form_valid(self, form):
         form.instance.owner = self.request.user.dept
@@ -259,6 +258,11 @@ class InstrumentUpdate(LoginRequiredMixin, UpdateView):
     model = Instrument
     form_class = InstrumentForm
     login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
     def get_template_names(self):
         if is_htmx(self.request):
