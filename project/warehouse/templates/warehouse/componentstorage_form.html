@@ -15,16 +15,16 @@
 >
     <div class="cnt-table-cell">
         <div class="input-group input-group-sm">
-                {% if form.component.errors %}
-                    {{ form.component|addclass:"form-control form-control-sm is-invalid" }}
-                {% else %}
-                    {{ form.component|addclass:"form-control form-control-sm" }}
-                {% endif %}
-                {% if form.component.errors %}
-                    <div id="validation-{{ form.inventory_number.id_for_label }}" class="invalid-feedback">
-                        {{ form.component.errors }}
-                    </div>
-                {% endif %}
+            {% if form.component.errors %}
+                {{ form.component|addclass:"form-control form-control-sm is-invalid" }}
+            {% else %}
+                {{ form.component|addclass:"form-control form-control-sm" }}
+            {% endif %}
+            {% if form.component.errors %}
+                <div id="validation-{{ form.inventory_number.id_for_label }}" class="invalid-feedback">
+                    {{ form.component.errors }}
+                </div>
+            {% endif %}
             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#component-form-modal"
                 hx-get="{% url 'hardware:component-create-modal' %}"
                 hx-target="next #component-modal-content"

@@ -2,7 +2,9 @@
 <div class="cnt-table-row">
     <div class="cnt-table-cell">
         <a href="{% url 'hardware:component-detail' componentstorage.component.pk %}">
-            {{ componentstorage.component.manufacturer }} {{ componentstorage.component.name }} {{ componentstorage.component.type|default:"-" }}
+            {{ componentstorage.component.manufacturer }}
+            {{ componentstorage.component.name }}
+            {{ componentstorage.component.type|default:"" }}
         </a>
     </div>
     <div class="cnt-table-cell">{{ componentstorage.inventory_number|default:"-" }}</div>
