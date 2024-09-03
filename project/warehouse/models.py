@@ -73,7 +73,8 @@ class Material(models.Model):
         return reverse('warehouse:material-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return f'{self.name}, {self.measurement_unit}'
+        return (f'{self.name}, {self.measurement_unit} '
+                f'{(self.article_number) if self.article_number else ""}')
 
 
 class MaterialStorage(models.Model):

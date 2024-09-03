@@ -1,0 +1,25 @@
+<option value=""
+    {% if not request.GET.material %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Материал...
+    {% else %}
+        ---------
+    {% endif %}
+</option>
+
+{% for material in material_list %}
+    <option value="{{ material.pk }}"
+        {% if material.pk|stringformat:'i' == request.GET.material or material.pk == selected_material %}
+            selected
+        {% endif %}
+    >
+        {{ material.name }},
+        {{ material.measurement_unit }}
+        {% if material.article_number %}
+            ({{ material.article_number }})
+        {% endif %}
+    </option>
+{% endfor %}

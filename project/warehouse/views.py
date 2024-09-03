@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Sum, Prefetch
 from django.http import HttpResponseRedirect, HttpResponse
@@ -423,3 +424,31 @@ def storage_li_view(request, pk):
     storage = get_object_or_404(queryset, pk=pk)
     context = {'storage': storage}
     return render(request, 'warehouse/includes/storage_li.html', context)
+
+
+def material_select_view(request):
+    context = {'material_list': Material.objects.all()}
+    return render(request, 'warehouse/includes/material_select.html', context)
+
+
+@login_required
+def material_create_modal(request):
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            material = form.save()
+            return render(
+                request,
+                'warehouse/includes/material_create_success_modal.html',
+                context={'material': material}
+            )
+
+    else:
+        form = MaterialForm()
+
+    return render(
+        request,
+        'warehouse/includes/material_form_modal.html',
+        context={'form': form}
+    )

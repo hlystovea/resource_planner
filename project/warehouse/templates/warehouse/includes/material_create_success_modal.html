@@ -1,0 +1,17 @@
+<div
+    hx-get="{% url 'warehouse:material-select' %}?material={{ material.pk }}"
+    hx-trigger="load"
+    hx-target="previous #id_material"
+    hx-params="none"
+    hx-swap="innerHTML"
+></div>
+<div class="modal-header">
+    <h5 class="modal-title" id="delete-modal-label">Материал</h5>
+    <button class="btn-close" type="button" data-bs-toggle="modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <p>Новый материал <em>{{ material }}</em> сохранён.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-secondary me-1" type="button" data-bs-toggle="modal">Закрыть</button>
+    </div>
+</div>

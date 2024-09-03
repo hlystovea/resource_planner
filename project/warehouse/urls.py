@@ -16,7 +16,9 @@ instrument_urls = [
 
 material_urls = [
     path('material/', views.MaterialList.as_view(), name='material-list'),
+    path('material/select/', views.material_select_view, name='material-select'),
     path('material/create/', views.MaterialCreate.as_view(), name='material-create'),  # noqa (E501)
+    path('material/create/modal/', views.material_create_modal, name='material-create-modal'),  # noqa (E501)
     path('material/<int:pk>/', views.MaterialDetail.as_view(), name='material-detail'),  # noqa (E501)
     path('material/<int:pk>/update/', views.MaterialUpdate.as_view(), name='material-update'),  # noqa (E501)
     path('material/<int:pk>/delete/', views.MaterialDelete.as_view(), name='material-delete'),  # noqa (E501)
