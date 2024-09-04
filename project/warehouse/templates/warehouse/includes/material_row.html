@@ -1,25 +1,26 @@
 {% load static %}
-<tr>
-    <td colspan="2"><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></td>
-    <td>{{ material.article_number|default:"-" }}</td>
-    <td>{% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</td>
-    <td>
+<div class="cnt-table-row">
+    <div class="cnt-table-cell"><a href="{% url 'warehouse:material-detail' material.pk %}">{{ material.name }}</a></div>
+    <div class="cnt-table-cell">{{ material.measurement_unit|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ material.article_number|default:"-" }}</div>
+    <div class="cnt-table-cell">{% if material.total %}{{ material.total|floatformat }}{% else %}0{% endif %} {{ material.measurement_unit}}</div>
+    <div class="cnt-table-cell">
         {% if user.is_authenticated %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:material-update' material.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML"
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
             </button>
             <button class="btn btn-sm btn-danger my-0" type="submit"
                 hx-delete="{% url 'warehouse:material-delete' material.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить материал?"
             >
                 <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
             </button>
         {% endif %}
-    </td>
-</tr>
+    </div>
+</div>

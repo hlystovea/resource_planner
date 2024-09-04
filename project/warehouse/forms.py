@@ -33,12 +33,6 @@ class MaterialForm(ModelForm):
     class Meta:
         model = Material
         fields = '__all__'
-
-
-class MaterialInlineForm(ModelForm):
-    class Meta:
-        model = Material
-        exclude = ('image', )
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
             'article_number': TextInput(attrs={'placeholder': 'Артикул'}),

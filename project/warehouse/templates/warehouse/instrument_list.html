@@ -26,7 +26,7 @@
         {% include "warehouse/includes/instrument_table.html" %}
         {% if user.is_authenticated %}
             <div class="cnt-table-footer">
-                {% include 'warehouse/includes/instrument_inline_form.html' with form=form %}
+                {% include 'warehouse/includes/instrument_inline_form.html' %}
             </div>
         {% endif %}
     </div>

@@ -4,7 +4,7 @@
             hx-get="{% url 'warehouse:material-list' %}"
             hx-push-url="true"
             hx-trigger="keyup changed delay:500ms"
-            hx-target="#materialTable"
+            hx-target="#material-table"
             hx-swap="outerHTML"
             hx-include="[name='dept']"
         >
@@ -17,7 +17,7 @@
         <select class="form-select form-select-sm" id="selectDept" name="dept"
             hx-get="{% url 'warehouse:material-list' %}"
             hx-push-url="true"
-            hx-target="#materialTable"
+            hx-target="#material-table"
             hx-swap="outerHTML"
             hx-include="[name='search']"
         >

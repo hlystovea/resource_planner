@@ -11,8 +11,7 @@ from qr_code.qrcode.utils import QRCodeOptions
 from core.utils import is_htmx
 from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
-                             MaterialForm, MaterialInlineForm,
-                             MaterialStorageForm, StorageForm)
+                             MaterialForm, MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -165,7 +164,8 @@ class MaterialList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = MaterialInlineForm()
+        if not is_htmx(self.request):
+            context['form'] = MaterialForm()
         return context
 
 
@@ -174,16 +174,16 @@ class MaterialCreate(LoginRequiredMixin, CreateView):
     form_class = MaterialForm
     login_url = reverse_lazy('login')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_new'] = True
-        return context
-
 
 class MaterialUpdate(LoginRequiredMixin, UpdateView):
     model = Material
     form_class = MaterialForm
     login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -235,7 +235,8 @@ class InstrumentList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = InstrumentForm()
+        if not is_htmx(self.request):
+            context['form'] = InstrumentForm()
         return context
 
 

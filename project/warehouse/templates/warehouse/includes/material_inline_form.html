@@ -1,19 +1,81 @@
 {% load static %}
 {% load addclass %}
-<tr>
-    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.measurement_unit|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.article_number|addclass:"form-control form-control-sm" }}</td>
-    <td></td>
-    <td>
-        <button class="btn btn-sm btn-success me-1" hx-post="{% url 'warehouse:material-update' material.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML" hx-include="closest tr">
+<form class="cnt-table-row"
+    {% if is_update %}
+        id="material-form-{{ material.pk }}"
+        hx-post="{% url 'warehouse:material-update' material.pk %}"
+        hx-swap="outerHTML"
+    {% else %}
+        id="material-form"
+        hx-post="{% url 'warehouse:material-create' %}"
+        hx-target="#material-table"
+        hx-swap="beforeend"
+        hx-swap-oob="true"
+    {% endif %}
+>
+    <div class="cnt-table-cell">
+        {% if form.name.errors %}
+            {{ form.name|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.name|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.name.errors %}
+            <div id="validation-{{ form.name.id_for_label }}" class="invalid-feedback">
+                {{ form.name.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.measurement_unit.errors %}
+            {{ form.measurement_unit|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.measurement_unit|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.measurement_unit.errors %}
+        <div id="validation-{{ form.measurement_unit.id_for_label }}" class="invalid-feedback">
+            {{ form.measurement_unit.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.article_number.errors %}
+            {{ form.article_number|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.article_number|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.article_number.errors %}
+            <div id="validation-{{ form.article_number.id_for_label }}" class="invalid-feedback">
+                {{ form.article_number.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+    </div>
+    <div class="cnt-table-cell">
+        {% if is_update %}
+            <button class="btn btn-sm btn-success me-1">
+                <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-secondary me-1"
+                hx-get="{% url 'warehouse:material-detail' material.pk %}"
+                hx-target="closest form"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
+            </button>
+        {% else %}
+            <button class="btn btn-sm btn-secondary me-1">
+                Добавить
+            </button>
+        {% endif %}
+    </div>
+</form>
 
-            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
-        </button>
-        <button class="btn btn-sm btn-secondary me-1" hx-get="{% url 'warehouse:material-detail' material.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML">
-            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
-        </button>
-    </td>
-</tr>
+{% if form.non_field_errors %}
+<div id="material-table" hx-swap-oob="beforeend:material-table">
+    <div id="alert" class="alert alert-danger alert-dismissible w-75 fade show fixed-top mt-2 mx-auto" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ form.non_field_errors }}
+    </div>
+</div>
+{% endif %}
