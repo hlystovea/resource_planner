@@ -11,5 +11,24 @@
         <h1>Инструменты/Приборы</h1>
     </div>
     {% include "warehouse/includes/instrument_filter.html" %}
-    {% include "warehouse/includes/instrument_table.html" %}
+    <div class="cnt-table my-2">
+        <div class="cnt-table-header">
+            <div class="cnt-table-row">
+                <div class="cnt-table-cell">Наименование</div>
+                <div class="cnt-table-cell">Инв. номер</div>
+                <div class="cnt-table-cell">Зав. номер</div>
+                <div class="cnt-table-cell">Подразделение</div>
+                <div class="cnt-table-cell">Дата последней проверки</div>
+                <div class="cnt-table-cell">Дата следующей проверки</div>
+                <div class="cnt-table-cell"></div>
+            </div>
+        </div>
+        {% include "warehouse/includes/instrument_table.html" %}
+        {% if user.is_authenticated %}
+            <div class="cnt-table-footer">
+                {% include 'warehouse/includes/instrument_inline_form.html' with form=form %}
+            </div>
+        {% endif %}
+    </div>
+    {% include "includes/paginator.html" %}
 {% endblock %}
