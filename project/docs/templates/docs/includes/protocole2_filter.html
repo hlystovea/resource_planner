@@ -1,10 +1,14 @@
 <div class="row justify-content-end">
-    <div hx-get="{% url 'hardware:connection-select' %}?label=true" hx-trigger="load" hx-target="#selectConnection"
-        hx-params="none">
+    <div hx-get="{% url 'hardware:connection-select' %}?label=true&connection={{ request.GET.connection }}"
+         hx-trigger="load"
+         hx-target="#selectConnection"
+         hx-params="none"
+    >
     </div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectConnection" name="connection"
             hx-get="{% url 'docs:protocol_e2-list' %}"
+            hx-push-url="true"
             hx-target="#protocolTable"
             hx-swap="outerHTML"
         >

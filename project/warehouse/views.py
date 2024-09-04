@@ -230,7 +230,7 @@ class InstrumentList(ListView):
 
     def get_template_names(self):
         if is_htmx(self.request):
-            return ['warehouse/includes/instrument_content.html']
+            return ['warehouse/includes/instrument_table.html']
         return ['warehouse/instrument_list.html']
 
     def get_context_data(self, **kwargs):

@@ -4,7 +4,7 @@
             hx-get="{% url 'warehouse:instrument-list' %}"
             hx-push-url="true"
             hx-trigger="keyup changed delay:500ms"
-            hx-target="#content"
+            hx-target="#instrument-table"
             hx-swap="outerHTML"
             hx-include="[name='dept']"
         >
@@ -12,12 +12,12 @@
 </div>
 <div class="row justify-content-end">
     <div class="col-auto">
-        <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept">
+        <div hx-get="{% url 'staff:dept-select' %}?label=true&dept={{ request.GET.dept }}" hx-trigger="load" hx-target="#selectDept">
         </div>
         <select class="form-select form-select-sm" id="selectDept" name="dept"
             hx-get="{% url 'warehouse:instrument-list' %}"
             hx-push-url="true"
-            hx-target="#content"
+            hx-target="#instrument-table"
             hx-swap="outerHTML"
             hx-include="[name='search']"
         >

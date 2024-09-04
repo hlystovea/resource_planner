@@ -103,7 +103,7 @@
 </form>
 
 {% if form.non_field_errors %}
-<div id="content" hx-swap-oob="beforeend:content">
+<div id="instrument-table" hx-swap-oob="beforeend:instrument-table">
     <div id="alert" class="alert alert-danger alert-dismissible w-75 fade show fixed-top mt-2 mx-auto" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         {{ form.non_field_errors }}
