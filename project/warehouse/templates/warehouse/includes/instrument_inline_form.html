@@ -8,7 +8,7 @@
     {% else %}
         id="instrument-form"
         hx-post="{% url 'warehouse:instrument-create' %}"
-        hx-target="#instrument-table"
+        hx-target="#instrument-body"
         hx-swap="beforeend"
         hx-swap-oob="true"
     {% endif %}
