@@ -1,3 +1,61 @@
-<footer class="bg-dark border-top py-5 mt-auto">
-    <p class="m-0 text-secondary text-center ">Филиал 2023-{% now "Y" %}</p>
+<footer class="bg-dark pb-5 pt-4 mt-auto text-secondary">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+                <h6 class="text-uppercase fw-semibold">Склад</h6>
+                <ul class="list-unstyled mt-4">
+                    <li class="mb-1">
+                        <a href="{% url 'warehouse:storage-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Места хранения
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="{% url 'hardware:component-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Запасные части
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="{% url 'warehouse:material-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Материалы
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="{% url 'warehouse:instrument-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Инструмент
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+                <h6 class="text-uppercase fw-semibold">Дефекты</h6>
+                <ul class="list-unstyled footer-link mt-4">
+                    <li class="mb-1">
+                        <a href="{% url 'defects:defect-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Журнал
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="{% url 'defects:defect-statistics' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Статистика
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+                <h6 class="text-uppercase fw-semibold">Документация</h6>
+                <ul class="list-unstyled footer-link mt-4">
+                    <li class="mb-1">
+                        <a href="{% url 'docs:protocol_e2-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                            Протоколы Э2
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+                <a href="{% url 'hardware:hardware-list' %}" class="link-secondary link-underline link-underline-opacity-0 link-opacity-75-hover">
+                    <h6 class="text-uppercase fw-semibold">Оборудование</h6>
+                </a>
+            </div>
+        </div>
+    </div>
 </footer>
