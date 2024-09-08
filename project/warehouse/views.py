@@ -74,22 +74,6 @@ class StorageList(ListView):
         queryset = StorageFilter(self.request.GET, super().get_queryset()).qs
         return queryset.annotate(storage_count=Count('storage'))
 
-    def get_template_names(self):
-        if is_htmx(self.request) and self.request.GET.get('storage'):
-            return ['warehouse/includes/storage_ul.html']
-        return ['warehouse/storage_list.html']
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        if is_htmx(self.request):
-            parent_storage_pk = self.request.GET.get('storage')
-            parent_storage = get_object_or_404(Storage, pk=parent_storage_pk)
-            context['parent_storage'] = parent_storage
-
-        context['form'] = StorageForm()
-        return context
-
 
 class StorageCreate(LoginRequiredMixin, CreateView):
     model = Storage
@@ -425,10 +409,18 @@ class ComponentStorageDelete(LoginRequiredMixin,
 
 
 def storage_li_view(request, pk):
-    queryset = Storage.objects.annotate(storage_count=Count('storage'))
-    storage = get_object_or_404(queryset, pk=pk)
+    storage = get_object_or_404(Storage.objects.all(), pk=pk)
     context = {'storage': storage}
     return render(request, 'warehouse/includes/storage_li.html', context)
+
+
+def storage_ul_view(request, pk):
+    storage = get_object_or_404(Storage.objects.all(), pk=pk)
+    context = {
+        'storage': storage,
+        'form': StorageForm(),
+    }
+    return render(request, 'warehouse/includes/storage_ul.html', context)
 
 
 def material_select_view(request):

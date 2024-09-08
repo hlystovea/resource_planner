@@ -1,9 +1,10 @@
 {% load static %}
 <li>
-    <input class="tree-menu__item" name="storage" type="checkbox" id="tree-menu-item-{{ storage.pk }}" value="{{ storage.pk }}"
-        hx-get="{% url 'warehouse:storage-list' %}"
+    <input class="tree-menu__item" name="storage" type="checkbox" id="tree-menu-item-{{ storage.pk }}"
+        hx-get="{% url 'warehouse:storage-ul' storage.pk %}"
         hx-target="closest li"
         hx-swap="outerHTML"
+        hx-params="none"
     >
     <label for="tree-menu-item-{{ storage.pk }}" class="tree-menu__label"></label>
     <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
