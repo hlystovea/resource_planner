@@ -18,7 +18,7 @@
         {{ storage.name }}
     </a>
 
-    <ul class="list">
+    <ul class="tree-menu">
         {% for storage in storage.storage.all %}
             {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}

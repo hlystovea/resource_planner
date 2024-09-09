@@ -57,6 +57,10 @@ div.htmx-swapping div {
     border: none;
 }
 
+.tree-menu {
+    list-style-type: none;
+    padding-left: 1.25rem;
+}
 
 .tree-menu__item {
   display: none;

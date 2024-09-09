@@ -23,7 +23,7 @@
         {% endif %}
     </a>
 
-    <ul>
+    <ul class="tree-menu">
         {% for object in object.children.all %}
             {% include 'hardware/includes/menu_li.html' %}
         {% endfor %}
