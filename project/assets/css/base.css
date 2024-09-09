@@ -80,3 +80,25 @@ div.htmx-swapping div {
   background: url('/static/icons/dash-square.svg') no-repeat center center;
   background-size: contain;
 }
+
+.tree-menu__switch {
+  display: none;
+}
+
+.tree-menu__switch + .tree-menu__label {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+  background: url('/static/icons/x.svg') no-repeat center center;
+  background-size: contain;
+}
+
+.tree-menu__switch:checked + .tree-menu__label {
+  width: 24px;
+  height: 24px;
+  background: url('/static/icons/list.svg') no-repeat center center;
+  background-size: contain;
+}

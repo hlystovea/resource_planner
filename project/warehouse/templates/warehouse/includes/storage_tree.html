@@ -1,5 +1,5 @@
 {% load is_root %}
-<ul class="tree-menu p-0">
+<ul class="tree-menu p-0" style="width: 400px;">
     {% for storage in storage_list|is_root %}
         {% include 'warehouse/includes/storage_li.html' %}
     {% endfor %}
