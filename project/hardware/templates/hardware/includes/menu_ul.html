@@ -1,12 +1,15 @@
 {% load static %}
+{% load model_name %}
 <li>
-    <a class="icon-link align-middle" role="button"
+    <input class="tree-menu__item" type="checkbox"
+        id="tree-menu-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_menu_collapse_url }}"
         hx-target="closest li"
         hx-swap="outerHTML"
+        hx-params="none"
+        checked
     >
-        <img class="bi bi-dash-square" src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" alt="-">
-    </a>
+    <label for="tree-menu-{{ object|model_name }}-{{ object.pk }}" class="tree-menu__label"></label>
     <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
         hx-get="{{ object.get_absolute_url }}"
