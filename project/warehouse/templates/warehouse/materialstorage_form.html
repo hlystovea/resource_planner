@@ -10,7 +10,9 @@
         hx-post="{% url 'warehouse:material-storage-create' storage.pk %}"
         hx-target="#material-table"
         hx-swap="beforeend"
-        hx-swap-oob="true"
+        {% if form.errors %}
+            hx-swap-oob="true"
+        {% endif %}
     {% endif %}
 >
     <div class="cnt-table-cell">
