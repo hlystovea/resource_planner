@@ -1,26 +1,28 @@
 {% load static %}
-<tr>
-    <td><a href="{% url 'warehouse:instrument-detail' instrument.pk %}">{{ instrument.name }}</a></td>
-    <td>{{ instrument.inventory_number|default:"-" }}</td>
-    <td>{{ instrument.serial_number|default:"-" }}</td>
-    <td>{{ instrument.owner|default:"-" }}</td>
-    <td>
+<div class="cnt-table-row">
+    <div class="cnt-table-cell"><a href="{% url 'warehouse:instrument-detail' instrument.pk %}">{{ instrument.name }}</a></div>
+    <div class="cnt-table-cell">{{ instrument.inventory_number|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ instrument.serial_number|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ instrument.owner|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ instrument.last_verification|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ instrument.next_verification|default:"-" }}</div>
+    <div class="cnt-table-cell">
         {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == instrument.owner %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:instrument-update' instrument.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML"
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
             </button>
             <button class="btn btn-sm btn-danger my-0" type="submit"
                 hx-delete="{% url 'warehouse:instrument-delete' instrument.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить инструмент?"
             >
                 <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
             </button>
         {% endif %}
-    </td>
-</tr>
+    </div>
+</div>

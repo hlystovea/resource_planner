@@ -120,10 +120,6 @@ class TestInstrument:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], InstrumentForm), \
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
-        assert 'is_new' in response.context, \
-            'Проверьте, что передали поле `is_new` в контекст страницы'
-        assert response.context['is_new'], \
-            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
             'name': name,
@@ -160,7 +156,7 @@ class TestInstrument:
 
     @pytest.mark.django_db
     @pytest.mark.parametrize('name, inventory_number, serial_number', test_args)
-    def test_inventory_number_view_update(
+    def test_instrument_view_update(
         self, name, inventory_number, serial_number, auto_login_user, instrument
     ):
         client, user = auto_login_user()
@@ -175,7 +171,11 @@ class TestInstrument:
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], InstrumentForm), \
-            'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+            'Проверьте, что поле `form` содержит объект класса `InstrumentForm`'
+        assert 'is_update' in response.context, \
+            'Проверьте, что передали поле `is_update` в контекст страницы'
+        assert response.context['is_update'], \
+            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         response = client.get(url, headers={'Hx-Request': True})
         assert response.templates[0].name == 'warehouse/includes/instrument_inline_form.html', \

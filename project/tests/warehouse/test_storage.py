@@ -78,14 +78,6 @@ class TestStorage:
         assert 'storage_list' in response.context, \
             'Проверьте, что передали поле "storage_list" в контекст страницы'
 
-        response = client.get(
-            f'{url}?storage={storage_1.pk}',
-            headers={'Hx-Request': True}
-        )
-        assert response.templates[0].name == 'warehouse/includes/storage_ul.html', \
-            'Проверьте, что используете шаблон storage_ul.html в ответе ' \
-            'для htmx запроса'
-
     @pytest.mark.django_db
     def test_storage_view_get_detail(self, client, storage_1):
         try:

@@ -22,9 +22,12 @@
         <div class="card-body">
           <p class="h5 mb-3">{{ instrument.name }}</p>
           <p class="h6">
-            <p class="mb-1"><span class="text-muted">Инв. номер: </span>{{ instrument.inventory_number|default:"" }}</p>
-            <p class="mb-1"><span class="text-muted">Зав. номер: </span>{{ instrument.serial_number|default:"" }}</p>
-            <p class="mb-1"><span class="text-muted">Подразделение: </span>{{ instrument.owner|default:"" }}</p>
+            <p class="mb-1"><span class="text-muted">Инв. номер: </span>{{ instrument.inventory_number|default:"н/д" }}</p>
+            <p class="mb-1"><span class="text-muted">Зав. номер: </span>{{ instrument.serial_number|default:"н/д" }}</p>
+            <p class="mb-1"><span class="text-muted">Подразделение: </span>{{ instrument.owner|default:"н/д" }}</p>
+            <p class="mb-1"><span class="text-muted">Дата последней проверки: </span>{{ instrument.last_verification|default:"н/д" }}</p>
+            <p class="mb-1"><span class="text-muted">Дата следующей проверки: </span>{{ instrument.next_verification|default:"н/д" }}</p>
+            <p class="mb-1"><span class="text-muted">Период проверки (месяцев): </span>{{ instrument.verification_period|default:"н/д" }}</p>
           </p>
         </div>
       </div>

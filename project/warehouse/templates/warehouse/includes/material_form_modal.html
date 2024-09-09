@@ -1,0 +1,115 @@
+{% load static %}
+{% load addclass %}
+<div class="modal-header">
+    <h5 class="modal-title" id="delete-modal-label">Материал</h5>
+    <button type="button" class="btn-close" data-bs-toggle="modal" aria-label="Закрыть"></button>
+</div>
+<div class="modal-body">
+    <form enctype="multipart/form-data"
+        hx-post="{% url 'warehouse:material-create-modal'%}"
+        hx-target="closest .modal-content"
+        hx-swap="innerHTML"
+    >
+        <div class="card my-2">
+            <div class="card-body">
+                {% if form.errors %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                
+                    {% for field in form %}
+                        {% if field.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Наименование -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.name.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                        {{ form.name.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {% if form.name.errors %}
+                            {{ form.name|addclass:"form-control form-control-sm is-invalid" }}
+                        {% else %}
+                            {{ form.name|addclass:"form-control form-control-sm" }}
+                        {% endif %}
+                        {% if form.name.help_text %}
+                        <small id="{{ form.name.id_for_label }}-help" class="form-text text-muted">
+                            {{ form.name.help_text|safe }}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Единицы измерения -->
+                <div class="form-group row my-1" aria-required="true">
+                    <label for="{{ form.measurement_unit.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                        {{ form.measurement_unit.label }}
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-md-5">
+                        {% if form.measurement_unit.errors %}
+                            {{ form.measurement_unit|addclass:"form-control form-control-sm is-invalid" }}
+                        {% else %}
+                            {{ form.measurement_unit|addclass:"form-control form-control-sm" }}
+                        {% endif %}
+                        {% if form.measurement_unit.help_text %}
+                        <small id="{{ form.measurement_unit.id_for_label }}-help" class="form-text text-muted">
+                            {{ form.measurement_unit.help_text|safe }}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Артикул -->
+                <div class="form-group row my-1">
+                    <label for="{{ form.article_number.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                        {{ form.article_number.label }}
+                    </label>
+                    <div class="col-md-5">
+                        {% if form.article_number.errors %}
+                            {{ form.article_number|addclass:"form-control form-control-sm is-invalid" }}
+                        {% else %}
+                            {{ form.article_number|addclass:"form-control form-control-sm" }}
+                        {% endif %}
+                        {% if form.article_number.help_text %}
+                        <small id="{{ form.article_number.id_for_label }}-help" class="form-text text-muted">
+                            {{ form.article_number.help_text|safe }}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Изображение -->
+                <div class="form-group row my-1">
+                    <label for="{{ form.image.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                        {{ form.image.label }}
+                    </label>
+                    <div class="col-md-5">
+                        {% if form.image.errors %}
+                            {{ form.image|addclass:"form-control form-control-sm is-invalid" }}
+                        {% else %}
+                            {{ form.image|addclass:"form-control form-control-sm" }}
+                        {% endif %}
+                        {% if form.image.help_text %}
+                            <small id="{{ form.image.id_for_label }}-help" class="form-text text-muted">
+                                {{ form.image.help_text|safe }}
+                            </small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-sm btn-success me-1" type="submit">Сохранить</button>
+            <button class="btn btn-sm btn-danger me-1" type="button" data-bs-toggle="modal" data-bs-target="#part-form-modal">Отмена</button>
+        </div>
+    </form>
+</div>

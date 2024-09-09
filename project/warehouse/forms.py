@@ -1,4 +1,5 @@
-from django.forms import ChoiceField, Form, ModelForm, NumberInput, TextInput
+from django.forms import (ChoiceField, DateInput, Form,
+                          ModelForm, NumberInput, TextInput)
 
 from staff.models import Dept
 from warehouse.models import (ComponentStorage, Instrument, Material,
@@ -19,16 +20,12 @@ class InstrumentForm(ModelForm):
     class Meta:
         model = Instrument
         exclude = ('owner', )
-
-
-class InstrumentInlineForm(ModelForm):
-    class Meta:
-        model = Instrument
-        exclude = ('owner', 'image')
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
             'inventory_number': TextInput(attrs={'placeholder': 'Инв. номер'}),
             'serial_number': TextInput(attrs={'placeholder': 'Зав. номер'}),
+            'verification_period': NumberInput(attrs={'placeholder': 'Период проверки (месяцев)'}), # noqa (E501)
+            'last_verification': DateInput(attrs={'placeholder': 'Дата послед. проверки'}), # noqa (E501)
         }
 
 
@@ -36,12 +33,6 @@ class MaterialForm(ModelForm):
     class Meta:
         model = Material
         fields = '__all__'
-
-
-class MaterialInlineForm(ModelForm):
-    class Meta:
-        model = Material
-        exclude = ('image', )
         widgets = {
             'name': TextInput(attrs={'placeholder': 'Наименование'}),
             'article_number': TextInput(attrs={'placeholder': 'Артикул'}),

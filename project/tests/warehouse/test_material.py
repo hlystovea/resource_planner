@@ -116,10 +116,6 @@ class TestMaterial:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], MaterialForm), \
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
-        assert 'is_new' in response.context, \
-            'Проверьте, что передали поле `is_new` в контекст страницы'
-        assert response.context['is_new'], \
-            'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
 
         data = {
             'name': name,
@@ -166,6 +162,10 @@ class TestMaterial:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], MaterialForm), \
             'Проверьте, что поле `form` содержит объект класса `MaterialForm`'
+        assert 'is_update' in response.context, \
+            'Проверьте, что передали поле `is_update` в контекст страницы'
+        assert response.context['is_update'], \
+            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         response = client.get(url, headers={'Hx-Request': True})
         assert response.templates[0].name == 'warehouse/includes/material_inline_form.html', \

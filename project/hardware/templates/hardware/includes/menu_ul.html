@@ -1,14 +1,18 @@
 {% load static %}
+{% load model_name %}
 <li>
-    <a class="icon-link align-middle" role="button"
+    <input class="tree-menu__item" type="checkbox"
+        id="menu-item-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_menu_collapse_url }}"
         hx-target="closest li"
         hx-swap="outerHTML"
+        hx-params="none"
+        checked
     >
-        <img class="bi bi-dash-square" src="{% static 'icons/dash-square.svg' %}" height="16" fill="currentColor" alt="-">
-    </a>
-    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+    <label class="tree-menu__label" for="menu-item-{{ object|model_name }}-{{ object.pk }}"></label>
+    <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
+        id="menu-link-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_absolute_url }}"
         hx-target="#content"
     >
@@ -19,7 +23,7 @@
         {% endif %}
     </a>
 
-    <ul class="list">
+    <ul class="tree-menu">
         {% for object in object.children.all %}
             {% include 'hardware/includes/menu_li.html' %}
         {% endfor %}

@@ -11,11 +11,18 @@
         <h1>Места хранения</h1>
     </div>
     <div class="row">
-        <div class="col-4 border-end">
-            {% include 'warehouse/includes/storage_tree.html' %}
+        <div class="col-auto p-0">
+            <div class="collapse show collapse-horizontal" id="tree-menu">
+                {% include 'warehouse/includes/storage_tree.html' %}
+            </div>
         </div>
-        <div class="col-8">
-            <div id="storageContent">
+        <div class="col-auto border-end">
+            <input class="tree-menu__switch" type="checkbox" id="tree-menu-switch" data-bs-toggle="collapse" data-bs-target="#tree-menu"
+                aria-expanded="false" aria-controls="#tree-menu">
+            <label class="tree-menu__label" for="tree-menu-switch"></label>
+        </div>
+        <div class="col">
+            <div id="content">
                 <div class="row justify-content-center">
                     <div class="w-50 p-3">
                         <p class="text-body-secondary text-center">

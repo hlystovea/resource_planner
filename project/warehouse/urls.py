@@ -16,7 +16,9 @@ instrument_urls = [
 
 material_urls = [
     path('material/', views.MaterialList.as_view(), name='material-list'),
+    path('material/select/', views.material_select_view, name='material-select'),
     path('material/create/', views.MaterialCreate.as_view(), name='material-create'),  # noqa (E501)
+    path('material/create/modal/', views.material_create_modal, name='material-create-modal'),  # noqa (E501)
     path('material/<int:pk>/', views.MaterialDetail.as_view(), name='material-detail'),  # noqa (E501)
     path('material/<int:pk>/update/', views.MaterialUpdate.as_view(), name='material-update'),  # noqa (E501)
     path('material/<int:pk>/delete/', views.MaterialDelete.as_view(), name='material-delete'),  # noqa (E501)
@@ -29,6 +31,7 @@ storage_urls = [
     path('storage/<int:pk>/update/', views.StorageUpdate.as_view(), name='storage-update'),  # noqa (E501)
     path('storage/<int:pk>/delete/', views.StorageDelete.as_view(), name='storage-delete'),  # noqa (E501)
     path('storage/<int:pk>/li/', views.storage_li_view, name='storage-li'),
+    path('storage/<int:pk>/ul/', views.storage_ul_view, name='storage-ul'),
     path('storage/create/', views.StorageCreate.as_view(), name='storage-create'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/', views.MaterialStorageDetail.as_view(), name='material-storage-detail'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/update/', views.MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
