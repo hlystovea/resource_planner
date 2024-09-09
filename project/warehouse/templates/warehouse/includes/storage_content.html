@@ -1,9 +1,12 @@
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 1s ease-out;
+<script>
+    document.querySelectorAll('.tree-menu__link').forEach(link => {
+        link.classList.remove('bg-info');
+    });
+    if (document.querySelector('#menu-link-{{ storage.pk }}')) {
+        document.querySelector('#menu-link-{{ storage.pk }}').classList.add('bg-info');
     }
-</style>
+</script>
+
 <div class="row justify-content-between">
     <div class="col me-auto">
         <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
@@ -26,45 +29,46 @@
 <div class="row mt-5">
     <h5>Запасные части</h5>
 </div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Производитель</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Тип</th>
-            <th scope="col">Инв. номер</th>
-            <th scope="col">Количество</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Запчасть</div>
+            <div class="cnt-table-cell">Инв. номер</div>
+            <div class="cnt-table-cell">Количество</div>
+            <div class="cnt-table-cell"></div>
+        </div>
+    </div>
+    <div id="component-table" class="cnt-table-group">
         {% for componentstorage in storage.components.all %}
             {% include "warehouse/componentstorage_detail.html" %}
         {% endfor %}
-        {% if user.is_authenticated and storage.owner == user.dept %}
+    </div>
+    {% if user.is_authenticated and storage.owner == user.dept %}
+        <div class="cnt-table-footer">
             {% include "warehouse/componentstorage_form.html" with form=componentstorage_form %}
-        {% endif %}
-    </tbody>
-</table>
+        </div>
+    {% endif %}
+</div>
 <div class="row mt-5">
     <h5>Расходные материалы</h5>
 </div>
-<table class="table table-sm table-hover">
-    <thead class="table">
-        <tr>
-            <th scope="col">Наименование</th>
-            <th scope="col">Артикул</th>
-            <th scope="col">Инв. номер</th>
-            <th scope="col">Количество</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="cnt-table">
+    <div class="cnt-table-header">
+        <div class="cnt-table-row">
+            <div class="cnt-table-cell">Наименование</div>
+            <div class="cnt-table-cell">Инв. номер</div>
+            <div class="cnt-table-cell">Количество</div>
+            <div class="cnt-table-cell"></div>
+        </div>
+    </div>
+    <div id="material-table" class="cnt-table-group">
         {% for materialstorage in storage.materials.all %}
             {% include "warehouse/materialstorage_detail.html" %}
         {% endfor %}
-        {% if user.is_authenticated and storage.owner == user.dept %}
+    </div>
+    {% if user.is_authenticated and storage.owner == user.dept %}
+        <div class="cnt-table-footer">
             {% include "warehouse/materialstorage_form.html" with form=materialstorage_form %}
-        {% endif %}
-    </tbody>
-</table>
+        </div>
+    {% endif %}
+</div>

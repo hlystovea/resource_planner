@@ -1,19 +1,112 @@
 {% load static %}
 {% load addclass %}
-<tr>
-    <td>{{ form.name|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.inventory_number|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ form.serial_number|addclass:"form-control form-control-sm" }}</td>
-    <td>{{ instrument.owner|default:"-" }}</td>
-    <td>
-        <button class="btn btn-sm btn-success me-1" hx-post="{% url 'warehouse:instrument-update' instrument.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML" hx-include="closest tr">
+<form class="cnt-table-row"
+    {% if is_update %}
+        id="instrument-form-{{ instrument.pk }}"
+        hx-post="{% url 'warehouse:instrument-update' instrument.pk %}"
+        hx-swap="outerHTML"
+    {% else %}
+        id="instrument-form"
+        hx-post="{% url 'warehouse:instrument-create' %}"
+        hx-target="#instrument-table"
+        hx-swap="beforeend"
+        hx-swap-oob="true"
+    {% endif %}
+>
+    <div class="cnt-table-cell">
+        {% if form.name.errors %}
+            {{ form.name|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.name|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.name.errors %}
+            <div id="validation-{{ form.name.id_for_label }}" class="invalid-feedback">
+                {{ form.name.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.inventory_number.errors %}
+            {{ form.inventory_number|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.inventory_number|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.inventory_number.errors %}
+        <div id="validation-{{ form.inventory_number.id_for_label }}" class="invalid-feedback">
+            {{ form.inventory_number.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.serial_number.errors %}
+            {{ form.serial_number|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.serial_number|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.serial_number.errors %}
+        <div id="validation-{{ form.serial_number.id_for_label }}" class="invalid-feedback">
+            {{ form.serial_number.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        <input type="text" disabled
+            {% if is_update %}
+                value="{{ instrument.owner|default:'-' }}"
+            {% else %}
+                value="{{ user.dept|default:'-' }}"
+            {% endif %}
+        >
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.last_verification.errors %}
+            {{ form.last_verification|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.last_verification|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.last_verification.errors %}
+        <div id="validation-{{ form.last_verification.id_for_label }}" class="invalid-feedback">
+            {{ form.last_verification.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if form.verification_period.errors %}
+            {{ form.verification_period|addclass:"form-control form-control-sm is-invalid" }}
+        {% else %}
+            {{ form.verification_period|addclass:"form-control form-control-sm" }}
+        {% endif %}
+        {% if form.verification_period.errors %}
+        <div id="validation-{{ form.verification_period.id_for_label }}" class="invalid-feedback">
+            {{ form.verification_period.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="cnt-table-cell">
+        {% if is_update %}
+            <button class="btn btn-sm btn-success me-1">
+                <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
+            </button>
+            <button class="btn btn-sm btn-secondary me-1"
+                hx-get="{% url 'warehouse:instrument-detail' instrument.pk %}"
+                hx-target="closest form"
+                hx-swap="outerHTML"
+            >
+                <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
+            </button>
+        {% else %}
+            <button class="btn btn-sm btn-secondary me-1">
+                Добавить
+            </button>
+        {% endif %}
+    </div>
+</form>
 
-            <img src="{% static 'icons/check.svg' %}" height="16" fill="currentColor" class="bi bi-check-lg align-text-bottom">
-        </button>
-        <button class="btn btn-sm btn-secondary me-1" hx-get="{% url 'warehouse:instrument-detail' instrument.pk %}"
-            hx-target="closest tr" hx-swap="outerHTML">
-            <img src="{% static 'icons/x.svg' %}" height="16" fill="currentColor" class="bi bi-x-lg align-text-bottom">
-        </button>
-    </td>
-</tr>
+{% if form.non_field_errors %}
+<div id="instrument-table" hx-swap-oob="beforeend:instrument-table">
+    <div id="alert" class="alert alert-danger alert-dismissible w-75 fade show fixed-top mt-2 mx-auto" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ form.non_field_errors }}
+    </div>
+</div>
+{% endif %}

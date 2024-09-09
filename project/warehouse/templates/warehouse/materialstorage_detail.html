@@ -1,30 +1,30 @@
 {% load static %}
-<tr>
-    <td>
+<div class="cnt-table-row">
+    <div class="cnt-table-cell">
         <a href="{% url 'warehouse:material-detail' materialstorage.material.pk %}">
             {{ materialstorage.material.name}}
+            {{ materialstorage.material.article_number|default:"" }}
         </a>
-    </td>
-    <td>{{ materialstorage.material.article_number|default:"-" }}</td>
-    <td>{{ materialstorage.inventory_number|default:"-" }}</td>
-    <td>{{ materialstorage.amount|floatformat }} {{ materialstorage.material.measurement_unit}}</td>
-    <td>
+    </div>
+    <div class="cnt-table-cell">{{ materialstorage.inventory_number|default:"-" }}</div>
+    <div class="cnt-table-cell">{{ materialstorage.amount|floatformat }} {{ materialstorage.material.measurement_unit}}</div>
+    <div class="cnt-table-cell">
         {% if user.is_authenticated and user.is_superuser or user.is_authenticated and user.dept == materialstorage.storage.owner %}
             <button class="btn btn-sm btn-secondary me-1 my-0"
                 hx-get="{% url 'warehouse:material-storage-update' materialstorage.storage.pk materialstorage.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML"
             >
                 <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen align-text-bottom">
             </button>
             <button class="btn btn-sm btn-danger me-1 my-0"
                 hx-delete="{% url 'warehouse:material-storage-delete' materialstorage.storage.pk materialstorage.pk %}"
-                hx-target="closest tr"
+                hx-target="closest .cnt-table-row"
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить хранящийся материал?"
             >
                 <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
             </button>
         {% endif %}
-    </td>
-</tr>
+    </div>
+</div>

@@ -11,8 +11,14 @@
     </div>
 </div>
 <div class="row justify-content-end">
-    <div hx-get="{% url 'hardware:manufacturer-options' %}?label=true" hx-trigger="load" hx-target="#selectManufacturer"></div>
-    <div hx-get="{% url 'staff:dept-select' %}?label=true" hx-trigger="load" hx-target="#selectDept"></div>
+    <div hx-get="{% url 'hardware:manufacturer-options' %}?label=true&manufacturer={{ request.GET.manufacturer }}"
+         hx-trigger="load"
+         hx-target="#selectManufacturer"
+    ></div>
+    <div hx-get="{% url 'staff:dept-select' %}?label=true&dept={{ request.GET.dept }}"
+         hx-trigger="load"
+         hx-target="#selectDept"
+    ></div>
     <div class="col-sm-2">
         <select class="form-select form-select-sm" id="selectManufacturer" name="manufacturer"
             hx-get="{% url 'hardware:component-list' %}"

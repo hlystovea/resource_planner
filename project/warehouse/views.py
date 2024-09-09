@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Sum, Prefetch
 from django.http import HttpResponseRedirect, HttpResponse
@@ -10,9 +11,7 @@ from qr_code.qrcode.utils import QRCodeOptions
 from core.utils import is_htmx
 from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
-                             InstrumentInlineForm, MaterialForm,
-                             MaterialInlineForm, MaterialStorageForm,
-                             StorageForm)
+                             MaterialForm, MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
 
@@ -74,22 +73,6 @@ class StorageList(ListView):
     def get_queryset(self):
         queryset = StorageFilter(self.request.GET, super().get_queryset()).qs
         return queryset.annotate(storage_count=Count('storage'))
-
-    def get_template_names(self):
-        if is_htmx(self.request) and self.request.GET.get('storage'):
-            return ['warehouse/includes/storage_ul.html']
-        return ['warehouse/storage_list.html']
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        if is_htmx(self.request):
-            parent_storage_pk = self.request.GET.get('storage')
-            parent_storage = get_object_or_404(Storage, pk=parent_storage_pk)
-            context['parent_storage'] = parent_storage
-
-        context['form'] = StorageForm()
-        return context
 
 
 class StorageCreate(LoginRequiredMixin, CreateView):
@@ -165,7 +148,8 @@ class MaterialList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = MaterialInlineForm()
+        if not is_htmx(self.request):
+            context['form'] = MaterialForm()
         return context
 
 
@@ -174,16 +158,16 @@ class MaterialCreate(LoginRequiredMixin, CreateView):
     form_class = MaterialForm
     login_url = reverse_lazy('login')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_new'] = True
-        return context
-
 
 class MaterialUpdate(LoginRequiredMixin, UpdateView):
     model = Material
     form_class = MaterialForm
     login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -235,7 +219,8 @@ class InstrumentList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = InstrumentInlineForm()
+        if not is_htmx(self.request):
+            context['form'] = InstrumentForm()
         return context
 
 
@@ -244,10 +229,10 @@ class InstrumentCreate(LoginRequiredMixin, CreateView):
     form_class = InstrumentForm
     login_url = reverse_lazy('login')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_new'] = True
-        return context
+    def get_template_names(self):
+        if is_htmx(self.request):
+            return ['warehouse/includes/instrument_inline_form.html']
+        return super().get_template_names()
 
     def form_valid(self, form):
         form.instance.owner = self.request.user.dept
@@ -258,6 +243,11 @@ class InstrumentUpdate(LoginRequiredMixin, UpdateView):
     model = Instrument
     form_class = InstrumentForm
     login_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -419,7 +409,43 @@ class ComponentStorageDelete(LoginRequiredMixin,
 
 
 def storage_li_view(request, pk):
-    queryset = Storage.objects.annotate(storage_count=Count('storage'))
-    storage = get_object_or_404(queryset, pk=pk)
+    storage = get_object_or_404(Storage.objects.all(), pk=pk)
     context = {'storage': storage}
     return render(request, 'warehouse/includes/storage_li.html', context)
+
+
+def storage_ul_view(request, pk):
+    storage = get_object_or_404(Storage.objects.all(), pk=pk)
+    context = {
+        'storage': storage,
+        'form': StorageForm(),
+    }
+    return render(request, 'warehouse/includes/storage_ul.html', context)
+
+
+def material_select_view(request):
+    context = {'material_list': Material.objects.all()}
+    return render(request, 'warehouse/includes/material_select.html', context)
+
+
+@login_required
+def material_create_modal(request):
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            material = form.save()
+            return render(
+                request,
+                'warehouse/includes/material_create_success_modal.html',
+                context={'material': material}
+            )
+
+    else:
+        form = MaterialForm()
+
+    return render(
+        request,
+        'warehouse/includes/material_form_modal.html',
+        context={'form': form}
+    )

@@ -10,7 +10,9 @@
         hx-post="{% url 'hardware:cabinet-create' %}"
         hx-target="#cabinet-table"
         hx-swap="beforeend"
-        hx-swap-oob="true"
+        {% if form.errors %}
+            hx-swap-oob="true"
+        {% endif %}
     {% endif %}
 >
     {% for field in form %}
