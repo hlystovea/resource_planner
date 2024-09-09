@@ -2,16 +2,17 @@
 {% load model_name %}
 <li>
     <input class="tree-menu__item" type="checkbox"
-        id="tree-menu-{{ object|model_name }}-{{ object.pk }}"
+        id="menu-item-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_menu_collapse_url }}"
         hx-target="closest li"
         hx-swap="outerHTML"
         hx-params="none"
         checked
     >
-    <label for="tree-menu-{{ object|model_name }}-{{ object.pk }}" class="tree-menu__label"></label>
-    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+    <label class="tree-menu__label" for="menu-item-{{ object|model_name }}-{{ object.pk }}"></label>
+    <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
+        id="menu-link-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_absolute_url }}"
         hx-target="#content"
     >
