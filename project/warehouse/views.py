@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Count, Sum, Prefetch
+from django.db.models import F, Sum, Prefetch
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
@@ -9,11 +9,12 @@ from django.urls import reverse, reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
 from core.utils import is_htmx
-from warehouse.filters import InstrumentFilter, MaterialFilter, StorageFilter
+from warehouse.filters import InstrumentFilter, MaterialFilter
 from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              MaterialForm, MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
+from warehouse.utils import get_tree
 
 
 def get_url(request, storage: Storage) -> str:
@@ -63,16 +64,33 @@ class StorageDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context['materialstorage_form'] = MaterialStorageForm()
         context['componentstorage_form'] = ComponentStorageForm()
+
+        if is_htmx(self.request):
+            return context
+
+        objects = Storage.objects.values(
+            'pk', 'name', 'parent_storage', 'owner')
+        storage_list, _ = get_tree(
+            objects=objects,
+            active_pk=context['storage'].pk,
+            parent_field='parent_storage'
+        )
+        context['storage_list'] = storage_list
+        context['form'] = StorageForm()
         return context
 
 
 class StorageList(ListView):
     model = Storage
-    ordering = 'name'
 
-    def get_queryset(self):
-        queryset = StorageFilter(self.request.GET, super().get_queryset()).qs
-        return queryset.annotate(storage_count=Count('storage'))
+    def get_context_data(self, **kwargs):
+        objects = Storage.objects.values(
+            'pk', 'name', 'parent_storage', 'owner')
+        storage_list, _ = get_tree(objects, parent_field='parent_storage')
+        return {
+            'storage_list': storage_list,
+            'form': StorageForm(),
+        }
 
 
 class StorageCreate(LoginRequiredMixin, CreateView):
@@ -411,16 +429,8 @@ class ComponentStorageDelete(LoginRequiredMixin,
 def storage_li_view(request, pk):
     storage = get_object_or_404(Storage.objects.all(), pk=pk)
     context = {'storage': storage}
+    context['form'] = StorageForm()
     return render(request, 'warehouse/includes/storage_li.html', context)
-
-
-def storage_ul_view(request, pk):
-    storage = get_object_or_404(Storage.objects.all(), pk=pk)
-    context = {
-        'storage': storage,
-        'form': StorageForm(),
-    }
-    return render(request, 'warehouse/includes/storage_ul.html', context)
 
 
 def material_select_view(request):
