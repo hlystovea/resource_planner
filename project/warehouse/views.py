@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import F, Sum, Prefetch
+from django.db.models import Sum, Prefetch
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
@@ -98,6 +98,7 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/li/'
+    template_name = 'warehouse/storage_form.html'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user.dept
@@ -108,7 +109,7 @@ class StorageUpdate(LoginRequiredMixin, UpdateView):
     model = Storage
     form_class = StorageForm
     login_url = reverse_lazy('login')
-    success_url = '/warehouse/storage/{id}/li/'
+    success_url = '/warehouse/storage/{id}/name/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -431,6 +432,12 @@ def storage_li_view(request, pk):
     context = {'storage': storage}
     context['form'] = StorageForm()
     return render(request, 'warehouse/includes/storage_li.html', context)
+
+
+def storage_name_view(request, pk):
+    storage = get_object_or_404(Storage.objects.all(), pk=pk)
+    context = {'storage': storage}
+    return render(request, 'warehouse/includes/storage_name.html', context)
 
 
 def material_select_view(request):
