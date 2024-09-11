@@ -435,9 +435,10 @@ def storage_li_view(request, pk):
 
 
 def storage_name_view(request, pk):
+    template_name = 'warehouse/includes/storage_update_success.html'
     storage = get_object_or_404(Storage.objects.all(), pk=pk)
     context = {'storage': storage}
-    return render(request, 'warehouse/includes/storage_name.html', context)
+    return render(request, template_name, context)
 
 
 def material_select_view(request):

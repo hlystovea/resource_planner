@@ -8,6 +8,7 @@
         hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
         hx-push-url="true"
         hx-target="#content"
+        hx-swap-oob="true"
     >
         {{ storage.name }}
     </a>
@@ -26,7 +27,7 @@
             {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}
         {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and not storage.owner %}
-            {% include 'warehouse/includes/storage_form.html' with parent_storage=storage %}
+            {% include 'warehouse/storage_form.html' with parent_storage=storage %}
         {% endif %}
     </ul>
 </li>
