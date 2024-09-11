@@ -11,9 +11,21 @@
     <div class="row mb-5">
         <h1>Места хранения</h1>
     </div>
-    <div class="row mb-2">
-        <div id="content">
-            {% include 'warehouse/includes/storage_content.html' %}
+    <div class="row">
+        <div class="col-auto p-0">
+            <div class="collapse show collapse-horizontal" id="tree-menu">
+                {% include 'warehouse/includes/storage_tree.html' %}
+            </div>
+        </div>
+        <div class="col-auto border-end">
+            <input class="tree-menu__switch" type="checkbox" id="tree-menu-switch" data-bs-toggle="collapse"
+                data-bs-target="#tree-menu" aria-expanded="false" aria-controls="#tree-menu">
+            <label class="tree-menu__label" for="tree-menu-switch"></label>
+        </div>
+        <div class="col">
+            <div id="content">
+                {% include 'warehouse/includes/storage_content.html' %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -68,7 +68,6 @@ class StorageForm(ModelForm):
             'name': TextInput(
                 attrs={
                     'placeholder': 'Наименование',
-                    'autofocus': '',
                 }
             ),
         }
