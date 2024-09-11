@@ -1,0 +1,4 @@
+{% include 'warehouse/includes/storage_name.html' %}
+<a id="menu-link-{{ storage.pk }}" hx-swap-oob="innerHTML:#menu-link-{{ storage.pk }}">
+    {{ storage.name }}
+</a>

@@ -1,11 +1,6 @@
 {% load static %}
 <li>
-    <input class="tree-menu__item" name="storage" type="checkbox" id="tree-menu-item-{{ storage.pk }}"
-        hx-get="{% url 'warehouse:storage-ul' storage.pk %}"
-        hx-target="closest li"
-        hx-swap="outerHTML"
-        hx-params="none"
-    >
+    <input class="tree-menu__item" type="checkbox" id="tree-menu-item-{{ storage.pk }}" {% if storage.show %}checked{% endif %}>
     <label for="tree-menu-item-{{ storage.pk }}" class="tree-menu__label"></label>
     <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
@@ -13,10 +8,26 @@
         hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
         hx-push-url="true"
         hx-target="#content"
+        hx-swap-oob="true"
     >
         {{ storage.name }}
     </a>
-    {% if user.is_authenticated and storage.owner == user.dept or user.is_authenticated and user.is_superuser %}
-        {% include 'warehouse/includes/storage_edit_buttons.html' %}
+    {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.is_superuser %}
+        <a class="icon-link align-middle" role="button"
+            hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
+            hx-target="closest li"
+            hx-swap="outerHTML"
+            hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
+        >
+            <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-trash3">
+        </a>
     {% endif %}
+    <ul class="tree-menu">
+        {% for storage in storage.children %}
+            {% include 'warehouse/includes/storage_li.html' %}
+        {% endfor %}
+        {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and not storage.owner %}
+            {% include 'warehouse/storage_form.html' with parent_storage=storage %}
+        {% endif %}
+    </ul>
 </li>

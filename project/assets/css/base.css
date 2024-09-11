@@ -81,6 +81,14 @@ div.htmx-swapping div {
   background-size: contain;
 }
 
+.tree-menu__item ~ .tree-menu {
+    display: none;
+}
+
+.tree-menu__item:checked ~ .tree-menu {
+    display: block;
+}
+
 .tree-menu__switch {
   display: none;
 }
