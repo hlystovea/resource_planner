@@ -8,11 +8,10 @@
         hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
         hx-push-url="true"
         hx-target="#content"
-        hx-swap-oob="true"
     >
         {{ storage.name }}
     </a>
-    {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.is_superuser %}
+    {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.dept == storage.owner or user.is_authenticated and user.is_superuser %}
         <a class="icon-link align-middle" role="button"
             hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
             hx-target="closest li"
@@ -26,7 +25,7 @@
         {% for storage in storage.children %}
             {% include 'warehouse/includes/storage_li.html' %}
         {% endfor %}
-        {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and not storage.owner %}
+        {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.dept == storage.owner or user.is_authenticated and not storage.owner %}
             {% include 'warehouse/storage_form.html' with parent_storage=storage %}
         {% endif %}
     </ul>

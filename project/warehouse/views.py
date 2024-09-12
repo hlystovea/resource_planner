@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Sum, Prefetch
+from django.db.models.deletion import ProtectedError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
@@ -98,7 +99,6 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/li/'
-    template_name = 'warehouse/storage_form.html'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user.dept
@@ -110,12 +110,7 @@ class StorageUpdate(LoginRequiredMixin, UpdateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/name/'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_update'] = True
-        context['parent_storage'] = self.object.parent_storage
-        return context
+    template_name = 'warehouse/includes/storage_name.html'
 
 
 class StorageDelete(LoginRequiredMixin, DeleteView):
@@ -125,13 +120,16 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        success_url = self.get_success_url()
-        self.object.delete()
+
+        try:
+            self.object.delete()
+        except ProtectedError:
+            return HttpResponse(status=204)
 
         if is_htmx(request):
             return HttpResponse()
 
-        return HttpResponseRedirect(success_url)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class MaterialDetail(DetailView):
@@ -429,8 +427,10 @@ class ComponentStorageDelete(LoginRequiredMixin,
 
 def storage_li_view(request, pk):
     storage = get_object_or_404(Storage.objects.all(), pk=pk)
-    context = {'storage': storage}
-    context['form'] = StorageForm()
+    context = {
+        'storage': storage,
+        'form': StorageForm(),
+    }
     return render(request, 'warehouse/includes/storage_li.html', context)
 
 

@@ -4,11 +4,17 @@
     hx-target="this"
     hx-swap="outerHTML"
 >
-    <input class="form-control border border-0 shadow-none fs-3 p-0" type="text" name="name"
+    <input class="form-control border border-0 shadow-none fs-3 p-0 {% if form.name.errors %}is-invalid{% endif %}"
+        type="text"
+        name="name"
         maxlength="200"
         value="{{ storage.name }}"
-        hx-trigger="keyup changed delay:800ms"
     >
+    {% if form.name.errors %}
+        <div id="validation-{{ form.name.id_for_label }}" class="invalid-feedback">
+            {{ form.name.errors }}
+        </div>
+    {% endif %}
     {% if storage.parent_storage %}
         <input type="hidden" name="parent_storage" value="{{ storage.parent_storage.pk }}">
     {% endif %}
