@@ -2,15 +2,14 @@
 <li>
     <input class="tree-menu__item" type="checkbox" id="tree-menu-item-{{ storage.pk }}" {% if storage.show %}checked{% endif %}>
     <label for="tree-menu-item-{{ storage.pk }}" class="tree-menu__label"></label>
-    <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+    <input class="tree-menu__link" type="radio" name="active" id="tree-menu-link-{{ storage.pk }}" {% if storage.pk == active %}checked{% endif %}>
+    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
         id="menu-link-{{ storage.pk }}"
         hx-get="{% url 'warehouse:storage-detail' storage.pk %}"
         hx-push-url="true"
         hx-target="#content"
-    >
-        {{ storage.name }}
-    </a>
+    ><label for="tree-menu-link-{{ storage.pk }}">{{ storage.name }}</label></a>
     {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.dept == storage.owner or user.is_authenticated and user.is_superuser %}
         <a class="icon-link align-middle" role="button"
             hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"

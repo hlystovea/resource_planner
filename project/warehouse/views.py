@@ -72,6 +72,7 @@ class StorageDetail(DetailView):
         )
         context['storage_list'] = storage_list
         context['form'] = StorageForm()
+        context['active'] = context['storage'].pk
         return context
 
 
