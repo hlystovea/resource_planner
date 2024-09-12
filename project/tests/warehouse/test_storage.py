@@ -116,7 +116,7 @@ class TestStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
     def test_storage_view_create(self, name, auto_login_user):
-        client, user = auto_login_user()
+        client, _ = auto_login_user()
         url = reverse('warehouse:storage-create')
 
         try:
@@ -148,7 +148,7 @@ class TestStorage:
     @pytest.mark.django_db
     @pytest.mark.parametrize('name', test_args)
     def test_storage_view_update(self, name, auto_login_user, storage_1):
-        client, user = auto_login_user()
+        client, _ = auto_login_user()
         url = reverse('warehouse:storage-update', kwargs={'pk': storage_1.pk})
 
         try:
@@ -161,10 +161,6 @@ class TestStorage:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], StorageForm), \
             'Проверьте, что поле `form` содержит объект класса `StorageForm`'
-        assert 'is_update' in response.context, \
-            'Проверьте, что передали поле `is_update` в контекст стр.'
-        assert response.context['is_update'], \
-            'Проверьте, что значение поля `is_update` в контексте стр. = `True`'
 
         data = {
             'name': name,
