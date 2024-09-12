@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
 from core.utils import is_htmx
@@ -15,13 +15,7 @@ from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              MaterialForm, MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
-from warehouse.utils import get_tree
-
-
-def get_url(request, storage: Storage) -> str:
-    return request.build_absolute_uri(
-        reverse('warehouse:storage-detail', kwargs={'pk': storage.pk})
-    )
+from warehouse.utils import get_tree, get_url
 
 
 def qrcode_view(request, pk):
