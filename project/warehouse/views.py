@@ -113,18 +113,18 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:storage-list')
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
+        success_url = self.get_success_url()
 
         try:
             self.object.delete()
         except ProtectedError:
             return HttpResponse(status=204)
 
-        if is_htmx(request):
+        if is_htmx(self.request):
             return HttpResponse()
 
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(success_url)
 
 
 class MaterialDetail(DetailView):

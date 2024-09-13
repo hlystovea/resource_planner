@@ -12,7 +12,7 @@
     ><label for="tree-menu-link-{{ storage.pk }}">{{ storage.name }}</label></a>
     {% if user.is_authenticated and user.dept.pk == storage.owner or user.is_authenticated and user.dept == storage.owner or user.is_authenticated and user.is_superuser %}
         <a class="icon-link align-middle" role="button"
-            hx-delete="{% url 'warehouse:storage-delete' storage.pk %}"
+            hx-post="{% url 'warehouse:storage-delete' storage.pk %}"
             hx-target="closest li"
             hx-swap="outerHTML"
             hx-confirm="Вы уверены, что хотите удалить место хранения и все вложенные элементы?"
