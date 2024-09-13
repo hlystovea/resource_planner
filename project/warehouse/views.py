@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Sum, Prefetch
+from django.db.models.deletion import ProtectedError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from qr_code.qrcode.utils import QRCodeOptions
 
 from core.utils import is_htmx
@@ -14,13 +15,7 @@ from warehouse.forms import (ComponentStorageForm, InstrumentForm,
                              MaterialForm, MaterialStorageForm, StorageForm)
 from warehouse.models import (ComponentStorage, Instrument, Material,
                               MaterialStorage, Storage)
-from warehouse.utils import get_tree
-
-
-def get_url(request, storage: Storage) -> str:
-    return request.build_absolute_uri(
-        reverse('warehouse:storage-detail', kwargs={'pk': storage.pk})
-    )
+from warehouse.utils import get_tree, get_url
 
 
 def qrcode_view(request, pk):
@@ -77,6 +72,7 @@ class StorageDetail(DetailView):
         )
         context['storage_list'] = storage_list
         context['form'] = StorageForm()
+        context['active'] = context['storage'].pk
         return context
 
 
@@ -98,7 +94,6 @@ class StorageCreate(LoginRequiredMixin, CreateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/li/'
-    template_name = 'warehouse/storage_form.html'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user.dept
@@ -110,12 +105,7 @@ class StorageUpdate(LoginRequiredMixin, UpdateView):
     form_class = StorageForm
     login_url = reverse_lazy('login')
     success_url = '/warehouse/storage/{id}/name/'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_update'] = True
-        context['parent_storage'] = self.object.parent_storage
-        return context
+    template_name = 'warehouse/includes/storage_name.html'
 
 
 class StorageDelete(LoginRequiredMixin, DeleteView):
@@ -123,12 +113,15 @@ class StorageDelete(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('warehouse:storage-list')
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
-        self.object.delete()
 
-        if is_htmx(request):
+        try:
+            self.object.delete()
+        except ProtectedError:
+            return HttpResponse(status=204)
+
+        if is_htmx(self.request):
             return HttpResponse()
 
         return HttpResponseRedirect(success_url)
@@ -429,8 +422,10 @@ class ComponentStorageDelete(LoginRequiredMixin,
 
 def storage_li_view(request, pk):
     storage = get_object_or_404(Storage.objects.all(), pk=pk)
-    context = {'storage': storage}
-    context['form'] = StorageForm()
+    context = {
+        'storage': storage,
+        'form': StorageForm(),
+    }
     return render(request, 'warehouse/includes/storage_li.html', context)
 
 

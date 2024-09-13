@@ -26,13 +26,13 @@ material_urls = [
 
 storage_urls = [
     path('storage/', views.StorageList.as_view(), name='storage-list'),
+    path('storage/create/', views.StorageCreate.as_view(), name='storage-create'),
     path('storage/<int:pk>/', views.StorageDetail.as_view(), name='storage-detail'),  # noqa (E501)
     path('storage/<int:pk>/qrcode/', views.qrcode_view, name='storage-qrcode'),
     path('storage/<int:pk>/update/', views.StorageUpdate.as_view(), name='storage-update'),  # noqa (E501)
     path('storage/<int:pk>/delete/', views.StorageDelete.as_view(), name='storage-delete'),  # noqa (E501)
     path('storage/<int:pk>/li/', views.storage_li_view, name='storage-li'),
-    path('storage/<int:pk>/name/', views.storage_name_view, name='storage-li'),
-    path('storage/create/', views.StorageCreate.as_view(), name='storage-create'),  # noqa (E501)
+    path('storage/<int:pk>/name/', views.storage_name_view, name='storage-name'),
     path('storage/<int:storage_pk>/material/<int:pk>/', views.MaterialStorageDetail.as_view(), name='material-storage-detail'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/update/', views.MaterialStorageUpdate.as_view(), name='material-storage-update'),  # noqa (E501)
     path('storage/<int:storage_pk>/material/<int:pk>/delete/', views.MaterialStorageDelete.as_view(), name='material-storage-delete'),  # noqa (E501)

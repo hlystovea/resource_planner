@@ -89,6 +89,14 @@ div.htmx-swapping div {
     display: block;
 }
 
+.tree-menu__link {
+    display: none;
+}
+
+.tree-menu__link:checked + a {
+    background-color: var(--bs-info);
+}
+
 .tree-menu__switch {
   display: none;
 }
@@ -110,3 +118,4 @@ div.htmx-swapping div {
   background: url('/static/icons/list.svg') no-repeat center center;
   background-size: contain;
 }
+
