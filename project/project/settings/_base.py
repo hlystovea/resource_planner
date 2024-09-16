@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import environ
+from django.conf import settings
 
 
 env = environ.Env(DEBUG=(bool, False))
@@ -129,6 +130,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'assets'), )
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+DEFAULT_FILE_STORAGE = settings.STORAGES['default']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 

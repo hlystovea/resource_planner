@@ -1,8 +1,8 @@
-asgiref==3.7.2
+asgiref==3.8.1
 colorama==0.4.6
 contourpy==1.2.1
 cycler==0.12.1
-django==4.2.2
+django==5.1.1
 django-admin-autocomplete-all==0.6.6
 django-environ==0.10.0
 django-extensions==3.2.3
