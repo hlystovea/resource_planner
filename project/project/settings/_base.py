@@ -3,7 +3,10 @@ from pathlib import Path
 
 import environ
 from django.conf import settings
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 env = environ.Env(DEBUG=(bool, False))
 
