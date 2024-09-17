@@ -14,8 +14,8 @@ handler404 = 'core.views.error_404_handler'  # noqa (F811)
 handler500 = 'core.views.error_500_handler'  # noqa (F811)
 
 
-admin.site.site_title = config.SITE_NAME
-admin.site.site_header = config.SITE_NAME
+admin.site.site_title = _('Сайт')
+admin.site.site_header = _('Сайт')
 admin.site.index_title = _('Администрирование')
 
 
