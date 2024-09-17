@@ -1,3 +1,4 @@
+from constance import config
 from django.conf import settings
 from django.conf.urls import handler400, handler403, handler404, handler500
 from django.conf.urls.static import static
@@ -13,8 +14,8 @@ handler404 = 'core.views.error_404_handler'  # noqa (F811)
 handler500 = 'core.views.error_500_handler'  # noqa (F811)
 
 
-admin.site.site_title = _('Филиал')
-admin.site.site_header = _('Эксплуатация')
+admin.site.site_title = config.SITE_NAME
+admin.site.site_header = config.SITE_NAME
 admin.site.index_title = _('Администрирование')
 
 
