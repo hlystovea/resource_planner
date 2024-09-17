@@ -10,19 +10,13 @@
         checked
     >
     <label class="tree-menu__label" for="menu-item-{{ object|model_name }}-{{ object.pk }}"></label>
-    <a class="tree-menu__link link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+    <input class="tree-menu__link" type="radio" name="active" id="tree-menu-link-{{ object|model_name }}-{{ object.pk }}">
+    <a class="link-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
         role="button"
         id="menu-link-{{ object|model_name }}-{{ object.pk }}"
         hx-get="{{ object.get_absolute_url }}"
         hx-target="#content"
-    >
-        {% if object.abbreviation %}
-            {{ object.abbreviation }}
-        {% else %}
-            {{ object.name }}
-        {% endif %}
-    </a>
-
+    ><label for="tree-menu-link-{{ object|model_name }}-{{ object.pk }}">{% if object.abbreviation %}{{ object.abbreviation }}{% else %}{{ object.name }}{% endif %}</label></a>
     <ul class="tree-menu">
         {% for object in object.children.all %}
             {% include 'hardware/includes/menu_li.html' %}

@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django_filters import BooleanFilter, CharFilter, FilterSet, NumberFilter
+from django_filters import CharFilter, FilterSet, NumberFilter
 
 
 class InstrumentFilter(FilterSet):
@@ -22,8 +22,3 @@ class MaterialFilter(FilterSet):
         return queryset.filter(
             Q(name__icontains=value) | Q(article_number__icontains=value)
         )
-
-
-class StorageFilter(FilterSet):
-    storage = NumberFilter(field_name='parent_storage')
-    is_root = BooleanFilter(field_name='parent_storage', lookup_expr='isnull')

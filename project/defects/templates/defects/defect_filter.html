@@ -1,20 +1,20 @@
 <div class="row justify-content-end mt-4">
-    <!-- Get options for the selectFacility on load -->
+    <!-- Get options for the select-facility on load -->
     <div hx-get="{% url 'hardware:facility-select' %}?label=true&facility={{ request.GET.facility }}"
          hx-trigger="load"
-         hx-target="#selectFacility"
+         hx-target="#facility-select"
          hx-params="none"
     >
     </div>
     <div class="col-sm-2 px-2">
-        <select class="form-select form-select-sm" id="selectFacility" name="facility"
+        <select class="form-select form-select-sm" id="facility-select" name="facility"
             hx-get="{% url 'hardware:connection-select' %}?label=true"
-            hx-target="#selectConnection"
+            hx-target="#connection-select"
         >
         </select>
     </div>
     <div class="col-sm-2 px-2">
-        <select class="form-select form-select-sm" id="selectConnection" name="connection"
+        <select class="form-select form-select-sm" id="connection-select" name="connection"
             hx-get="{% url 'hardware:connection-select' %}?label=true&connection={{ request.GET.connection }}"
             hx-trigger="load"
             hx-params="none"
@@ -22,7 +22,7 @@
         </select>
     </div>
     <div class="col-sm-2 px-2">
-        <select class="form-select form-select-sm" id="selectGroup" name="group"
+        <select class="form-select form-select-sm" id="group-select" name="group"
             hx-get="{% url 'hardware:group-select' %}?label=true&group={{ request.GET.group }}"
             hx-trigger="load"
             hx-params="none"
@@ -30,14 +30,15 @@
         </select>
     </div>
     <div class="col-sm-2 px-2">
-        <select class="form-select form-select-sm" id="selectStatus" name="unrepaired">
+        <select class="form-select form-select-sm" id="status-select" name="unrepaired">
             <option value="" selected>Статус...</option>
             <option value="false">Устранено</option>
             <option value="true">Не устранено</option>
         </select>
     </div>
+    <input type="hidden" name="component" value="{{ request.GET.component }}">
     <div class="col-auto px-2">
-        <button id="updateButton" type="button" class="btn btn-secondary btn-sm mb-3"
+        <button id="update-button" type="button" class="btn btn-secondary btn-sm mb-3"
             hx-get="{% url 'defects:defect-list' %}"
             hx-push-url="true"
             hx-target="#defectTable"
