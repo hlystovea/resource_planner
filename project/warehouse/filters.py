@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django_filters import BooleanFilter, CharFilter, FilterSet, NumberFilter
+from django_filters import CharFilter, FilterSet, NumberFilter
 
 
 class InstrumentFilter(FilterSet):
