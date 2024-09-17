@@ -1,20 +1,14 @@
-from django.db.models import Count, F, Value
-from django.db.models.functions import Concat, ExtractYear
-from django.shortcuts import get_object_or_404
+from django.db.models import Count, F
+from django.db.models.functions import ExtractYear
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from api.serializers import (DefectSerializer, StatisticsSerializer,
+                             YearSerializer)
 from defects.filters import DefectFilter
 from defects.models import Defect
-from hardware.models import (Cabinet, Component, Connection,
-                             Facility, Group, Hardware, Part)
-from .serializers import (CabinetSerializer, ComponentSerializer,
-                          ConnectionSerializer, DefectSerializer,
-                          FacilitySerializer, GroupSerializer,
-                          HardwareSerializer, PartSerializer,
-                          StatisticsSerializer, YearSerializer)
 
 
 class DefectViewSet(ReadOnlyModelViewSet):
