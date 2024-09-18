@@ -72,6 +72,8 @@ class TestComponent:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/component_list.html', \
+            'Проверьте, что используете шаблон component_list.html в ответе'
 
         assert 'component_list' in response.context, \
             'Проверьте, что передали поле "component_list" в контекст страницы'
@@ -89,6 +91,8 @@ class TestComponent:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200, \
             'Статус код страницы должен быть 200'
+        assert response.templates[0].name == 'hardware/component_detail.html', \
+            'Проверьте, что используете шаблон component_detail.html в ответе'
 
         component = get_field_context(response.context, Component)
 
@@ -119,6 +123,8 @@ class TestComponent:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/component_form.html', \
+            'Проверьте, что используете шаблон component_form.html в ответе'
 
         form = get_field_context(response.context, ComponentForm)
 
@@ -128,6 +134,39 @@ class TestComponent:
             'Проверьте, что передали поле `is_new` в контекст страницы'
         assert response.context['is_new'], \
             'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
+
+        data = {
+            'name': name,
+            'function': function,
+            'design': design,
+            'manufacturer': manufacturer_1
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('name', test_args)
+    def test_component_view_create_modal(
+        self, name, function, design, manufacturer_1, auto_login_user
+    ):
+        client, user = auto_login_user()
+        url = reverse('hardware:component-create-modal')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/includes/component_form_modal.html', \
+            'Проверьте, что используете шаблон component_form_modal.html в ответе'
+
+        form = get_field_context(response.context, ComponentForm)
+
+        assert form is not None, \
+            'Проверьте, что передали поле типа `ComponentForm` в контекст стр.'
 
         data = {
             'name': name,
@@ -265,6 +304,20 @@ class TestComponent:
             'Проверьте, что объект Component содержит поле defect_count ' \
             'с количеством дефектов'
 
+    @pytest.mark.django_db
+    def test_component_view_get_select(self, client):
+        url = reverse('hardware:component-select')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+        assert 'component_list' in response.context, \
+            'Проверьте, что передали поле "component_list" в контекст страницы'
+        assert response.templates[0].name == 'hardware/includes/component_select.html', \
+            'Проверьте, что используете шаблон component_select.html в ответе'
 
 class TestPart:
     @pytest.mark.django_db
@@ -298,7 +351,6 @@ class TestPart:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
-        
 
         assert 'part' in response.context, \
             'Проверьте, что передали поле `part` в контекст страницы'
@@ -306,7 +358,7 @@ class TestPart:
             'Проверьте, что поле `part` содержит эксземпляр класса `Part`'
 
         part = response.context['part']
-    
+
         assert response.templates[0].name == 'hardware/includes/part_create_success_modal.html', \
             'Проверьте, что используете шаблон part_create_success_modal.html в ответе'
         assert part is not None, \
