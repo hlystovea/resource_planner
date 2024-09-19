@@ -75,10 +75,10 @@ class TestConnection:
             'Проверьте, что передали поле типа `Connection` в контекст страницы'
 
     @pytest.mark.django_db
-    def test_connection_view_get_ul(self, client, facility):
+    def test_connection_view_get_ul(self, client, connection):
         try:
             url = reverse(
-                'hardware:connection-ul', kwargs={'pk': facility.id}
+                'hardware:connection-ul', kwargs={'pk': connection.id}
             )
             response = client.get(url)
         except Exception as e:
@@ -90,8 +90,8 @@ class TestConnection:
 
         assert 'object' in response.context, \
             'Проверьте, что передали поле "object" в контекст страницы'
-        assert isinstance(response.context['object'], Facility), \
-            'Проверьте, что передали поле типа `Facility` в контекст страницы'
+        assert isinstance(response.context['object'], Connection), \
+            'Проверьте, что передали поле типа `Connection` в контекст страницы'
 
     @pytest.mark.django_db
     def test_connection_view_get_select(self, client):

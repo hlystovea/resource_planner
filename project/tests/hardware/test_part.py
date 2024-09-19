@@ -311,10 +311,10 @@ class TestPart:
         assert response.templates[0].name == 'hardware/includes/menu_ul.html', \
             'Проверьте, что используете шаблон menu_ul.html в ответе'
 
-        object = get_field_context(response.context, Cabinet)
-
-        assert object is not None, \
-            'Проверьте, что передали поле типа `Cabinet` в контекст страницы'
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Part), \
+            'Проверьте, что передали поле типа `Part` в контекст страницы'
 
     @pytest.mark.django_db
     def test_part_view_get_select(self, client):

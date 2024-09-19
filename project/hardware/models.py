@@ -26,7 +26,7 @@ class Facility(models.Model):
         return reverse('hardware:facility-detail', kwargs={'pk': self.pk})
 
     def get_menu_open_url(self):
-        return reverse('hardware:connection-ul', kwargs={'pk': self.pk})
+        return reverse('hardware:facility-ul', kwargs={'pk': self.pk})
 
     def get_menu_collapse_url(self):
         return reverse('hardware:facility-li', kwargs={'pk': self.pk})
@@ -74,7 +74,7 @@ class Connection(models.Model):
         return reverse('hardware:connection-detail', kwargs={'pk': self.pk})
 
     def get_menu_open_url(self):
-        return reverse('hardware:hardware-ul', kwargs={'pk': self.pk})
+        return reverse('hardware:connection-ul', kwargs={'pk': self.pk})
 
     def get_menu_collapse_url(self):
         return reverse('hardware:connection-li', kwargs={'pk': self.pk})
@@ -146,7 +146,7 @@ class Hardware(models.Model):
         return reverse('hardware:hardware-detail', kwargs={'pk': self.pk})
 
     def get_menu_open_url(self):
-        return reverse('hardware:cabinet-ul', kwargs={'pk': self.pk})
+        return reverse('hardware:hardware-ul', kwargs={'pk': self.pk})
 
     def get_menu_collapse_url(self):
         return reverse('hardware:hardware-li', kwargs={'pk': self.pk})
@@ -235,7 +235,7 @@ class Cabinet(models.Model):
         return reverse('hardware:cabinet-detail', kwargs={'pk': self.pk})
 
     def get_menu_open_url(self):
-        return reverse('hardware:part-ul', kwargs={'pk': self.pk})
+        return reverse('hardware:cabinet-ul', kwargs={'pk': self.pk})
 
     def get_menu_collapse_url(self):
         return reverse('hardware:cabinet-li', kwargs={'pk': self.pk})
@@ -319,7 +319,7 @@ class Part(models.Model):
         return reverse('hardware:part-detail', kwargs={'pk': self.pk})
 
     def get_menu_open_url(self):
-        return reverse('hardware:part-part-ul', kwargs={'pk': self.pk})
+        return reverse('hardware:part-ul', kwargs={'pk': self.pk})
 
     def get_menu_collapse_url(self):
         return reverse('hardware:part-li', kwargs={'pk': self.pk})

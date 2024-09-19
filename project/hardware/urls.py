@@ -19,14 +19,14 @@ facility_urls = [
     path('facilities/select/', views.facility_select_view, name='facility-select'),  # noqa (E501)
     path('facilities/<int:pk>/', views.FacilityDetail.as_view(), name='facility-detail'),  # noqa (E501)
     path('facilities/<int:pk>/li/', views.FacilityLiView.as_view(), name='facility-li'),  # noqa (E501)
-    path('facilities/<int:pk>/ul/', views.ConnectionUlView.as_view(), name='connection-ul'),  # noqa (E501)
+    path('facilities/<int:pk>/ul/', views.FacilityUlView.as_view(), name='facility-ul'),  # noqa (E501)
 ]
 
 connection_urls = [
     path('connections/select/', views.connection_select_view, name='connection-select'),  # noqa (E501)
     path('connections/<int:pk>/', views.ConnectionDetail.as_view(), name='connection-detail'),  # noqa (E501)
     path('connections/<int:pk>/li/', views.ConnectionLiView.as_view(), name='connection-li'),  # noqa (E501)
-    path('connections/<int:pk>/ul/', views.HardwareUlView.as_view(), name='hardware-ul'),  # noqa (E501)
+    path('connections/<int:pk>/ul/', views.ConnectionUlView.as_view(), name='connection-ul'),  # noqa (E501)
 ]
 
 group_urls = [
@@ -38,7 +38,7 @@ hardware_urls = [
     path('hardware/select/', views.hardware_select_view, name='hardware-select'),  # noqa (E501)
     path('hardware/<int:pk>/', views.HardwareDetail.as_view(), name='hardware-detail'),  # noqa (E501)
     path('hardware/<int:pk>/li/', views.HardwareLiView.as_view(), name='hardware-li'),  # noqa (E501)
-    path('hardware/<int:pk>/ul/', views.CabinetUlView.as_view(), name='cabinet-ul'),  # noqa (E501)
+    path('hardware/<int:pk>/ul/', views.HardwareUlView.as_view(), name='hardware-ul'),  # noqa (E501)
 ]
 
 cabinet_urls = [
@@ -49,7 +49,7 @@ cabinet_urls = [
     path('cabinets/<int:pk>/delete/', views.CabinetDelete.as_view(), name='cabinet-delete'),  # noqa (E501)
     path('cabinets/<int:pk>/inline/', views.CabinetInlineView.as_view(), name='cabinet-inline'),  # noqa (E501)
     path('cabinets/<int:pk>/li/', views.CabinetLiView.as_view(), name='cabinet-li'),  # noqa (E501)
-    path('cabinets/<int:pk>/ul/', views.PartUlView.as_view(), name='part-ul'),
+    path('cabinets/<int:pk>/ul/', views.CabinetUlView.as_view(), name='cabinet-ul'),
 ]
 
 manufacturer_urls = [
@@ -67,7 +67,7 @@ part_urls = [
     path('parts/<int:pk>/delete/', views.PartDelete.as_view(), name='part-delete'),  # noqa (E501)
     path('parts/<int:pk>/inline/', views.PartInlineView.as_view(), name='part-inline'),  # noqa (E501)
     path('parts/<int:pk>/li/', views.PartLiView.as_view(), name='part-li'),
-    path('parts/<int:pk>/ul/', views.PartPartUlView.as_view(), name='part-part-ul'),  # noqa (E501)
+    path('parts/<int:pk>/ul/', views.PartUlView.as_view(), name='part-ul'),  # noqa (E501)
 ]
 
 urlpatterns = (

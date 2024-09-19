@@ -273,10 +273,10 @@ class TestCabinet:
             'Проверьте, что передали поле типа `Cabinet` в контекст страницы'
 
     @pytest.mark.django_db
-    def test_cabinet_view_get_ul(self, client, hardware):
+    def test_cabinet_view_get_ul(self, client, cabinet):
         try:
             url = reverse(
-                'hardware:cabinet-ul', kwargs={'pk': hardware.id}
+                'hardware:cabinet-ul', kwargs={'pk': cabinet.id}
             )
             response = client.get(url)
         except Exception as e:
@@ -287,9 +287,9 @@ class TestCabinet:
             'Проверьте, что используете шаблон menu_ul.html в ответе'
 
         assert 'object' in response.context, \
-            'Проверьте, что передали поле object в контекст страницы'
-        assert isinstance(response.context['object'], Hardware), \
-            'Проверьте, что передали поле типа `Hardware` в контекст страницы'
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Cabinet), \
+            'Проверьте, что передали поле типа `Cabinet` в контекст страницы'
 
     @pytest.mark.django_db
     def test_cabinet_view_get_select(self, client):

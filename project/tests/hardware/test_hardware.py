@@ -83,10 +83,10 @@ class TestHardware:
             'Проверьте, что передали поле типа `Hardware` в контекст страницы'
 
     @pytest.mark.django_db
-    def test_hardware_view_get_ul(self, client, connection):
+    def test_hardware_view_get_ul(self, client, hardware):
         try:
             url = reverse(
-                'hardware:hardware-ul', kwargs={'pk': connection.id}
+                'hardware:hardware-ul', kwargs={'pk': hardware.id}
             )
             response = client.get(url)
         except Exception as e:
@@ -97,9 +97,9 @@ class TestHardware:
             'Проверьте, что используете шаблон menu_ul.html в ответе'
 
         assert 'object' in response.context, \
-            'Проверьте, что передали поле "object" в контекст страницы'
-        assert isinstance(response.context['object'], Connection), \
-            'Проверьте, что передали поле типа `Connection` в контекст страницы'
+            'Проверьте, что передали поле object в контекст страницы'
+        assert isinstance(response.context['object'], Hardware), \
+            'Проверьте, что передали поле типа `Hardware` в контекст страницы'
 
     @pytest.mark.django_db
     def test_hardware_view_get_select(self, client):

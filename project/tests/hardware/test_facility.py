@@ -66,6 +66,25 @@ class TestFacility:
             'Проверьте, что передали поле типа `Facility` в контекст страницы'
 
     @pytest.mark.django_db
+    def test_facility_view_get_ul(self, client, facility):
+        try:
+            url = reverse(
+                'hardware:facility-ul', kwargs={'pk': facility.id}
+            )
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200, \
+            'Статус код страницы должен быть 200'
+        assert response.templates[0].name == 'hardware/includes/menu_ul.html', \
+            'Проверьте, что используете шаблон menu_ul.html в ответе'
+
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Facility), \
+            'Проверьте, что передали поле типа `Facility` в контекст страницы'
+
+    @pytest.mark.django_db
     def test_facility_view_get_select(self, client):
         url = reverse('hardware:facility-select')
 
