@@ -6,6 +6,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/hlystovea/resource_planner)
 ![GitHub issues](https://img.shields.io/github/issues/hlystovea/resource_planner)
 ![workflow badge](https://github.com/hlystovea/resource_planner/actions/workflows/main.yml/badge.svg)
+[![codecov](https://codecov.io/gh/hlystovea/resource_planner/graph/badge.svg?token=QDHUX6DVHW)](https://codecov.io/gh/hlystovea/resource_planner)
 
 ## Описание
 Сервис предназначен для учета и планирования использования ресурсов предприятия.
