@@ -3,6 +3,7 @@ from pathlib import Path
 
 import environ
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
 
@@ -35,12 +36,11 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'staff.apps.StaffConfig',
     'warehouse.apps.WarehouseConfig',
-    'repairs.apps.RepairsConfig',
     'hardware.apps.HardwareConfig',
-    'shortener.apps.ShortenerConfig',
     'defects.apps.DefectsConfig',
     'docs.apps.DocsConfig',
     'qr_code',
+    'constance',
 ]
 
 if DEBUG:
@@ -66,6 +66,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'constance.context_processors.config',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -152,3 +153,9 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
+
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'SITE_NAME': ('Филиал', _('Наименование сайта')),
+}

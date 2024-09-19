@@ -125,7 +125,7 @@ class ConnectionLiView(LiViewMixin, DetailView):
     model = Connection
 
 
-class ConnectionUlView(UlViewMixin, DetailView):
+class FacilityUlView(UlViewMixin, DetailView):
     queryset = Facility.objects.prefetch_related('connections')
 
 
@@ -155,7 +155,7 @@ class HardwareLiView(LiViewMixin, DetailView):
     model = Hardware
 
 
-class HardwareUlView(UlViewMixin, DetailView):
+class ConnectionUlView(UlViewMixin, DetailView):
     queryset = Connection.objects.prefetch_related('hardware')
 
 
@@ -223,7 +223,7 @@ class CabinetLiView(LiViewMixin, DetailView):
     model = Cabinet
 
 
-class CabinetUlView(UlViewMixin, DetailView):
+class HardwareUlView(UlViewMixin, DetailView):
     queryset = Hardware.objects.prefetch_related('cabinets')
 
 
@@ -284,11 +284,11 @@ class PartLiView(LiViewMixin, DetailView):
     model = Part
 
 
-class PartUlView(UlViewMixin, DetailView):
+class CabinetUlView(UlViewMixin, DetailView):
     queryset = Cabinet.objects.prefetch_related('parts')
 
 
-class PartPartUlView(UlViewMixin, DetailView):
+class PartUlView(UlViewMixin, DetailView):
     queryset = Part.objects.prefetch_related('parts')
 
     def get_context_data(self, **kwargs):

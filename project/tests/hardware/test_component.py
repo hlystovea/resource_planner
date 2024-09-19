@@ -1,10 +1,11 @@
 import pytest
 
-from django.db.models import fields
+from django.db.models.fields import CharField
+from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 
-from hardware.forms import ComponentForm, PartForm
-from hardware.models import Component, Part
+from hardware.forms import ComponentForm
+from hardware.models import Component
 from tests.common import get_field_context, search_field
 from warehouse.models import ComponentStorage
 
@@ -18,7 +19,7 @@ class TestComponent:
         name_field = search_field(model_fields, 'name')
         assert name_field is not None, \
             'Модель Component должна содержать поле name'
-        assert type(name_field) == fields.CharField, \
+        assert isinstance(name_field, CharField), \
             'Поле name модели Component должно быть текстовым CharField'
         assert not name_field.blank, \
             'Поле name модели Component должно быть обязательным'
@@ -26,7 +27,7 @@ class TestComponent:
         function_field = search_field(model_fields, 'function_id')
         assert function_field is not None, \
             'Модель Component должна содержать поле function'
-        assert type(function_field) == fields.related.ForeignKey, \
+        assert isinstance(function_field, ForeignKey), \
             'Поле function должно быть ForeignKey'
         assert not function_field.blank, \
             'Поле function ндолжно быть обязательным'
@@ -34,7 +35,7 @@ class TestComponent:
         design_field = search_field(model_fields, 'design_id')
         assert design_field is not None, \
             'Модель Component должна содержать поле design'
-        assert type(design_field) == fields.related.ForeignKey, \
+        assert isinstance(design_field, ForeignKey), \
             'Поле design должно быть ForeignKey'
         assert not design_field.blank, \
             'Поле design должно быть обязательным'
@@ -42,7 +43,7 @@ class TestComponent:
         manufacturer_field = search_field(model_fields, 'manufacturer_id')
         assert manufacturer_field is not None, \
             'Модель Component должна содержать поле manufacturer'
-        assert type(manufacturer_field) == fields.related.ForeignKey, \
+        assert isinstance(manufacturer_field, ForeignKey), \
             'Поле manufacturer должно быть ForeignKey'
         assert not manufacturer_field.blank, \
             'Поле manufacturer должно быть обязательным'
@@ -50,7 +51,7 @@ class TestComponent:
         type_field = search_field(model_fields, 'type')
         assert type_field is not None, \
             'Модель Component должна содержать поле type'
-        assert type(type_field) == fields.CharField, \
+        assert isinstance(type_field, CharField), \
             'Поле type должно быть CharField'
         assert type_field.blank, \
             'Поле type не должно быть обязательным'
@@ -58,7 +59,7 @@ class TestComponent:
         series_field = search_field(model_fields, 'series')
         assert series_field is not None, \
             'Модель Component должна содержать поле series'
-        assert type(series_field) == fields.CharField, \
+        assert isinstance(series_field, CharField), \
             'Поле series должно быть CharField'
         assert series_field.blank, \
             'Поле series не должно быть обязательным'
@@ -72,6 +73,8 @@ class TestComponent:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/component_list.html', \
+            'Проверьте, что используете шаблон component_list.html в ответе'
 
         assert 'component_list' in response.context, \
             'Проверьте, что передали поле "component_list" в контекст страницы'
@@ -89,12 +92,14 @@ class TestComponent:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200, \
             'Статус код страницы должен быть 200'
+        assert response.templates[0].name == 'hardware/component_detail.html', \
+            'Проверьте, что используете шаблон component_detail.html в ответе'
 
         component = get_field_context(response.context, Component)
 
         assert component is not None, \
             'Проверьте, что передали поле типа `Component` в контекст страницы'
-        assert type(component.amount.first()) == ComponentStorage, \
+        assert isinstance(component.amount.first(), ComponentStorage), \
             'Проверьте, что вместе с объектом Component передали поле ' \
             'типа ComponentStorage в контекст страницы'
 
@@ -119,6 +124,8 @@ class TestComponent:
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/component_form.html', \
+            'Проверьте, что используете шаблон component_form.html в ответе'
 
         form = get_field_context(response.context, ComponentForm)
 
@@ -128,6 +135,39 @@ class TestComponent:
             'Проверьте, что передали поле `is_new` в контекст страницы'
         assert response.context['is_new'], \
             'Проверьте, что значение поля `is_new` в контексте стр. = `True`'
+
+        data = {
+            'name': name,
+            'function': function,
+            'design': design,
+            'manufacturer': manufacturer_1
+        }
+        try:
+            response = client.post(url, follow=True, data=data)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('name', test_args)
+    def test_component_view_create_modal(
+        self, name, function, design, manufacturer_1, auto_login_user
+    ):
+        client, user = auto_login_user()
+        url = reverse('hardware:component-create-modal')
+
+        try:
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+        assert response.status_code == 200
+        assert response.templates[0].name == 'hardware/includes/component_form_modal.html', \
+            'Проверьте, что используете шаблон component_form_modal.html в ответе'
+
+        form = get_field_context(response.context, ComponentForm)
+
+        assert form is not None, \
+            'Проверьте, что передали поле типа `ComponentForm` в контекст стр.'
 
         data = {
             'name': name,
@@ -265,12 +305,9 @@ class TestComponent:
             'Проверьте, что объект Component содержит поле defect_count ' \
             'с количеством дефектов'
 
-
-class TestPart:
     @pytest.mark.django_db
-    def test_part_create_modal(self, component_1, cabinet, auto_login_user):
-        client, user = auto_login_user()
-        url = reverse('hardware:part-create-modal')
+    def test_component_view_get_select(self, client):
+        url = reverse('hardware:component-select')
 
         try:
             response = client.get(url)
@@ -278,42 +315,7 @@ class TestPart:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
         assert response.status_code == 200
 
-        assert 'form' in response.context, \
-            'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], PartForm), \
-            'Проверьте, что поле `form` содержит объект класса `PartForm`'
-        assert response.templates[0].name == 'hardware/includes/part_form_modal.html', \
-            'Проверьте, что используете шаблон part_form_modal.html в ответе'
-
-        data = {
-            'name': 'some',
-            'component': component_1.pk,
-            'cabinet': cabinet.pk,
-            'release_year': 2000,
-            'launch_year': 2000,
-        }
-        try:
-            response = client.post(url, data=data)
-        except Exception as e:
-            assert False, f'Страница работает не правильно. Ошибка: {e}'
-        assert response.status_code == 200
-
-        
-
-        assert 'part' in response.context, \
-            'Проверьте, что передали поле `part` в контекст страницы'
-        assert isinstance(response.context['part'], Part), \
-            'Проверьте, что поле `part` содержит эксземпляр класса `Part`'
-
-        part = response.context['part']
-    
-        assert response.templates[0].name == 'hardware/includes/part_create_success_modal.html', \
-            'Проверьте, что используете шаблон part_create_success_modal.html в ответе'
-        assert part is not None, \
-            'Проверьте, что передали поле типа `Part` в контекст страницы'
-        assert data['name'] == part.name, \
-            'Проверьте, что сохраненный экземпляр `part` содержит ' \
-            'соответствующее поле `name`'
-        assert data['cabinet'] == part.cabinet.pk, \
-            'Проверьте, что сохраненный экземпляр `part` содержит ' \
-            'соответствующее поле `cabinet`'
+        assert 'component_list' in response.context, \
+            'Проверьте, что передали поле "component_list" в контекст страницы'
+        assert response.templates[0].name == 'hardware/includes/component_select.html', \
+            'Проверьте, что используете шаблон component_select.html в ответе'
