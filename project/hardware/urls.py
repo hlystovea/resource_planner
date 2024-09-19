@@ -29,8 +29,11 @@ connection_urls = [
     path('connections/<int:pk>/ul/', views.HardwareUlView.as_view(), name='hardware-ul'),  # noqa (E501)
 ]
 
-hardware_urls = [
+group_urls = [
     path('groups/select/', views.group_select_view, name='group-select'),
+]
+
+hardware_urls = [
     path('hardware/', views.HardwareList.as_view(), name='hardware-list'),
     path('hardware/select/', views.hardware_select_view, name='hardware-select'),  # noqa (E501)
     path('hardware/<int:pk>/', views.HardwareDetail.as_view(), name='hardware-detail'),  # noqa (E501)
@@ -71,6 +74,7 @@ urlpatterns = (
     component_urls
     + facility_urls
     + connection_urls
+    + group_urls
     + hardware_urls
     + manufacturer_urls
     + cabinet_urls
