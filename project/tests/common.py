@@ -6,6 +6,7 @@ def search_field(fields, attname):
 
 
 def get_field_context(context, field_type):
-    for fld in context.keys():
-        if fld not in ('user', 'request') and type(context[fld]) == field_type:
-            return context[fld]
+    for field in context.keys():
+        if (field not in ('user', 'request')
+                and isinstance(context[field], field_type)):
+            return context[field]
