@@ -202,24 +202,44 @@ class TestStatistics:
             'Проверьте, что передали поле `years`.'
 
     @pytest.mark.django_db
-    def test_defect_statistics_by_year_view(self, client, defect):
-        defect.pk = None
-        defect.save()
-
-        defect.pk = None
-        defect.date = '2001-01-01'
-        defect.save()
-
+    def test_defect_statistics_by_group_view(self, client):
         try:
-            url = reverse('api:defect-statistics-by-year')
+            url = reverse('api:defect-statistics-by-group')
             response = client.get(url)
         except Exception as e:
             assert False, f'Страница работает не правильно. Ошибка: {e}'
 
         assert response.status_code == 200
 
-        assert len(response.data) == 2, \
-            'Проверьте, что эндпоинт возвращает правильное количество экз.'
+    @pytest.mark.django_db
+    def test_defect_statistics_by_tech_reason(self, client):
+        try:
+            url = reverse('api:defect-statistics-by-tech-reason')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_defect_statistics_by_org_reason(self, client):
+        try:
+            url = reverse('api:defect-statistics-by-org-reason')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_defect_statistics_by_repair_method(self, client):
+        try:
+            url = reverse('api:defect-statistics-by-repair-method')
+            response = client.get(url)
+        except Exception as e:
+            assert False, f'Страница работает не правильно. Ошибка: {e}'
+
+        assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_defect_statistics_view(self, client):
