@@ -2,7 +2,8 @@ from django.conf import settings
 from django.conf.urls import handler400, handler403, handler404, handler500
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.core.exceptions import BadRequest, PermissionDenied
+from django.urls import include, path, Resolver404
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import RedirectView
 
@@ -34,3 +35,20 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # noqa (E501)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  # noqa (E501)
+
+
+if settings.TEST:
+    def bad_request_view(request):
+        raise BadRequest
+
+    def permission_denied_view(request):
+        raise PermissionDenied
+
+    def not_found_view(request):
+        raise Resolver404
+
+    urlpatterns += [
+        path('400/', bad_request_view),
+        path('403/', permission_denied_view),
+        path('404/', not_found_view),
+    ]
