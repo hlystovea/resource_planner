@@ -4,7 +4,7 @@ from django.db.models.fields import CharField
 from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 
-from hardware.models import Connection, Hardware
+from hardware.models import Hardware
 from tests.common import get_field_context, search_field
 
 

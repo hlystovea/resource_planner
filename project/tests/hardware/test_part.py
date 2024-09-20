@@ -5,7 +5,7 @@ from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 
 from hardware.forms import PartForm
-from hardware.models import Cabinet, Part
+from hardware.models import Part
 from tests.common import get_field_context, search_field
 
 

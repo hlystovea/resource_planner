@@ -9,13 +9,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env(DEBUG=(bool, False), TEST=(bool, False))
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
+TEST = env('TEST')
 
 ALLOWED_HOSTS = ['*']
 

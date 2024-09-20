@@ -1,5 +1,6 @@
 from ._base import *  # noqa
 
+TEST = True
 
 ALLOWED_HOSTS = [
     'localhost',
