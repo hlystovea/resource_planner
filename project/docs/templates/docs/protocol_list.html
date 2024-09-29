@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Документы{% endblock %}
+{% block content %}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'docs:protocol-list' %}">Документы</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'docs:protocol-list' %}">Протоколы ТО</a></li>
+    </ol>
+</nav>
+<div class="row mb-2">
+    <h1>Протоколы ТО</h1>
+</div>
+{% if user.is_authenticated %}
+<a class="btn btn-sm btn-secondary me-auto" href="{% url 'docs:protocol-create' %}" role="button">
+    Добавить
+</a>
+{% endif %}
+{% include './includes/protocol_filter.html' %}
+{% include './includes/protocol_table.html' %}
+{% endblock %}

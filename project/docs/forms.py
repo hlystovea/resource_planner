@@ -5,7 +5,7 @@ from django.forms.widgets import DateInput
 from django.utils.translation import gettext_lazy as _
 from pandas.errors import EmptyDataError
 
-from docs.models import ProtocolE2
+from docs.models import File, Protocol, ProtocolE2, Text
 from docs.utils import plot_from_csv
 
 
@@ -56,3 +56,27 @@ class ProtocolE2Form(ModelForm):
                 attrs={'type': 'date'}
             ),
         }
+
+
+class ProtocolForm(ModelForm):
+    class Meta:
+        model = Protocol
+        fields = '__all__'
+        widgets = {
+            'date': DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'type': 'date'}
+            ),
+        }
+
+
+class TextForm(ModelForm):
+    class Meta:
+        model = Text
+        fields = '__all__'
+
+
+class ImageForm(ModelForm):
+    class Meta:
+        model = File
+        fields = '__all__'

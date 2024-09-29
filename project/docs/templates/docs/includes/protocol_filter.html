@@ -1,0 +1,34 @@
+<div class="row justify-content-end">
+    <div hx-get="{% url 'hardware:connection-select' %}?label=true&connection={{ request.GET.connection }}"
+        hx-trigger="load"
+        hx-target="#select-connection"
+        hx-params="none"
+    >
+    </div>
+    <div hx-get="{% url 'docs:template-select' %}?label=true&template={{ request.GET.template }}"
+        hx-trigger="load"
+        hx-target="#select-template"
+        hx-params="none"
+    >
+    </div>
+    <div class="col-sm-2 px-2">
+        <select class="form-select form-select-sm" id="select-template" name="template"
+            hx-get="{% url 'docs:protocol-list' %}"
+            hx-push-url="true"
+            hx-target="#content"
+            hx-swap="outerHTML"
+            hx-include="[name='connection'],[name='year']"
+        >
+        </select>
+    </div>
+    <div class="col-sm-2 px-2">
+        <select class="form-select form-select-sm" id="select-connection" name="connection"
+            hx-get="{% url 'docs:protocol-list' %}"
+            hx-push-url="true"
+            hx-target="#content"
+            hx-swap="outerHTML"
+            hx-include="[name='template'],[name='year']"
+        >
+        </select>
+    </div>
+</div>

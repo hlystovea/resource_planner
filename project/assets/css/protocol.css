@@ -1,24 +1,26 @@
-body {
-    width: 21cm;
+html {
+    display: flex;
+    justify-content: center;
 }
 
-main {
-    padding: 0.2cm;
+body {
+    width: 210mm;
 }
 
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: auto;
+    margin: 0 1px;
     text-align: center;
 }
 
-table caption {
+table caption { 
     text-align: left;
     margin-top: 0.2cm;
 }
 
 .header {
-    border: 5px double black;
+    border: 6px double black;
 }
 
 .header td {
@@ -88,7 +90,7 @@ main > ul > li {
 }
 
 .signatures td:first-child {
-    width: 10cm;
+    width: 8cm;
 }
 
 .signatures td:nth-child(2) {
@@ -100,8 +102,14 @@ main > ul > li {
     content: "(подпись)";
     font-size: 0.75rem;
     position: relative;
-    bottom: -20px;
+    bottom: -0.4cm;
     left: 0.4cm;
+}
+
+figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 img {
@@ -109,5 +117,6 @@ img {
 }
 
 figcaption {
-    text-align: center;
+    text-indent: 0;
+    margin-bottom: 2mm;
 }

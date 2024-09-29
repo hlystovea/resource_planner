@@ -1,0 +1,25 @@
+{% load static %}
+<div id="content">
+    <div class="row">
+        <div class="col-auto">
+            {% include './protocol_years.html' %}
+        </div>
+    </div>
+    <table class="table table-sm table-hover">
+        <thead class="table">
+            <tr>
+                <th scope="col">Дата проверки</th>
+                <th scope="col">Присоединение</th>
+                <th scope="col">Документ</th>
+                <th scope="col">Выполнили</th>
+                <th scope="col">Проверил</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for protocol in protocol_list %}
+                {% include './protocol_row.html' with protocol=protocol %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
