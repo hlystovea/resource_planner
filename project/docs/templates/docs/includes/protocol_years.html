@@ -1,0 +1,18 @@
+<input type="hidden" name="year" value="{{ request.GET.year }}">
+<span>Год: </span>
+{% for year in year_list %}
+    <a href="#" class="text-decoration-none 
+        {% if year|stringformat:'i' == request.GET.year %}
+            link-dark bg-warning"
+            hx-get="{% url 'docs:protocol-list' %}"
+        {% else %}
+            link-secondary"
+            hx-get="{% url 'docs:protocol-list' %}?year={{ year }}"
+        {% endif %}
+        hx-push-url="true"
+        hx-target="#content"
+        hx-swap="outerHTML"
+        hx-include="[name='connection'],[name='template']"
+        hx-params="not year"
+    >{{ year }}</a>
+{% endfor %}

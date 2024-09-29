@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Протокол{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/protocol.css' %}">
+    <link rel="stylesheet" href="{% static 'css/print.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+</head>
+
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% block content %}
+        <!-- Содержимое страницы -->
+    {% endblock %}
+</body>
+
+</html>

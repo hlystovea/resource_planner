@@ -1,0 +1,21 @@
+<option value=""
+    {% if not request.GET.template %}
+        selected
+    {% endif %}
+>
+    {% if request.GET.label %}
+        Документ...
+    {% else %}
+        ---------
+    {% endif %}
+</option>
+
+{% for template in template_list %}
+    <option value="{{ template.pk }}"
+        {% if template.pk|stringformat:'i' == request.GET.template %}
+            selected
+        {% endif %}
+    >
+        {{ template.name|capfirst }}
+   </option>
+{% endfor %}
