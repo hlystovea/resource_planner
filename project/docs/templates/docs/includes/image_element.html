@@ -1,5 +1,17 @@
 {% load addclass %}
-{% if form %}
+{% if image %}
+    <div class="image-area">
+        <img src="{{ image.value.url }}" alt="{{ image.value.name }}">
+        {% if user.is_authenticated %}
+            <a class="image-area__delete no-print"
+                hx-delete="{% url 'docs:image-delete' image.pk %}"
+                hx-target="closest .image-area"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить изображение?"
+            >&#215;</a>
+        {% endif %}
+    </div>
+{% elif form and user.is_authenticated %}
     <form class="no-print" enctype="multipart/form-data"
         hx-post="{% url 'docs:image-create' %}"
         hx-swap="outerHTML"
@@ -35,14 +47,4 @@
         <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
         <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
     </form>
-{% else %}
-    <div class="image-area">
-        <img src="{{ image.value.url }}" alt="{{ image.value.name }}">
-        <a class="image-area__delete no-print"
-            hx-delete="{% url 'docs:image-delete' image.pk %}"
-            hx-target="closest .image-area"
-            hx-swap="outerHTML swap:1s"
-            hx-confirm="Вы уверены, что хотите удалить изображение?"
-        >&#215;</a>
-    </div>
 {% endif %}
