@@ -36,5 +36,13 @@
         <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
     </form>
 {% else %}
-    <img src="{{ image.value.url }}" alt="{{ image.value.name }}">
+    <div class="image-area">
+        <img src="{{ image.value.url }}" alt="{{ image.value.name }}">
+        <a class="image-area__delete no-print"
+            hx-delete="{% url 'docs:image-delete' image.pk %}"
+            hx-target="closest .image-area"
+            hx-swap="outerHTML swap:1s"
+            hx-confirm="Вы уверены, что хотите удалить изображение?"
+        >&#215;</a>
+    </div>
 {% endif %}

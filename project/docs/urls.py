@@ -28,6 +28,7 @@ text_urls = [
 
 file_urls = [
     path('images/create/', views.image_create_view, name='image-create'),
+    path('images/<int:pk>/delete/', views.image_delete_view, name='image-delete'),  # noqa (E501)
 ]
 
 urlpatterns = protocol_urls + template_urls + text_urls + file_urls

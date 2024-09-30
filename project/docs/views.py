@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractYear
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.template import Template as TemplateClass
@@ -13,7 +13,7 @@ from core.utils import is_htmx
 from docs.filters import ProtocolE2Filter, ProtocolFilter
 from docs.forms import (ImageForm, ProtocolE2Form,
                         ProtocolForm, TextForm)
-from docs.models import Protocol, ProtocolE2, Template
+from docs.models import Protocol, ProtocolE2, Template, File
 
 
 class ProtocolE2ListView(ListView):
@@ -124,6 +124,12 @@ class ProtocolDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('docs:protocol-list')
 
 
+class ImageDeleteView(LoginRequiredMixin, DeleteView):
+    model = File
+    login_url = reverse_lazy('login')
+    success_url = reverse_lazy('docs:image-create')
+
+
 def protocol_detail_view(request, pk):
     queryset = Protocol.objects.select_related(
         'connection', 'template', 'supervisor__dept__service'
@@ -171,6 +177,23 @@ def image_create_view(request):
         form = ImageForm()
 
     return render(request, template, {'form': form})
+
+
+@login_required
+def image_delete_view(request, pk):
+    image = get_object_or_404(File, pk=pk)
+
+    if request.method == 'POST' or 'DELETE':
+        context = {
+            'form': ImageForm(),
+            'protocol_pk': image.protocol.pk,
+            'slug': image.slug,
+        }
+        image.delete()
+
+        return render(request, 'docs/includes/image_element.html', context)
+
+    return HttpResponseNotAllowed(('POST', 'DELETE'))
 
 
 def template_select_view(request):
