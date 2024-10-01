@@ -77,6 +77,8 @@ class TextForm(ModelForm):
 
 
 class ImageForm(ModelForm):
+    value = PreProcessingCSVFileField(label=_('Файл'), required=True)
+
     class Meta:
         model = File
         fields = '__all__'

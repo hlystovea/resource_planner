@@ -12,6 +12,7 @@ table {
     width: auto;
     margin: 0 1px;
     text-align: center;
+    page-break-inside: avoid;
 }
 
 table caption { 
@@ -111,6 +112,7 @@ figure {
     flex-direction: column;
     align-items: center;
     text-indent: 0;
+    page-break-inside: avoid;
 }
 
 img {
