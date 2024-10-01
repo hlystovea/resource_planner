@@ -5,23 +5,25 @@ html {
 
 body {
     width: 210mm;
+    font-size: 12pt;
 }
 
 table {
     border-collapse: collapse;
     width: auto;
-    margin: 0 1px;
-    text-align: center;
+    margin: 0 1px 2mm;
+    text-align: left;
     page-break-inside: avoid;
 }
 
 table caption { 
     text-align: left;
-    margin-top: 0.2cm;
+    margin-top: 2mm;
 }
 
 .header {
     border: 6px double black;
+    text-align: center;
 }
 
 .header td {
@@ -59,21 +61,25 @@ li p {
     margin: 0;
 }
 
-.instruments {
+.table {
     border: 1px solid black;
 }
 
-.instruments th {
+.table th {
     border: 1px solid black;
     background-color: lightgray;
     height: 1.2cm;
     padding: 0.1cm;
 }
 
-.instruments td {
+.table td {
     border: 1px solid black;
     min-width: 1.5cm;
     padding: 0.1cm;
+}
+
+.text-center {
+    text-align: center;
 }
 
 main > ul > li {
