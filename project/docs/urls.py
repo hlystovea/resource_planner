@@ -11,11 +11,6 @@ protocol_urls = [
     path('protocols/<int:pk>/', views.protocol_detail_view, name='protocol-detail'),  # noqa (E501)
     path('protocols/<int:pk>/update/', views.ProtocolUpdateView.as_view(), name='protocol-update'),  # noqa (E501)
     path('protocols/<int:pk>/delete/', views.ProtocolDeleteView.as_view(), name='protocol-delete'),  # noqa (E501)
-    path('protocol-e2/', views.ProtocolE2ListView.as_view(), name='protocol_e2-list'),  # noqa (E501)
-    path('protocol-e2/create/', views.ProtocolE2CreateView.as_view(), name='protocol_e2-create'),  # noqa (E501)
-    path('protocol-e2/<int:pk>/', views.ProtocolE2DetailView.as_view(), name='protocol_e2-detail'),  # noqa (E501)
-    path('protocol-e2/<int:pk>/update/', views.ProtocolE2UpdateView.as_view(), name='protocol_e2-update'),  # noqa (E501)
-    path('protocol-e2/<int:pk>/delete/', views.ProtocolE2DeleteView.as_view(), name='protocol_e2-delete'),  # noqa (E501)
 ]
 
 template_urls = [
