@@ -146,6 +146,15 @@ class Protocol(models.Model):
         verbose_name = _('Протокол ТО')
         verbose_name_plural = _('Протоколы ТО')
 
+    def clean(self):
+        errors = {}
+        if self.date and self.date > now().date():
+            errors['date'] = ValidationError(
+                _('Дата проверки не может быть в будущем')
+            )
+        if errors:
+            raise ValidationError(errors)
+
     def get_absolute_url(self):
         return reverse('docs:protocol-detail', kwargs={'pk': self.pk})
 
