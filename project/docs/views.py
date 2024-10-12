@@ -12,7 +12,7 @@ from core.utils import is_htmx
 from docs.filters import ProtocolFilter
 from docs.forms import (FloatForm, ImageForm,
                         IntegerForm, ProtocolForm, TextForm)
-from docs.models import Protocol, Template, File
+from docs.models import Integer, File, Float, Protocol, Template, Text
 
 
 class ProtocolListView(ListView):
@@ -85,39 +85,75 @@ def protocol_detail_view(request, pk):
 
 
 @login_required
-def text_create_view(request):
-    template = 'docs/includes/base_element.html'
-    form = TextForm(request.POST or None)
+def text_update_or_create_view(request, **kwargs):
+    if pk := kwargs.get('pk'):
+        instance = get_object_or_404(Text, pk=pk)
+        url = reverse_lazy('docs:text-update', kwargs={'pk': pk})
+    else:
+        instance = None
+        url = reverse_lazy('docs:text-create')
+
+    template = 'docs/includes/text_element.html'
+    form = TextForm(request.POST or None, instance=instance)
 
     if form.is_valid():
-        text = form.save()
-        return render(request, template, {'text': text})
+        form.save()
 
-    return render(request, template, {'form': form})
+    return render(request, template, {'form': form, 'url': url})
 
 
 @login_required
-def integer_create_view(request):
-    template = 'docs/includes/base_element.html'
-    form = IntegerForm(request.POST or None)
+def char_update_or_create_view(request, **kwargs):
+    if pk := kwargs.get('pk'):
+        instance = get_object_or_404(Text, pk=pk)
+        url = reverse_lazy('docs:char-update', kwargs={'pk': pk})
+    else:
+        instance = None
+        url = reverse_lazy('docs:char-create')
+
+    template = 'docs/includes/char_element.html'
+    form = TextForm(request.POST or None, instance=instance)
 
     if form.is_valid():
-        object = form.save()
-        return render(request, template, {'object': object})
+        form.save()
 
-    return render(request, template, {'form': form})
+    return render(request, template, {'form': form, 'url': url})
 
 
 @login_required
-def float_create_view(request):
-    template = 'docs/includes/base_element.html'
-    form = FloatForm(request.POST or None)
+def integer_update_or_create_view(request, **kwargs):
+    if pk := kwargs.get('pk'):
+        instance = get_object_or_404(Integer, pk=pk)
+        url = reverse_lazy('docs:integer-update', kwargs={'pk': pk})
+    else:
+        instance = None
+        url = reverse_lazy('docs:integer-create')
+
+    template = 'docs/includes/integer_element.html'
+    form = IntegerForm(request.POST or None, instance=instance)
 
     if form.is_valid():
-        object = form.save()
-        return render(request, template, {'object': object})
+        form.save()
 
-    return render(request, template, {'form': form})
+    return render(request, template, {'form': form, 'url': url})
+
+
+@login_required
+def float_update_or_create_view(request, **kwargs):
+    if pk := kwargs.get('pk'):
+        instance = get_object_or_404(Float, pk=pk)
+        url = reverse_lazy('docs:float-update', kwargs={'pk': pk})
+    else:
+        instance = None
+        url = reverse_lazy('docs:float-create')
+
+    template = 'docs/includes/float_element.html'
+    form = FloatForm(request.POST or None, instance=instance)
+
+    if form.is_valid():
+        form.save()
+
+    return render(request, template, {'form': form, 'url': url})
 
 
 @login_required

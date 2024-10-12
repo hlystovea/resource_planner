@@ -1,0 +1,22 @@
+{% load addclass %}
+{% if form %}
+    <form style="display: inline-block;"
+        hx-post="{{ url }}"
+        hx-swap="outerHTML"
+        hx-trigger="keyup changed from:#id_text_{% firstof slug form.slug.value %} delay:500ms, change from:#id_text_{% firstof slug form.slug.value %}"
+    >
+    
+        <textarea name="value" id="id_text_{% firstof slug form.slug.value %}" value="{{ form.value.value }}" required></textarea>
+
+        {% if form.value.errors %}
+            <div class="invalid-feedback">
+                {{ form.value.errors }}
+            </div>
+        {% endif %}
+
+        <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
+        <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
+    </form>
+{% else %}
+    {{ object.value }}
+{% endif %}

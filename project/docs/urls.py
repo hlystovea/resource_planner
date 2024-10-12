@@ -18,15 +18,23 @@ template_urls = [
 ]
 
 text_urls = [
-    path('texts/create/', views.text_create_view, name='text-create'),
+    path('texts/create/', views.text_update_or_create_view, name='text-create'),  # noqa (E501)
+    path('texts/<int:pk>/update/', views.text_update_or_create_view, name='text-update'),  # noqa (E501)
+]
+
+char_urls = [
+    path('chars/create/', views.char_update_or_create_view, name='char-create'),  # noqa (E501)
+    path('chars/<int:pk>/update/', views.char_update_or_create_view, name='char-update'),  # noqa (E501)
 ]
 
 integer_urls = [
-    path('integers/create/', views.integer_create_view, name='integer-create'),
+    path('integers/create/', views.integer_update_or_create_view, name='integer-create'),  # noqa (E501)
+    path('integers/<int:pk>/update/', views.integer_update_or_create_view, name='integer-update'),  # noqa (E501)
 ]
 
 float_urls = [
-    path('floats/create/', views.float_create_view, name='float-create'),
+    path('floats/create/', views.float_update_or_create_view, name='float-create'),  # noqa (E501)
+    path('floats/<int:pk>/update/', views.float_update_or_create_view, name='float-update'),  # noqa (E501)
 ]
 
 file_urls = [
@@ -38,6 +46,7 @@ urlpatterns = (
     protocol_urls
     + template_urls
     + text_urls
+    + char_urls
     + integer_urls
     + float_urls
     + file_urls

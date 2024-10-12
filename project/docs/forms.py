@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.forms import ModelForm, FileField
+from django.forms import CharField, FileField, ModelForm
 from django.forms.widgets import DateInput
 from django.utils.translation import gettext_lazy as _
 from pandas.errors import EmptyDataError
@@ -34,6 +34,14 @@ class ProtocolForm(ModelForm):
 
 
 class TextForm(ModelForm):
+    class Meta:
+        model = Text
+        fields = '__all__'
+
+
+class CharForm(ModelForm):
+    value = CharField(required=True)
+
     class Meta:
         model = Text
         fields = '__all__'

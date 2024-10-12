@@ -1,41 +1,15 @@
 {% load addclass %}
-{% if object %}
-    {{ object.value }}
-{% elif form and user.is_authenticated %}
-    <form class="no-print" style="display: inline-block;"
+{% if form %}
+    <form style="display: inline-block;"
         hx-post="{{ url }}"
         hx-swap="outerHTML"
+        hx-trigger="keyup changed from:#id_{{ prefix }}_{% firstof slug form.slug.value %} delay:500ms, change from:#id_{{ prefix }}_{% firstof slug form.slug.value %}  delay:500ms"
     >
-        {% if form.errors %}
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            {% for field in form %}
-                {% if field.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ field.label }}: {{ field.errors }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-
-        {% if form.value.errors %}
-            {{ form.value|addclass:"form-control form-control-sm is-invalid" }}
-        {% else %}
-            {{ form.value|addclass:"form-control form-control-sm" }}
-        {% endif %}
-        {% if form.value.errors %}
-            <div id="validation-{{ form.value.id_for_label }}" class="invalid-feedback">
-                {{ form.value.errors }}
-            </div>
-        {% endif %}
-
+    
+        <input type="{{ type }}" name="value" {% if prefix == 'float' %}step="any"{% endif %} id="id_{{ prefix }}_{% firstof slug form.slug.value %}" value="{{ form.value.value }}" required>
         <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
         <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
-
-        <button class="btn btn-sm btn-secondary me-1" type="submit">Сохранить</button>
     </form>
+{% else %}
+    {{ object.value }}
 {% endif %}
