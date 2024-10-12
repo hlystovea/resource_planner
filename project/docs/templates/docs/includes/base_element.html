@@ -1,7 +1,11 @@
 {% load addclass %}
-{% if form %}
-    <form class="no-print" method="post" hx-post="{% url 'docs:text-create' %}" hx-swap="outerHTML">
-        {% csrf_token %}
+{% if object %}
+    {{ object.value }}
+{% elif form and user.is_authenticated %}
+    <form class="no-print" style="display: inline-block;"
+        hx-post="{{ url }}"
+        hx-swap="outerHTML"
+    >
         {% if form.errors %}
             {% if form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">
@@ -29,11 +33,9 @@
             </div>
         {% endif %}
 
-        <input type="hidden" name="protocol" value="{% firstof protocol.pk form.protocol.value %}">
+        <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
         <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
 
         <button class="btn btn-sm btn-secondary me-1" type="submit">Сохранить</button>
     </form>
-{% else %}
-    <p>{{ text.value }}</p>
 {% endif %}

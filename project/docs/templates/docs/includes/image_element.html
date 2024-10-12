@@ -1,10 +1,10 @@
 {% load addclass %}
-{% if image %}
+{% if object %}
     <div class="image-area">
-        <img src="{{ image.value.url }}" alt="{{ image.value.name }}">
+        <img src="{{ object.value.url }}" alt="{{ object.value.name }}">
         {% if user.is_authenticated %}
             <a class="image-area__delete no-print"
-                hx-delete="{% url 'docs:image-delete' image.pk %}"
+                hx-delete="{{ url }}"
                 hx-target="closest .image-area"
                 hx-swap="outerHTML swap:1s"
                 hx-confirm="Вы уверены, что хотите удалить изображение?"

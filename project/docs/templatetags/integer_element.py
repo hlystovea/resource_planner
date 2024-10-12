@@ -1,16 +1,16 @@
 from django import template
 from django.urls import reverse_lazy
 
-from docs.forms import TextForm
-from docs.models import Text
+from docs.forms import IntegerForm
+from docs.models import Integer
 
 
 register = template.Library()
 
 
 @register.inclusion_tag('docs/includes/base_element.html')
-def text_element(slug, protocol_pk, user):
-    object = Text.objects.filter(protocol=protocol_pk, slug=slug).first()
+def integer_element(slug, protocol_pk, user):
+    object = Integer.objects.filter(slug=slug, protocol=protocol_pk).first()
 
     if object:
         return {
@@ -18,9 +18,9 @@ def text_element(slug, protocol_pk, user):
         }
 
     return {
-        'form': TextForm(),
+        'form': IntegerForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
         'user': user,
-        'url': reverse_lazy('docs:text-create')
+        'url': reverse_lazy('docs:integer-create'),
     }

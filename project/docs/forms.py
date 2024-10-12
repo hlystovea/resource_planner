@@ -5,7 +5,7 @@ from django.forms.widgets import DateInput
 from django.utils.translation import gettext_lazy as _
 from pandas.errors import EmptyDataError
 
-from docs.models import File, Protocol, Text
+from docs.models import File, Float, Integer, Protocol, Text
 from docs.utils import plot_from_csv
 
 
@@ -36,6 +36,18 @@ class ProtocolForm(ModelForm):
 class TextForm(ModelForm):
     class Meta:
         model = Text
+        fields = '__all__'
+
+
+class IntegerForm(ModelForm):
+    class Meta:
+        model = Integer
+        fields = '__all__'
+
+
+class FloatForm(ModelForm):
+    class Meta:
+        model = Float
         fields = '__all__'
 
 

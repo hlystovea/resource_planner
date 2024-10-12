@@ -125,3 +125,31 @@ class Text(BaseElement):
                 name='text_slug_protocol_uniquetogether',
             ),
         ]
+
+
+class Integer(BaseElement):
+    value = models.IntegerField(verbose_name=_('Целое число'))
+
+    class Meta:
+        verbose_name = _('Целое число')
+        verbose_name_plural = _('Целые числа')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('slug', 'protocol'),
+                name='integer_slug_protocol_uniquetogether',
+            ),
+        ]
+
+
+class Float(BaseElement):
+    value = models.FloatField(verbose_name=_('Вещественное число'))
+
+    class Meta:
+        verbose_name = _('Вещественное число')
+        verbose_name_plural = _('Вещественные числа')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('slug', 'protocol'),
+                name='float_slug_protocol_uniquetogether',
+            ),
+        ]

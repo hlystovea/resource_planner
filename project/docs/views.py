@@ -10,7 +10,8 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from core.utils import is_htmx
 from docs.filters import ProtocolFilter
-from docs.forms import ImageForm, ProtocolForm, TextForm
+from docs.forms import (FloatForm, ImageForm,
+                        IntegerForm, ProtocolForm, TextForm)
 from docs.models import Protocol, Template, File
 
 
@@ -85,12 +86,36 @@ def protocol_detail_view(request, pk):
 
 @login_required
 def text_create_view(request):
-    template = 'docs/includes/text_element.html'
+    template = 'docs/includes/base_element.html'
     form = TextForm(request.POST or None)
 
     if form.is_valid():
         text = form.save()
         return render(request, template, {'text': text})
+
+    return render(request, template, {'form': form})
+
+
+@login_required
+def integer_create_view(request):
+    template = 'docs/includes/base_element.html'
+    form = IntegerForm(request.POST or None)
+
+    if form.is_valid():
+        object = form.save()
+        return render(request, template, {'object': object})
+
+    return render(request, template, {'form': form})
+
+
+@login_required
+def float_create_view(request):
+    template = 'docs/includes/base_element.html'
+    form = FloatForm(request.POST or None)
+
+    if form.is_valid():
+        object = form.save()
+        return render(request, template, {'object': object})
 
     return render(request, template, {'form': form})
 
