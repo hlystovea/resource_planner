@@ -8,22 +8,22 @@ from docs.models import Integer
 register = template.Library()
 
 
-@register.inclusion_tag('docs/includes/integer_element.html')
+@register.inclusion_tag('docs/base_element.html')
 def integer_element(slug, protocol_pk, user):
     object = Integer.objects.filter(slug=slug, protocol=protocol_pk).first()
 
-    if not user.is_authenticated:
-        return {'object': object}
-
-    form = IntegerForm(instance=object)
-    url = reverse_lazy('docs:integer-create')
-
     if object:
         url = reverse_lazy('docs:integer-update', kwargs={'pk': object.pk})
+        return {
+            'object': object,
+            'url': url,
+            'user': user,
+        }
 
     return {
-        'form': form,
+        'form': IntegerForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
-        'url': url,
+        'url': reverse_lazy('docs:integer-create'),
+        'user': user,
     }

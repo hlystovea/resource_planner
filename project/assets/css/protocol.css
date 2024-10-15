@@ -48,8 +48,8 @@ table caption {
 }
 
 ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 li {
@@ -63,6 +63,7 @@ li p {
 
 .table {
     border: 1px solid black;
+    width: 100%;
 }
 
 .table th {
@@ -157,4 +158,39 @@ div.htmx-swapping div {
     color: #ff443a;
     background-color: rgba(50, 50, 50, 0.5);
     border-color: #aaa;
+}
+
+form {
+    display: inline-block;
+    text-indent: 0;
+}
+
+form:has(textarea) {
+    display: block;
+}
+
+input {
+    width: auto;
+    min-width: 4ch;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid black;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    border: 1px solid black;
+    resize: vertical;
+}
+
+*[hx-get] {
+    cursor: pointer;
+}
+
+.is-invalid {
+    border-color: red;
 }

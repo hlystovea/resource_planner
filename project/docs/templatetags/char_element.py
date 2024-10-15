@@ -8,22 +8,21 @@ from docs.models import Text
 register = template.Library()
 
 
-@register.inclusion_tag('docs/includes/char_element.html')
+@register.inclusion_tag('docs/base_element.html')
 def char_element(slug, protocol_pk, user):
     object = Text.objects.filter(protocol=protocol_pk, slug=slug).first()
 
-    if not user.is_authenticated:
-        return {'object': object}
-
-    form = CharForm(instance=object)
-    url = reverse_lazy('docs:char-create')
-
     if object:
-        url = reverse_lazy('docs:char-update', kwargs={'pk': object.pk})
+        return {
+            'object': object,
+            'url': reverse_lazy('docs:char-update', kwargs={'pk': object.pk}),
+            'user': user,
+        }
 
     return {
-        'form': form,
+        'form': CharForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
-        'url': url,
+        'url': reverse_lazy('docs:char-create'),
+        'user': user,
     }

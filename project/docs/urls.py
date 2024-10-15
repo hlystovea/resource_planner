@@ -18,35 +18,36 @@ template_urls = [
 ]
 
 text_urls = [
-    path('texts/create/', views.text_update_or_create_view, name='text-create'),  # noqa (E501)
-    path('texts/<int:pk>/update/', views.text_update_or_create_view, name='text-update'),  # noqa (E501)
-]
-
-char_urls = [
-    path('chars/create/', views.char_update_or_create_view, name='char-create'),  # noqa (E501)
-    path('chars/<int:pk>/update/', views.char_update_or_create_view, name='char-update'),  # noqa (E501)
+    path('texts/create/', views.TextCreateView.as_view(), name='text-create'),  # noqa (E501)
+    path('texts/<int:pk>/', views.TextDetailView.as_view(), name='text-detail'),  # noqa (E501)
+    path('texts/<int:pk>/update/', views.TextUpdateView.as_view(), name='text-update'),  # noqa (E501)
+    path('chars/create/', views.CharCreateView.as_view(), name='char-create'),  # noqa (E501)
+    path('chars/<int:pk>/', views.CharDetailView.as_view(), name='char-detail'),  # noqa (E501)
+    path('chars/<int:pk>/update/', views.CharUpdateView.as_view(), name='char-update'),  # noqa (E501)
 ]
 
 integer_urls = [
-    path('integers/create/', views.integer_update_or_create_view, name='integer-create'),  # noqa (E501)
-    path('integers/<int:pk>/update/', views.integer_update_or_create_view, name='integer-update'),  # noqa (E501)
+    path('integers/create/', views.IntegerCreateView.as_view(), name='integer-create'),  # noqa (E501)
+    path('integers/<int:pk>/', views.IntegerDetailView.as_view(), name='integer-detail'),  # noqa (E501)
+    path('integers/<int:pk>/update/', views.IntegerUpdateView.as_view(), name='integer-update'),  # noqa (E501)
 ]
 
 float_urls = [
-    path('floats/create/', views.float_update_or_create_view, name='float-create'),  # noqa (E501)
-    path('floats/<int:pk>/update/', views.float_update_or_create_view, name='float-update'),  # noqa (E501)
+    path('floats/create/', views.FloatCreateView.as_view(), name='float-create'),  # noqa (E501)
+    path('floats/<int:pk>/', views.FloatDetailView.as_view(), name='float-detail'),  # noqa (E501)
+    path('floats/<int:pk>/update/', views.FloatUpdateView.as_view(), name='float-update'),  # noqa (E501)
 ]
 
 file_urls = [
-    path('images/create/', views.image_create_view, name='image-create'),
-    path('images/<int:pk>/delete/', views.image_delete_view, name='image-delete'),  # noqa (E501)
+    path('images/create/', views.ImageCreateView.as_view(), name='image-create'),  # noqa (E501)
+    path('images/<int:pk>/', views.ImageDetailView.as_view(), name='image-detail'),  # noqa (E501)
+    path('images/<int:pk>/delete/', views.ImageDeleteView.as_view(), name='image-delete'),  # noqa (E501)
 ]
 
 urlpatterns = (
     protocol_urls
     + template_urls
     + text_urls
-    + char_urls
     + integer_urls
     + float_urls
     + file_urls

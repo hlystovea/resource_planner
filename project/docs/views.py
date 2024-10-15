@@ -1,16 +1,16 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractYear
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.template import Template as TemplateClass
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (CreateView, DeleteView,
+                                  DetailView, ListView, UpdateView)
 
 from core.utils import is_htmx
 from docs.filters import ProtocolFilter
-from docs.forms import (FloatForm, ImageForm,
+from docs.forms import (CharForm, FloatForm, ImageForm,
                         IntegerForm, ProtocolForm, TextForm)
 from docs.models import Integer, File, Float, Protocol, Template, Text
 
@@ -84,110 +84,207 @@ def protocol_detail_view(request, pk):
     return HttpResponse(template.render(context))
 
 
-@login_required
-def text_update_or_create_view(request, **kwargs):
-    if pk := kwargs.get('pk'):
-        instance = get_object_or_404(Text, pk=pk)
-        url = reverse_lazy('docs:text-update', kwargs={'pk': pk})
-    else:
-        instance = None
-        url = reverse_lazy('docs:text-create')
+class TextDetailView(DetailView):
+    model = Text
+    template_name = 'docs/text_element.html'
 
-    template = 'docs/includes/text_element.html'
-    form = TextForm(request.POST or None, instance=instance)
-
-    if form.is_valid():
-        form.save()
-
-    return render(request, template, {'form': form, 'url': url})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:text-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
 
 
-@login_required
-def char_update_or_create_view(request, **kwargs):
-    if pk := kwargs.get('pk'):
-        instance = get_object_or_404(Text, pk=pk)
-        url = reverse_lazy('docs:char-update', kwargs={'pk': pk})
-    else:
-        instance = None
-        url = reverse_lazy('docs:char-create')
+class TextCreateView(LoginRequiredMixin, CreateView):
+    model = Text
+    form_class = TextForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/texts/{id}/'
+    template_name = 'docs/text_element.html'
 
-    template = 'docs/includes/char_element.html'
-    form = TextForm(request.POST or None, instance=instance)
-
-    if form.is_valid():
-        form.save()
-
-    return render(request, template, {'form': form, 'url': url})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:text-create')
+        return context
 
 
-@login_required
-def integer_update_or_create_view(request, **kwargs):
-    if pk := kwargs.get('pk'):
-        instance = get_object_or_404(Integer, pk=pk)
-        url = reverse_lazy('docs:integer-update', kwargs={'pk': pk})
-    else:
-        instance = None
-        url = reverse_lazy('docs:integer-create')
+class TextUpdateView(LoginRequiredMixin, UpdateView):
+    model = Text
+    form_class = TextForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/texts/{id}/'
+    template_name = 'docs/text_element.html'
 
-    template = 'docs/includes/integer_element.html'
-    form = IntegerForm(request.POST or None, instance=instance)
-
-    if form.is_valid():
-        form.save()
-
-    return render(request, template, {'form': form, 'url': url})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:text-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
 
 
-@login_required
-def float_update_or_create_view(request, **kwargs):
-    if pk := kwargs.get('pk'):
-        instance = get_object_or_404(Float, pk=pk)
-        url = reverse_lazy('docs:float-update', kwargs={'pk': pk})
-    else:
-        instance = None
-        url = reverse_lazy('docs:float-create')
+class CharDetailView(DetailView):
+    model = Text
+    template_name = 'docs/base_element.html'
 
-    template = 'docs/includes/float_element.html'
-    form = FloatForm(request.POST or None, instance=instance)
-
-    if form.is_valid():
-        form.save()
-
-    return render(request, template, {'form': form, 'url': url})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:char-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
 
 
-@login_required
-def image_create_view(request):
-    template = 'docs/includes/image_element.html'
+class CharCreateView(LoginRequiredMixin, CreateView):
+    model = Text
+    form_class = CharForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/chars/{id}/'
+    template_name = 'docs/base_element.html'
 
-    if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            file = form.save()
-            return render(request, template, {'image': file})
-
-    else:
-        form = ImageForm()
-
-    return render(request, template, {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:char-create')
+        return context
 
 
-@login_required
-def image_delete_view(request, pk):
-    image = get_object_or_404(File, pk=pk)
+class CharUpdateView(LoginRequiredMixin, UpdateView):
+    model = Text
+    form_class = CharForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/chars/{id}/'
+    template_name = 'docs/base_element.html'
 
-    if request.method == 'POST' or 'DELETE':
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:char-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class IntegerDetailView(DetailView):
+    model = Integer
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:integer-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class IntegerCreateView(LoginRequiredMixin, CreateView):
+    model = Integer
+    form_class = IntegerForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/integers/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:integer-create')
+        return context
+
+
+class IntegerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Integer
+    form_class = IntegerForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/integers/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:integer-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class FloatDetailView(DetailView):
+    model = Float
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:float-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class FloatCreateView(LoginRequiredMixin, CreateView):
+    model = Float
+    form_class = FloatForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/floats/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:float-create')
+        return context
+
+
+class FloatUpdateView(LoginRequiredMixin, UpdateView):
+    model = Float
+    form_class = FloatForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/floats/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:float-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class ImageDetailView(DetailView):
+    model = File
+    template_name = 'docs/image_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:image-delete',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class ImageCreateView(LoginRequiredMixin, CreateView):
+    model = File
+    form_class = ImageForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/images/{id}/'
+    template_name = 'docs/image_element.html'
+
+
+class ImageDeleteView(LoginRequiredMixin, DeleteView):
+    model = File
+    login_url = reverse_lazy('login')
+
+    def form_valid(self, form):
         context = {
             'form': ImageForm(),
-            'protocol_pk': image.protocol.pk,
-            'slug': image.slug,
+            'protocol_pk': self.object.protocol.pk,
+            'slug': self.object.slug,
         }
-        image.delete()
-
-        return render(request, 'docs/includes/image_element.html', context)
-
-    return HttpResponseNotAllowed(('POST', 'DELETE'))
+        self.object.delete()
+        return render(self.request, 'docs/image_element.html', context)
 
 
 def template_select_view(request):
