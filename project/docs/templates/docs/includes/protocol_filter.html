@@ -11,13 +11,25 @@
         hx-params="none"
     >
     </div>
+    <div hx-get="{% url 'hardware:hardware-select' %}?label=true&hardware={{ request.GET.hardware }}"
+        hx-trigger="load"
+        hx-target="#select-hardware"
+        hx-params="none"
+    >
+    </div>
+    <div hx-get="{% url 'hardware:hardware-select' %}?label=true"
+        hx-trigger="change from:#select-connection"
+        hx-target="#select-hardware"
+        hx-include="[name='connection']"
+    >
+    </div>
     <div class="col-sm-2 px-2">
         <select class="form-select form-select-sm" id="select-template" name="template"
             hx-get="{% url 'docs:protocol-list' %}"
             hx-push-url="true"
             hx-target="#content"
             hx-swap="outerHTML"
-            hx-include="[name='connection'],[name='year']"
+            hx-include="[name='connection'],[name='year'],[name='hardware']"
         >
         </select>
     </div>
@@ -27,7 +39,17 @@
             hx-push-url="true"
             hx-target="#content"
             hx-swap="outerHTML"
-            hx-include="[name='template'],[name='year']"
+            hx-include="[name='template'],[name='year'],[name='hardware']"
+        >
+        </select>
+    </div>
+    <div class="col-sm-2 px-2">
+        <select class="form-select form-select-sm" id="select-hardware" name="hardware"
+            hx-get="{% url 'docs:protocol-list' %}"
+            hx-push-url="true"
+            hx-target="#content"
+            hx-swap="outerHTML"
+            hx-include="[name='template'],[name='year'],[name='connection']"
         >
         </select>
     </div>

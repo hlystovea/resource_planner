@@ -16,8 +16,8 @@ class MixinAdmin(admin.ModelAdmin):
 
 @admin.register(Protocol)
 class ProtocolAdmin(MixinAdmin):
-    list_display = ('id', 'date', 'connection', 'supervisor')
-    list_filter = ('date', 'connection')
+    list_display = ('id', 'date', 'hardware', 'supervisor')
+    list_filter = ('date', 'hardware__connection')
     date_hierarchy = 'date'
 
 

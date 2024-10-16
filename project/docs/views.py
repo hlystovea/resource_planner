@@ -23,7 +23,9 @@ class ProtocolListView(ListView):
         queryset = super().get_queryset()
         queryset = ProtocolFilter(self.request.GET, queryset=queryset).qs
         queryset = queryset.select_related(
-            'connection', 'supervisor', 'template'
+            'template',
+            'supervisor',
+            'hardware__connection__facility',
         ).prefetch_related(
             'signers'
         )
@@ -66,7 +68,9 @@ class ProtocolDeleteView(LoginRequiredMixin, DeleteView):
 
 def protocol_detail_view(request, pk):
     queryset = Protocol.objects.select_related(
-        'connection', 'template', 'supervisor__dept__service'
+        'template',
+        'hardware__connection',
+        'supervisor__dept__service'
     ).prefetch_related(
         'signers__dept__service'
     )

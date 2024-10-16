@@ -15,12 +15,6 @@ class Protocol(models.Model):
         verbose_name=_('Шаблон'),
         on_delete=models.PROTECT
     )
-    connection = models.ForeignKey(
-        to='hardware.Connection',
-        verbose_name=_('Присоединение'),
-        on_delete=models.CASCADE,
-        related_name='protocols'
-    )
     hardware = models.ForeignKey(
         to='hardware.Hardware',
         verbose_name=_('Оборудование'),
