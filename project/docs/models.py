@@ -21,6 +21,13 @@ class Protocol(models.Model):
         on_delete=models.CASCADE,
         related_name='protocols'
     )
+    hardware = models.ForeignKey(
+        to='hardware.Hardware',
+        verbose_name=_('Оборудование'),
+        on_delete=models.CASCADE,
+        related_name='protocols',
+        null=True
+    )
     signers = models.ManyToManyField(
         to='staff.Employee',
         verbose_name=_('Подписывающие'),
