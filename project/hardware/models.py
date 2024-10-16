@@ -142,6 +142,10 @@ class Hardware(models.Model):
             )
         ]
 
+    @property
+    def abbreviation(self):
+        return ''.join(word[0] for word in self.name.split()).upper()
+
     def get_absolute_url(self):
         return reverse('hardware:hardware-detail', kwargs={'pk': self.pk})
 
