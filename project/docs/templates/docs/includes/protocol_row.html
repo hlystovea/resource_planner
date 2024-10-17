@@ -8,16 +8,17 @@
     <td>{{ protocol.supervisor }}</td>
     <td>
         {% if user.is_authenticated %}
-        <a class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'docs:protocol-update' protocol.pk %}">
+        <button class="btn btn-sm btn-secondary me-1 my-0" href="{% url 'docs:protocol-update' protocol.pk %}">
             <img src="{% static 'icons/pen.svg' %}" height="16" fill="currentColor" class="bi bi-pen">
-        </a>
-        {% endif %}
-        <button class="btn btn-sm btn-secondary" onClick="window.open(
-            '{{ protocol.get_absolute_url }}',
-            'newWin',
-            'Toolbar=0, Location=0, Directories=0, Status=0, Menubar=0, Scrollbars=0, Copyhistory=1, Width=820, Height=800, Left=600, Top=100'
-        )">
-            <img src="{% static 'icons/printer.svg' %}" height="16" fill="currentColor" class="bi bi-printer">
         </button>
+        <button class="btn btn-sm btn-danger my-0"
+            hx-post="{% url 'docs:protocol-delete' protocol.pk %}"
+            hx-target="#content"
+            hx-swap="outerHTML swap:1s"
+            hx-confirm="Вы уверены, что хотите удалить протокол?"
+        >
+            <img src="{% static 'icons/trash3.svg' %}" height="16" fill="currentColor" class="bi bi-basket align-text-bottom">
+        </button>
+        {% endif %}
     </td>
 </tr>
