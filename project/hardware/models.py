@@ -9,12 +9,12 @@ class Facility(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True,
+        unique=True
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
         max_length=30,
-        unique=True,
+        unique=True
     )
 
     class Meta:
@@ -42,17 +42,17 @@ class Facility(models.Model):
 class Connection(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200,
+        max_length=200
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
-        max_length=30,
+        max_length=30
     )
     facility = models.ForeignKey(
         to='hardware.Facility',
         verbose_name=_('Объект диспетчеризации'),
         on_delete=models.CASCADE,
-        related_name='connections',
+        related_name='connections'
     )
 
     class Meta:
@@ -62,11 +62,11 @@ class Connection(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('name', 'facility'),
-                name='name_facility_uniquetogether',
+                name='name_facility_uniquetogether'
             ),
             models.UniqueConstraint(
                 fields=('abbreviation', 'facility'),
-                name='abbreviation_facility_uniquetogether',
+                name='abbreviation_facility_uniquetogether'
             )
         ]
 
@@ -91,7 +91,7 @@ class Group(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True,
+        unique=True
     )
 
     class Meta:
@@ -110,25 +110,30 @@ class Group(models.Model):
 class Hardware(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200,
+        max_length=200
+    )
+    abbreviation = models.CharField(
+        verbose_name=_('Аббревиатура'),
+        max_length=30,
+        null=True
     )
     inventory_number = models.CharField(
         verbose_name=_('Инв. номер'),
-        max_length=50,
+        max_length=50
     )
     connection = models.ForeignKey(
         to='hardware.Connection',
         verbose_name=_('Присоединение'),
         on_delete=models.SET_NULL,
         related_name='hardware',
-        null=True,
+        null=True
     )
     group = models.ForeignKey(
         to='hardware.Group',
         verbose_name=_('Группа оборудования'),
         on_delete=models.SET_NULL,
         related_name='hardware',
-        null=True,
+        null=True
     )
 
     class Meta:
@@ -138,13 +143,9 @@ class Hardware(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('name', 'connection'),
-                name='name_connection_uniquetogether',
+                name='name_connection_uniquetogether'
             )
         ]
-
-    @property
-    def abbreviation(self):
-        return ''.join(word[0] for word in self.name.split()).upper()
 
     def get_absolute_url(self):
         return reverse('hardware:hardware-detail', kwargs={'pk': self.pk})
@@ -168,49 +169,49 @@ class Hardware(models.Model):
 class Cabinet(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200,
+        max_length=200
     )
     abbreviation = models.CharField(
         verbose_name=_('Оперативное наименование'),
-        max_length=30,
+        max_length=30
     )
     hardware = models.ForeignKey(
         to='hardware.Hardware',
         verbose_name=_('Оборудование'),
         on_delete=models.CASCADE,
-        related_name='cabinets',
+        related_name='cabinets'
     )
     manufacturer = models.ForeignKey(
         to='hardware.Manufacturer',
         verbose_name=_('Изготовитель'),
         on_delete=models.SET_NULL,
         related_name='cabinets',
-        null=True,
+        null=True
     )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
         max_length=100,
         blank=True,
-        null=True,
+        null=True
     )
     type = models.CharField(
         verbose_name=_('Тип изделия'),
         max_length=100,
         blank=True,
-        null=True,
+        null=True
     )
     release_year = models.IntegerField(
         verbose_name=_('Год выпуска'),
         validators=[
             MinValueValidator(1972),
-            MaxValueValidator(2050),
+            MaxValueValidator(2050)
         ]
     )
     launch_year = models.IntegerField(
         verbose_name=_('Год ввода в эксплуатацию'),
         validators=[
             MinValueValidator(1972),
-            MaxValueValidator(2050),
+            MaxValueValidator(2050)
         ]
     )
 
@@ -255,13 +256,13 @@ class Cabinet(models.Model):
 class Part(models.Model):
     name = models.CharField(
         verbose_name=_('Условное обозначение'),
-        max_length=200,
+        max_length=200
     )
     component = models.ForeignKey(
         'hardware.Component',
         verbose_name=_('Компонент'),
         on_delete=models.PROTECT,
-        related_name='parts',
+        related_name='parts'
     )
     release_year = models.IntegerField(
         verbose_name=_('Год выпуска'),
@@ -281,7 +282,7 @@ class Part(models.Model):
         to='hardware.Cabinet',
         verbose_name=_('Шкаф/Панель'),
         on_delete=models.CASCADE,
-        related_name='parts',
+        related_name='parts'
     )
     part = models.ForeignKey(
         to='hardware.Part',
@@ -289,13 +290,13 @@ class Part(models.Model):
         on_delete=models.SET_NULL,
         related_name='parts',
         blank=True,
-        null=True,
+        null=True
     )
     comment = models.CharField(
         verbose_name=_('Комментарий'),
         max_length=500,
         blank=True,
-        null=True,
+        null=True
     )
 
     class Meta:
@@ -339,38 +340,38 @@ class Part(models.Model):
 class Component(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
-        max_length=200,
+        max_length=200
     )
     function = models.ForeignKey(
         to='hardware.ComponentFunction',
         verbose_name=_('Назначение'),
         on_delete=models.PROTECT,
-        related_name='components',
+        related_name='components'
     )
     design = models.ForeignKey(
         to='hardware.ComponentDesign',
         verbose_name=_('Исполнение'),
         on_delete=models.PROTECT,
-        related_name='components',
+        related_name='components'
     )
     manufacturer = models.ForeignKey(
         to='hardware.Manufacturer',
         verbose_name=_('Изготовитель'),
         on_delete=models.SET_NULL,
         related_name='components',
-        null=True,
+        null=True
     )
     series = models.CharField(
         verbose_name=_('Серия изделия'),
         max_length=100,
         blank=True,
-        null=True,
+        null=True
     )
     type = models.CharField(
         verbose_name=_('Тип изделия'),
         max_length=100,
         blank=True,
-        null=True,
+        null=True
     )
 
     class Meta:
@@ -396,12 +397,12 @@ class ComponentDesign(models.Model):
     name = models.CharField(
         verbose_name=_('Исполнение'),
         max_length=200,
-        unique=True,
+        unique=True
     )
     abbreviation = models.CharField(
         verbose_name=_('Аббревиатура'),
         max_length=3,
-        unique=True,
+        unique=True
     )
 
     class Meta:
@@ -417,7 +418,7 @@ class ComponentFunction(models.Model):
     name = models.CharField(
         verbose_name=_('Назначение комплектующего'),
         max_length=50,
-        unique=True,
+        unique=True
     )
 
     class Meta:
@@ -433,7 +434,7 @@ class Manufacturer(models.Model):
     name = models.CharField(
         verbose_name=_('Наименование'),
         max_length=200,
-        unique=True,
+        unique=True
     )
 
     class Meta:

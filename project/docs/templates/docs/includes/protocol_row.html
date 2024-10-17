@@ -2,7 +2,7 @@
 <tr>
     <td><a href="{% url 'docs:protocol-detail' protocol.pk %}">{{ protocol.date|date:'d.m.Y' }}</a></td>
     <td>{{ protocol.hardware.connection.facility.abbreviation }} {{ protocol.hardware.connection.abbreviation }}</td>
-    <td>{{ protocol.hardware.abbreviation }}</td>
+    <td>{% firstof protocol.hardware.abbreviation protocol.hardware.name %}</td>
     <td>{{ protocol.template.name }}</td>
     <td>{{ protocol.signers.all|join:", " }}</td>
     <td>{{ protocol.supervisor }}</td>
