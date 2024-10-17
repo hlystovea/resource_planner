@@ -1,0 +1,11 @@
+{% if form and user.is_authenticated %}
+    {% include 'docs/includes/element_form.html' %}
+{% elif object %}
+    <span {% if user.is_authenticated %}hx-get="{{ url }}" hx-swap="outerHTML"{% endif %}>
+        {{ object.value }}
+    </span>
+{% else %}
+    <span class="no-print">
+        <a href="{% url 'login' %}?next={% url 'docs:protocol-detail' protocol_pk %}">Войти</a>
+    </span>
+{% endif %}

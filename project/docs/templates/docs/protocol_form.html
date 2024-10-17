@@ -66,19 +66,41 @@
                     </div>
 
                     <!-- Присоединение -->
-                    <div class="form-group row my-1"
-                        aria-required="{% if form.connection.required %}true{% else %}false{% endif %}">
-                        <label for="{{ form.connection.id_for_label }}" class="col-md-6 col-form-label text-md-right">
-                            {{ form.connection.label }}
-                            <span class="required">*</span>
+                    <div
+                        hx-get="{% url 'hardware:connection-select' %}{% if protocol %}?connection={{ protocol.hardware.connection.pk }}{% endif %}"
+                        hx-trigger="load"
+                        hx-target="#select-connection"
+                        hx-params="none"
+                    ></div>
+                    <div class="form-group row my-1" aria-required="false">
+                        <label for="select-connection" class="col-md-6 col-form-label text-md-right">
+                            Присоединение
                         </label>
                         <div class="col-md-6">
-                            {{ form.connection|addclass:"form-control" }}
-                            {% if form.connection.help_text %}
-                            <small id="{{ form.connection.id_for_label }}-help" class="form-text text-muted">
-                                {{ form.connection.help_text|safe }}
-                            </small>
-                            {% endif %}
+                            <select class="form-select form-select-sm" id="select-connection" name="connection"
+                                hx-get="{% url 'hardware:hardware-select' %}"
+                                hx-target="#select-hardware"
+                            >
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Оборудование -->
+                    {% if protocol %}
+                        <div
+                            hx-get="{% url 'hardware:hardware-select' %}?hardware={{ protocol.hardware.pk }}"
+                            hx-trigger="load"
+                            hx-target="#select-hardware"
+                        ></div>
+                    {% endif %}
+                    <div class="form-group row my-1" aria-required="true">
+                        <label for="select-hardware" class="col-md-6 col-form-label text-md-right">
+                            Оборудование<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <select class="form-select form-select-sm" id="select-hardware" name="hardware" required>
+                                <option value="" selected>---------</option>
+                            </select>
                         </div>
                     </div>
 

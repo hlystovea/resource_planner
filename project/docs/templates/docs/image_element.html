@@ -1,0 +1,35 @@
+{% load addclass %}
+{% if form and user.is_authenticated %}
+    <form class="no-print" enctype="multipart/form-data"
+        hx-post="{% url 'docs:image-create' %}"
+        hx-swap="outerHTML"
+        hx-trigger="change from:#{{ form.value.id_for_label }}"
+    >
+        {% if form.value.errors %}
+            {{ form.value|addclass:"is-invalid" }}
+            <div>
+                {{ form.value.errors }}
+            </div>
+        {% else %}
+            {{ form.value }}
+        {% endif %}
+        <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
+        <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
+    </form>
+{% elif object %}
+    <div class="image-area">
+        <img src="{{ object.value.url }}" alt="{{ object.value.name }}">
+        {% if user.is_authenticated %}
+            <a class="image-area__delete no-print"
+                hx-post="{{ url }}"
+                hx-target="closest .image-area"
+                hx-swap="outerHTML swap:1s"
+                hx-confirm="Вы уверены, что хотите удалить изображение?"
+            >&#215;</a>
+        {% endif %}
+    </div>
+{% else %}
+    <span class="no-print">
+        <a href="{% url 'login' %}?next={% url 'docs:protocol-detail' protocol_pk %}">Войти</a>
+    </span>
+{% endif %}

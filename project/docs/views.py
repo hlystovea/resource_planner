@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import FieldError
 from django.db.models.functions import ExtractYear
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -10,72 +10,14 @@ from django.views.generic import (CreateView, DeleteView,
                                   DetailView, ListView, UpdateView)
 
 from core.utils import is_htmx
-from docs.filters import ProtocolE2Filter, ProtocolFilter
-from docs.forms import (ImageForm, ProtocolE2Form,
-                        ProtocolForm, TextForm)
-from docs.models import Protocol, ProtocolE2, Template
-
-
-class ProtocolE2ListView(ListView):
-    model = ProtocolE2
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = ProtocolE2Filter(self.request.GET, queryset=queryset).qs
-        queryset = queryset.select_related(
-            'connection', 'supervisor'
-        ).prefetch_related(
-            'signers'
-        )
-        return queryset.order_by('-date')
-
-    def get_template_names(self):
-        if is_htmx(self.request):
-            return ['docs/includes/protocole2_table.html']
-        return ['docs/protocole2_list.html']
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['year_list'] = ProtocolE2.objects.dates(
-            'date',
-            'year'
-        ).values_list(
-            ExtractYear('date'),
-            flat=True
-        )
-        return context
-
-
-class ProtocolE2DetailView(DetailView):
-    model = ProtocolE2
-    queryset = ProtocolE2.objects.select_related(
-        'connection', 'supervisor__dept__service'
-    ).prefetch_related(
-        'signers__dept__service'
-    )
-
-
-class ProtocolE2CreateView(LoginRequiredMixin, CreateView):
-    model = ProtocolE2
-    form_class = ProtocolE2Form
-    login_url = reverse_lazy('login')
-    success_url = reverse_lazy('docs:protocol_e2-list')
-
-
-class ProtocolE2UpdateView(LoginRequiredMixin, UpdateView):
-    model = ProtocolE2
-    form_class = ProtocolE2Form
-    login_url = reverse_lazy('login')
-    success_url = reverse_lazy('docs:protocol_e2-list')
-
-
-class ProtocolE2DeleteView(LoginRequiredMixin, DeleteView):
-    model = ProtocolE2
-    login_url = reverse_lazy('login')
-    success_url = reverse_lazy('docs:protocol_e2-list')
+from docs.filters import ProtocolFilter
+from docs.forms import (CharForm, FloatForm, ImageForm,
+                        IntegerForm, ProtocolForm, TextForm)
+from docs.models import Integer, File, Float, Protocol, Template, Text
 
 
 class ProtocolListView(ListView):
+    paginate_by = 50
     model = Protocol
     login_url = reverse_lazy('login')
 
@@ -83,11 +25,17 @@ class ProtocolListView(ListView):
         queryset = super().get_queryset()
         queryset = ProtocolFilter(self.request.GET, queryset=queryset).qs
         queryset = queryset.select_related(
-            'connection', 'supervisor', 'template'
+            'template',
+            'supervisor',
+            'hardware__connection__facility',
         ).prefetch_related(
             'signers'
         )
-        return queryset.order_by('-date')
+        try:
+            return queryset.order_by(self.request.GET.get('sort'))
+
+        except FieldError:
+            return queryset.order_by('-date')
 
     def get_template_names(self):
         if is_htmx(self.request):
@@ -126,7 +74,9 @@ class ProtocolDeleteView(LoginRequiredMixin, DeleteView):
 
 def protocol_detail_view(request, pk):
     queryset = Protocol.objects.select_related(
-        'connection', 'template', 'supervisor__dept__service'
+        'template',
+        'hardware__connection',
+        'supervisor__dept__service'
     ).prefetch_related(
         'signers__dept__service'
     )
@@ -144,33 +94,207 @@ def protocol_detail_view(request, pk):
     return HttpResponse(template.render(context))
 
 
-@login_required
-def text_create_view(request):
-    template = 'docs/includes/text_element.html'
-    form = TextForm(request.POST or None)
+class TextDetailView(DetailView):
+    model = Text
+    template_name = 'docs/text_element.html'
 
-    if form.is_valid():
-        text = form.save()
-        return render(request, template, {'text': text})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:text-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
 
-    return render(request, template, {'form': form})
+
+class TextCreateView(LoginRequiredMixin, CreateView):
+    model = Text
+    form_class = TextForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/texts/{id}/'
+    template_name = 'docs/text_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:text-create')
+        return context
 
 
-@login_required
-def image_create_view(request):
-    template = 'docs/includes/image_element.html'
+class TextUpdateView(LoginRequiredMixin, UpdateView):
+    model = Text
+    form_class = TextForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/texts/{id}/'
+    template_name = 'docs/text_element.html'
 
-    if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:text-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
 
-        if form.is_valid():
-            file = form.save()
-            return render(request, template, {'image': file})
 
-    else:
-        form = ImageForm()
+class CharDetailView(DetailView):
+    model = Text
+    template_name = 'docs/base_element.html'
 
-    return render(request, template, {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:char-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class CharCreateView(LoginRequiredMixin, CreateView):
+    model = Text
+    form_class = CharForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/chars/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:char-create')
+        return context
+
+
+class CharUpdateView(LoginRequiredMixin, UpdateView):
+    model = Text
+    form_class = CharForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/chars/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:char-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class IntegerDetailView(DetailView):
+    model = Integer
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:integer-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class IntegerCreateView(LoginRequiredMixin, CreateView):
+    model = Integer
+    form_class = IntegerForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/integers/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:integer-create')
+        return context
+
+
+class IntegerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Integer
+    form_class = IntegerForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/integers/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:integer-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class FloatDetailView(DetailView):
+    model = Float
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:float-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class FloatCreateView(LoginRequiredMixin, CreateView):
+    model = Float
+    form_class = FloatForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/floats/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy('docs:float-create')
+        return context
+
+
+class FloatUpdateView(LoginRequiredMixin, UpdateView):
+    model = Float
+    form_class = FloatForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/floats/{id}/'
+    template_name = 'docs/base_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:float-update',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class ImageDetailView(DetailView):
+    model = File
+    template_name = 'docs/image_element.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = reverse_lazy(
+            'docs:image-delete',
+            kwargs={'pk': self.kwargs['pk']}
+        )
+        return context
+
+
+class ImageCreateView(LoginRequiredMixin, CreateView):
+    model = File
+    form_class = ImageForm
+    login_url = reverse_lazy('login')
+    success_url = '/docs/images/{id}/'
+    template_name = 'docs/image_element.html'
+
+
+class ImageDeleteView(LoginRequiredMixin, DeleteView):
+    model = File
+    login_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        context = {
+            'form': ImageForm(),
+            'protocol_pk': self.object.protocol.pk,
+            'slug': self.object.slug,
+        }
+        self.object.delete()
+        return render(self.request, 'docs/image_element.html', context)
 
 
 def template_select_view(request):

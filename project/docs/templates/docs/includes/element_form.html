@@ -1,0 +1,14 @@
+{% load addclass %}
+<form class="no-print"
+    hx-post="{{ url }}"
+    hx-swap="outerHTML"
+    hx-trigger="submit, change from:#{{ form.value.id_for_label }} delay:500ms"
+>
+    {% if form.value.errors %}
+        {{ form.value|addclass:'is-invalid' }}
+    {% else %}
+        {{ form.value }}
+    {% endif %}
+    <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
+    <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
+</form>

@@ -13,6 +13,6 @@
         hx-target="#defectTable"
         hx-swap="outerHTML"
         hx-include="*"
-        hx-params="not year"
+        hx-params="not year, csrfmiddlewaretoken"
     >{{ year }}</a>
 {% endfor %}
