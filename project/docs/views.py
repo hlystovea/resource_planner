@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import FieldError
 from django.db.models.functions import ExtractYear
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -16,6 +17,7 @@ from docs.models import Integer, File, Float, Protocol, Template, Text
 
 
 class ProtocolListView(ListView):
+    paginate_by = 50
     model = Protocol
     login_url = reverse_lazy('login')
 
@@ -29,7 +31,11 @@ class ProtocolListView(ListView):
         ).prefetch_related(
             'signers'
         )
-        return queryset.order_by('-date')
+        try:
+            return queryset.order_by(self.request.GET.get('sort'))
+
+        except FieldError:
+            return queryset.order_by('-date')
 
     def get_template_names(self):
         if is_htmx(self.request):

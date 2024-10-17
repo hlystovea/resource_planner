@@ -5,13 +5,75 @@
             {% include './protocol_years.html' %}
         </div>
     </div>
+    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
     <table class="table table-sm table-hover">
         <thead class="table">
             <tr>
-                <th scope="col">Дата проверки</th>
-                <th scope="col">Присоединение</th>
-                <th scope="col">Оборудование</th>
-                <th scope="col">Документ</th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'docs:protocol-list' %}?sort={% if request.GET.sort == 'date' %}-date{% else %}date{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#content"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort, csrfmiddlewaretoken"
+                    >
+                        Дата проверки
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'date' %}
+                        ↓
+                        {% elif request.GET.sort == '-date' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'docs:protocol-list' %}?sort={% if request.GET.sort == 'hardware__connection' %}-hardware__connection{% else %}hardware__connection{% endif %}"
+                        hx-push-url="true" hx-target="#content" hx-swap="outerHTML" hx-include="*"
+                        hx-params="not sort, csrfmiddlewaretoken"
+                    >
+                        Присоединение
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'hardware__connection' %}
+                        ↓
+                        {% elif request.GET.sort == '-hardware__connection' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'docs:protocol-list' %}?sort={% if request.GET.sort == 'hardware__name' %}-hardware__name{% else %}hardware__name{% endif %}"
+                        hx-push-url="true" hx-target="#content" hx-swap="outerHTML" hx-include="*"
+                        hx-params="not sort, csrfmiddlewaretoken">
+                        Оборудование
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'hardware__name' %}
+                        ↓
+                        {% elif request.GET.sort == '-hardware__name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'docs:protocol-list' %}?sort={% if request.GET.sort == 'template__name' %}-template__name{% else %}template__name{% endif %}"
+                        hx-push-url="true" hx-target="#content" hx-swap="outerHTML" hx-include="*"
+                        hx-params="not sort, csrfmiddlewaretoken">
+                        Документ
+                    </a>
+                    <span class="py-0">
+                        {% if request.GET.sort == 'template__name' %}
+                        ↓
+                        {% elif request.GET.sort == '-template__name' %}
+                        ↑
+                        {% endif %}
+                    </span>
+                </th>
                 <th scope="col">Выполнили</th>
                 <th scope="col">Проверил</th>
                 <th scope="col"></th>
@@ -23,4 +85,5 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include 'includes/paginator.html' %}
 </div>

@@ -29,7 +29,8 @@
             hx-push-url="true"
             hx-target="#content"
             hx-swap="outerHTML"
-            hx-include="[name='connection'],[name='year'],[name='hardware']"
+            hx-params="not csrfmiddlewaretoken"
+            hx-include="*"
         >
         </select>
     </div>
@@ -39,7 +40,8 @@
             hx-push-url="true"
             hx-target="#content"
             hx-swap="outerHTML"
-            hx-include="[name='template'],[name='year'],[name='hardware']"
+            hx-params="not csrfmiddlewaretoken"
+            hx-include="*"
         >
         </select>
     </div>
@@ -49,7 +51,8 @@
             hx-push-url="true"
             hx-target="#content"
             hx-swap="outerHTML"
-            hx-include="[name='template'],[name='year'],[name='connection']"
+            hx-params="not csrfmiddlewaretoken"
+            hx-include="*"
         >
         </select>
     </div>

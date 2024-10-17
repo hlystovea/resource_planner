@@ -12,7 +12,7 @@
         hx-push-url="true"
         hx-target="#content"
         hx-swap="outerHTML"
-        hx-include="[name='connection'],[name='template'],[name='hardware']"
-        hx-params="not year"
+        hx-include="*"
+        hx-params="not year, csrfmiddlewaretoken"
     >{{ year }}</a>
 {% endfor %}
