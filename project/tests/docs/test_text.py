@@ -2,7 +2,7 @@ import pytest
 from django.db.models import TextField, ForeignKey, SlugField
 from django.urls import reverse
 
-from docs.forms import TextForm
+from docs.forms import CharForm, TextForm
 from docs.models import Text, Protocol
 from tests.common import search_field
 
@@ -38,6 +38,19 @@ class TestText:
             'Поле "value" модели Text должно быть обязательным'
 
     @pytest.mark.django_db
+    def test_text_detail_view(self, client, text):
+        url = reverse('docs:text-detail', kwargs={'pk': text.pk})
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert response.templates[0].name == 'docs/text_element.html', \
+            'Проверьте, что используете шаблон text_element.html в ответе'
+
+    @pytest.mark.django_db
     def test_text_create_view(self, user_client, protocol):
         url = reverse('docs:text-create')
         response = user_client.get(url)
@@ -47,7 +60,87 @@ class TestText:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], TextForm), \
             'Проверьте, что поле `form` типа TextForm'
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert response.templates[0].name == 'docs/text_element.html', \
+            'Проверьте, что используете шаблон text_element.html в ответе'
+
+        data = {
+            'slug': 'some-slug',
+            'protocol': protocol.pk,
+            'value': 'Some value',
+        }
+
+        response = user_client.post(url, data=data, follow=True)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert response.templates[0].name == 'docs/text_element.html', \
+            'Проверьте, что используете шаблон text_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_text_update_view_unautorized_user(self, client, text):
+        url = reverse('docs:text-update', kwargs={'pk': text.pk})
+        response = client.get(url)
+
+        assert (response.status_code in (301, 302)
+                and response.url.startswith(reverse('login'))), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_text_update_view_autorized_user(self, user_client, text):
+        url = reverse('docs:text-update', kwargs={'pk': text.pk})
+        response = user_client.get(url)
+
+        assert response.status_code == 200
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], TextForm), \
+            'Проверьте, что передали поле `form` типа TextForm в контекст страницы'
+        assert response.templates[0].name == 'docs/text_element.html', \
+            'Проверьте, что используете шаблон text_element.html в ответе'
+
+        data = {
+            'value': 'foo-bar',
+        }
+
+        response = user_client.post(url, follow=True, data=data)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле `object` в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert data['value'] == response.context['object'].value, \
+            'Проверьте, что экземпляр `Text` был изменен'
+        assert response.templates[0].name == 'docs/text_element.html', \
+            'Проверьте, что используете шаблон text_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_char_detail_view(self, client, char):
+        url = reverse('docs:char-detail', kwargs={'pk': char.pk})
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_char_create_view(self, user_client, protocol):
+        url = reverse('docs:char-create')
+        response = user_client.get(url)
+
+        assert response.status_code == 200
+        assert response.context.get('form'), \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], CharForm), \
+            'Проверьте, что поле `form` типа CharForm'
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
         data = {
@@ -59,5 +152,47 @@ class TestText:
         response = user_client.post(url, data=data, follow=True)
 
         assert response.status_code == 200
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_char_update_view_unautorized_user(self, client, char):
+        url = reverse('docs:char-update', kwargs={'pk': char.pk})
+        response = client.get(url)
+
+        assert (response.status_code in (301, 302)
+                and response.url.startswith(reverse('login'))), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_char_update_view_autorized_user(self, user_client, char):
+        url = reverse('docs:char-update', kwargs={'pk': char.pk})
+        response = user_client.get(url)
+
+        assert response.status_code == 200
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], CharForm), \
+            'Проверьте, что передали поле `form` типа CharForm в контекст страницы'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+        data = {
+            'value': 'foo-bar',
+        }
+
+        response = user_client.post(url, follow=True, data=data)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле `object` в контекст страницы'
+        assert isinstance(response.context['object'], Text), \
+            'Проверьте, что поле `object` содержит экземпляр `Text`'
+        assert data['value'] == response.context['object'].value, \
+            'Проверьте, что экземпляр `Text` был изменен'
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'

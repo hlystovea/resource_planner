@@ -38,6 +38,19 @@ class TestInteger:
             'Поле "value" модели Integer должно быть обязательным'
 
     @pytest.mark.django_db
+    def test_integer_detail_view(self, client, integer):
+        url = reverse('docs:integer-detail', kwargs={'pk': integer.pk})
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Integer), \
+            'Проверьте, что поле `object` типа Integer'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
     def test_text_create_view(self, user_client, protocol):
         url = reverse('docs:integer-create')
         response = user_client.get(url)
@@ -47,7 +60,7 @@ class TestInteger:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], IntegerForm), \
             'Проверьте, что поле `form` типа IntegerForm'
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
         data = {
@@ -59,5 +72,43 @@ class TestInteger:
         response = user_client.post(url, data=data, follow=True)
 
         assert response.status_code == 200
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Integer), \
+            'Проверьте, что поле `object` типа Integer'
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_integer_update_view_unautorized_user(self, client, integer):
+        url = reverse('docs:integer-update', kwargs={'pk': integer.pk})
+        response = client.get(url)
+
+        assert (response.status_code in (301, 302)
+                and response.url.startswith(reverse('login'))), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_integer_update_view_autorized_user(self, user_client, integer):
+        url = reverse('docs:integer-update', kwargs={'pk': integer.pk})
+        response = user_client.get(url)
+
+        assert response.status_code == 200
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], IntegerForm), \
+            'Проверьте, что передали поле `form` типа IntegerForm в контекст страницы'
+
+        data = {
+            'value': 123,
+        }
+
+        response = user_client.post(url, follow=True, data=data)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле `object` в контекст страницы'
+        assert isinstance(response.context['object'], Integer), \
+            'Проверьте, что поле `object` содержит экземпляр `Integer`'
+        assert data['value'] == response.context['object'].value, \
+            'Проверьте, что экземпляр `Integer` был изменен'

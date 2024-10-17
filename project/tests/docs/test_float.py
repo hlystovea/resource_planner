@@ -8,7 +8,7 @@ from tests.common import search_field
 
 
 class TestFloat:
-    def test_text_model(self):
+    def test_float_model(self):
         model_fields = Float._meta.fields
 
         slug_field = search_field(model_fields, 'slug')
@@ -38,7 +38,20 @@ class TestFloat:
             'Поле "value" модели Float должно быть обязательным'
 
     @pytest.mark.django_db
-    def test_text_create_view(self, user_client, protocol):
+    def test_float_detail_view(self, client, float_):
+        url = reverse('docs:float-detail', kwargs={'pk': float_.pk})
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Float), \
+            'Проверьте, что поле `object` типа Float'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_float_create_view(self, user_client, protocol):
         url = reverse('docs:float-create')
         response = user_client.get(url)
 
@@ -47,7 +60,7 @@ class TestFloat:
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], FloatForm), \
             'Проверьте, что поле `form` типа FloatForm'
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
         data = {
@@ -59,5 +72,45 @@ class TestFloat:
         response = user_client.post(url, data=data, follow=True)
 
         assert response.status_code == 200
-        assert response.templates[0].name == 'docs/includes/base_element.html', \
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], Float), \
+            'Проверьте, что поле `object` типа Float'
+        assert response.templates[0].name == 'docs/base_element.html', \
+            'Проверьте, что используете шаблон base_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_float_update_view_unautorized_user(self, client, float_):
+        url = reverse('docs:float-update', kwargs={'pk': float_.pk})
+        response = client.get(url)
+
+        assert (response.status_code in (301, 302)
+                and response.url.startswith(reverse('login'))), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_float_update_view_autorized_user(self, user_client, float_):
+        url = reverse('docs:float-update', kwargs={'pk': float_.pk})
+        response = user_client.get(url)
+
+        assert response.status_code == 200
+        assert 'form' in response.context, \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], FloatForm), \
+            'Проверьте, что передали поле `form` типа FloatForm в контекст страницы'
+
+        data = {
+            'value': 123.4,
+        }
+
+        response = user_client.post(url, follow=True, data=data)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле `object` в контекст страницы'
+        assert isinstance(response.context['object'], Float), \
+            'Проверьте, что поле `object` содержит экземпляр `Float`'
+        assert data['value'] == response.context['object'].value, \
+            'Проверьте, что экземпляр `Float` был изменен'
+        assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
