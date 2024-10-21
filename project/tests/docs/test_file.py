@@ -38,7 +38,20 @@ class TestFile:
             'Поле "value" модели File должно быть обязательным'
 
     @pytest.mark.django_db
-    def test_image_create_view(self, user_client, protocol):
+    def test_image_detail_view(self, client, image):
+        url = reverse('docs:image-detail', kwargs={'pk': image.pk})
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert 'object' in response.context, \
+            'Проверьте, что передали поле "object" в контекст страницы'
+        assert isinstance(response.context['object'], File), \
+            'Проверьте, что поле `object` типа File'
+        assert response.templates[0].name == 'docs/image_element.html', \
+            'Проверьте, что используете шаблон image_element.html в ответе'
+
+    @pytest.mark.django_db
+    def test_image_create_view(self, user_client):
         url = reverse('docs:image-create')
         response = user_client.get(url)
 
@@ -46,18 +59,30 @@ class TestFile:
         assert response.context.get('form'), \
             'Проверьте, что передали поле `form` в контекст страницы'
         assert isinstance(response.context['form'], ImageForm), \
-            'Проверьте, что поле `form` типа TextForm'
-        assert response.templates[0].name == 'docs/includes/image_element.html', \
+            'Проверьте, что поле `form` типа ImageForm'
+        assert response.templates[0].name == 'docs/image_element.html', \
             'Проверьте, что используете шаблон image_element.html в ответе'
 
-        data = {
-            'slug': 'some-slug',
-            'protocol': protocol.pk,
-            'value': 'Some value',
-        }
+    @pytest.mark.django_db
+    def test_image_delete_view_unautorized_user(self, client, image):
+        url = reverse('docs:image-delete', kwargs={'pk': image.pk})
+        response = client.post(url)
 
-        response = user_client.post(url, data=data, follow=True)
+        assert (response.status_code in (301, 302)
+                and response.url.startswith(reverse('login'))), \
+            'Проверьте, что вы переадресуете пользователя на страницу авторизации'
+
+    @pytest.mark.django_db
+    def test_image_delete_view_autorized_user(self, user_client, image):
+        url = reverse('docs:image-delete', kwargs={'pk': image.pk})
+        response = user_client.post(url, follow=True)
 
         assert response.status_code == 200
-        assert response.templates[0].name == 'docs/includes/image_element.html', \
+        assert response.context.get('form'), \
+            'Проверьте, что передали поле `form` в контекст страницы'
+        assert isinstance(response.context['form'], ImageForm), \
+            'Проверьте, что поле `form` типа ImageForm'
+        assert response.templates[0].name == 'docs/image_element.html', \
             'Проверьте, что используете шаблон image_element.html в ответе'
+        assert not File.objects.filter(pk=image.pk).exists(), \
+            'Проверьте, что удаляется экземпляр модели "File"'

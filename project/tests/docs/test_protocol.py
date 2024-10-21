@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from docs.forms import ProtocolForm
 from docs.models import Protocol, Template
-from hardware.models import Connection
+from hardware.models import Hardware
 from staff.models import Employee
 from tests.common import search_field
 
@@ -22,15 +22,15 @@ class TestProtocol:
         assert not date_field.blank, \
             'Поле "date" модели Protocol должно быть обязательным'
 
-        connection_field = search_field(model_fields, 'connection_id')
-        assert connection_field is not None, \
-            'Модель Protocol должна содержать поле "connection"'
-        assert isinstance(connection_field, ForeignKey), \
-            'Поле "connection" модели Protocol должно быть ForeignKey'
-        assert connection_field.related_model == Connection, \
-            'Поле connection модели Protocol должно быть ссылкой на модель Connection'
-        assert not connection_field.blank, \
-            'Поле "connection" модели Protocol должно быть обязательным'
+        hardware_field = search_field(model_fields, 'hardware_id')
+        assert hardware_field is not None, \
+            'Модель Protocol должна содержать поле "hardware"'
+        assert isinstance(hardware_field, ForeignKey), \
+            'Поле "hardware" модели Protocol должно быть ForeignKey'
+        assert hardware_field.related_model == Hardware, \
+            'Поле hardware модели Protocol должно быть ссылкой на модель Hardware'
+        assert not hardware_field.blank, \
+            'Поле "hardware" модели Protocol должно быть обязательным'
 
         assert hasattr(Protocol, 'signers'), \
             'Модель Protocol должна содержать поле "signers"'
@@ -83,7 +83,7 @@ class TestProtocol:
 
     @pytest.mark.django_db
     def test_protocol_create_view(
-        self, auto_login_user, connection, template, instrument
+        self, auto_login_user, hardware, template, instrument
     ):
         client, user = auto_login_user()
         url = reverse('docs:protocol-create')
@@ -100,7 +100,7 @@ class TestProtocol:
         data = {
             'date': '2000-01-01',
             'template': template.pk,
-            'connection': connection.pk,
+            'hardware': hardware.pk,
             'signers': [user.pk],
             'supervisor': user.pk,
             'instrument': [instrument.pk],

@@ -5,22 +5,25 @@ html {
 
 body {
     width: 210mm;
+    font-size: 12pt;
 }
 
 table {
     border-collapse: collapse;
     width: auto;
-    margin: 0 1px;
-    text-align: center;
+    margin: 0 1px 2mm;
+    text-align: left;
+    page-break-inside: avoid;
 }
 
 table caption { 
     text-align: left;
-    margin-top: 0.2cm;
+    margin-top: 2mm;
 }
 
 .header {
     border: 6px double black;
+    text-align: center;
 }
 
 .header td {
@@ -45,8 +48,8 @@ table caption {
 }
 
 ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 li {
@@ -58,21 +61,26 @@ li p {
     margin: 0;
 }
 
-.instruments {
+.table {
     border: 1px solid black;
+    width: 100%;
 }
 
-.instruments th {
+.table th {
     border: 1px solid black;
     background-color: lightgray;
     height: 1.2cm;
     padding: 0.1cm;
 }
 
-.instruments td {
+.table td {
     border: 1px solid black;
     min-width: 1.5cm;
     padding: 0.1cm;
+}
+
+.text-center {
+    text-align: center;
 }
 
 main > ul > li {
@@ -110,6 +118,8 @@ figure {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-indent: 0;
+    page-break-inside: avoid;
 }
 
 img {
@@ -117,6 +127,70 @@ img {
 }
 
 figcaption {
-    text-indent: 0;
     margin-bottom: 2mm;
+}
+
+div.htmx-swapping div {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.image-area {
+    position: relative;
+}
+
+.image-area__delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 2px 1px;
+    cursor: pointer;
+    color: #333;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 20%;
+    background-color: rgba(100, 100, 100, 0.5);
+}
+
+.image-area__delete:hover {
+    color: #ff443a;
+    background-color: rgba(50, 50, 50, 0.5);
+    border-color: #aaa;
+}
+
+form {
+    display: inline-block;
+    text-indent: 0;
+}
+
+form:has(textarea) {
+    display: block;
+}
+
+input {
+    width: auto;
+    min-width: 4ch;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid black;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    border: 1px solid black;
+    resize: vertical;
+}
+
+*[hx-get] {
+    cursor: pointer;
+}
+
+.is-invalid {
+    border-color: red;
 }
