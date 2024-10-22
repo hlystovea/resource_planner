@@ -2,7 +2,7 @@ import pytest
 from django.db.models import IntegerField, ForeignKey, SlugField
 from django.urls import reverse
 
-from docs.forms import IntegerForm
+from docs.forms import IntegerCreateForm, IntegerUpdateForm
 from docs.models import Integer, Protocol
 from tests.common import search_field
 
@@ -58,8 +58,8 @@ class TestInteger:
         assert response.status_code == 200
         assert response.context.get('form'), \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], IntegerForm), \
-            'Проверьте, что поле `form` типа IntegerForm'
+        assert isinstance(response.context['form'], IntegerCreateForm), \
+            'Проверьте, что поле `form` типа IntegerCreateForm'
         assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
@@ -96,8 +96,8 @@ class TestInteger:
         assert response.status_code == 200
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], IntegerForm), \
-            'Проверьте, что передали поле `form` типа IntegerForm в контекст страницы'
+        assert isinstance(response.context['form'], IntegerUpdateForm), \
+            'Проверьте, что передали поле `form` типа IntegerUpdateForm'
 
         data = {
             'value': 123,
