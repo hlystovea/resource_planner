@@ -1,7 +1,7 @@
 from django import template
 from django.urls import reverse_lazy
 
-from docs.forms import FloatForm
+from docs.forms import FloatCreateForm
 from docs.models import Float
 
 
@@ -20,7 +20,7 @@ def float_element(slug, protocol_pk, user):
         }
 
     return {
-        'form': FloatForm(),
+        'form': FloatCreateForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
         'url': reverse_lazy('docs:float-create'),

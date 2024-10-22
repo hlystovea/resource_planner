@@ -1,7 +1,7 @@
 from django import template
 from django.urls import reverse_lazy
 
-from docs.forms import TextForm
+from docs.forms import TextCreateForm
 from docs.models import Text
 
 
@@ -20,7 +20,7 @@ def text_element(slug, protocol_pk, user):
         }
 
     return {
-        'form': TextForm(),
+        'form': TextCreateForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
         'url': reverse_lazy('docs:text-create'),
