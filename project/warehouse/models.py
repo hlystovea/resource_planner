@@ -175,7 +175,9 @@ class Instrument(models.Model):
         return reverse('warehouse:instrument-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return f'{self.name} ({self.inventory_number})'
+        return (f'{self.name} {self.type or ""} '
+                f'{"Инв.№" + self.inventory_number if self.inventory_number else ""} '
+                f'{"Зав.№" + self.serial_number if self.serial_number else ""}')
 
 
 class ComponentStorage(models.Model):
