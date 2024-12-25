@@ -11,8 +11,10 @@ from django.views.generic import (CreateView, DeleteView,
 
 from core.utils import is_htmx
 from docs.filters import ProtocolFilter
-from docs.forms import (CharForm, FloatForm, ImageForm,
-                        IntegerForm, ProtocolForm, TextForm)
+from docs.forms import (CharCreateForm, CharUpdateForm, FloatCreateForm,
+                        FloatUpdateForm, ImageForm, IntegerCreateForm,
+                        IntegerUpdateForm, ProtocolForm, TextCreateForm,
+                        TextUpdateForm)
 from docs.models import Integer, File, Float, Protocol, Template, Text
 
 
@@ -109,7 +111,7 @@ class TextDetailView(DetailView):
 
 class TextCreateView(LoginRequiredMixin, CreateView):
     model = Text
-    form_class = TextForm
+    form_class = TextCreateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/texts/{id}/'
     template_name = 'docs/text_element.html'
@@ -122,7 +124,7 @@ class TextCreateView(LoginRequiredMixin, CreateView):
 
 class TextUpdateView(LoginRequiredMixin, UpdateView):
     model = Text
-    form_class = TextForm
+    form_class = TextUpdateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/texts/{id}/'
     template_name = 'docs/text_element.html'
@@ -151,7 +153,7 @@ class CharDetailView(DetailView):
 
 class CharCreateView(LoginRequiredMixin, CreateView):
     model = Text
-    form_class = CharForm
+    form_class = CharCreateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/chars/{id}/'
     template_name = 'docs/base_element.html'
@@ -164,7 +166,7 @@ class CharCreateView(LoginRequiredMixin, CreateView):
 
 class CharUpdateView(LoginRequiredMixin, UpdateView):
     model = Text
-    form_class = CharForm
+    form_class = CharUpdateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/chars/{id}/'
     template_name = 'docs/base_element.html'
@@ -193,7 +195,7 @@ class IntegerDetailView(DetailView):
 
 class IntegerCreateView(LoginRequiredMixin, CreateView):
     model = Integer
-    form_class = IntegerForm
+    form_class = IntegerCreateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/integers/{id}/'
     template_name = 'docs/base_element.html'
@@ -206,7 +208,7 @@ class IntegerCreateView(LoginRequiredMixin, CreateView):
 
 class IntegerUpdateView(LoginRequiredMixin, UpdateView):
     model = Integer
-    form_class = IntegerForm
+    form_class = IntegerUpdateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/integers/{id}/'
     template_name = 'docs/base_element.html'
@@ -235,7 +237,7 @@ class FloatDetailView(DetailView):
 
 class FloatCreateView(LoginRequiredMixin, CreateView):
     model = Float
-    form_class = FloatForm
+    form_class = FloatCreateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/floats/{id}/'
     template_name = 'docs/base_element.html'
@@ -248,7 +250,7 @@ class FloatCreateView(LoginRequiredMixin, CreateView):
 
 class FloatUpdateView(LoginRequiredMixin, UpdateView):
     model = Float
-    form_class = FloatForm
+    form_class = FloatUpdateForm
     login_url = reverse_lazy('login')
     success_url = '/docs/floats/{id}/'
     template_name = 'docs/base_element.html'

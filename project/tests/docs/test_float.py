@@ -2,7 +2,7 @@ import pytest
 from django.db.models import FloatField, ForeignKey, SlugField
 from django.urls import reverse
 
-from docs.forms import FloatForm
+from docs.forms import FloatCreateForm, FloatUpdateForm
 from docs.models import Float, Protocol
 from tests.common import search_field
 
@@ -58,8 +58,8 @@ class TestFloat:
         assert response.status_code == 200
         assert response.context.get('form'), \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], FloatForm), \
-            'Проверьте, что поле `form` типа FloatForm'
+        assert isinstance(response.context['form'], FloatCreateForm), \
+            'Проверьте, что поле `form` типа FloatCreateForm'
         assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
@@ -96,8 +96,8 @@ class TestFloat:
         assert response.status_code == 200
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], FloatForm), \
-            'Проверьте, что передали поле `form` типа FloatForm в контекст страницы'
+        assert isinstance(response.context['form'], FloatUpdateForm), \
+            'Проверьте, что передали поле `form` типа FloatUpdateForm'
 
         data = {
             'value': 123.4,

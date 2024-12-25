@@ -1,7 +1,7 @@
 from django import template
 from django.urls import reverse_lazy
 
-from docs.forms import CharForm
+from docs.forms import CharCreateForm
 from docs.models import Text
 
 
@@ -20,7 +20,7 @@ def char_element(slug, protocol_pk, user):
         }
 
     return {
-        'form': CharForm(),
+        'form': CharCreateForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
         'url': reverse_lazy('docs:char-create'),

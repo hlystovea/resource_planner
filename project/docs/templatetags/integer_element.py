@@ -1,7 +1,7 @@
 from django import template
 from django.urls import reverse_lazy
 
-from docs.forms import IntegerForm
+from docs.forms import IntegerCreateForm
 from docs.models import Integer
 
 
@@ -21,7 +21,7 @@ def integer_element(slug, protocol_pk, user):
         }
 
     return {
-        'form': IntegerForm(),
+        'form': IntegerCreateForm(),
         'slug': slug,
         'protocol_pk': protocol_pk,
         'url': reverse_lazy('docs:integer-create'),

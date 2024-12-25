@@ -9,6 +9,7 @@
     <table class="table table-sm table-hover">
         <thead class="table">
             <tr>
+                <th></th>
                 <th scope="col">
                     <a class="p-0" href="#"
                         hx-get="{% url 'docs:protocol-list' %}?sort={% if request.GET.sort == 'date' %}-date{% else %}date{% endif %}"

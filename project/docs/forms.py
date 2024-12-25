@@ -33,13 +33,19 @@ class ProtocolForm(ModelForm):
         }
 
 
-class TextForm(ModelForm):
+class TextCreateForm(ModelForm):
     class Meta:
         model = Text
         fields = '__all__'
 
 
-class CharForm(ModelForm):
+class TextUpdateForm(ModelForm):
+    class Meta:
+        model = Text
+        exclude = ('protocol', 'slug')
+
+
+class CharCreateForm(ModelForm):
     value = CharField(required=True)
 
     class Meta:
@@ -47,16 +53,36 @@ class CharForm(ModelForm):
         fields = '__all__'
 
 
-class IntegerForm(ModelForm):
+class CharUpdateForm(ModelForm):
+    value = CharField(required=True)
+
+    class Meta:
+        model = Text
+        exclude = ('protocol', 'slug')
+
+
+class IntegerCreateForm(ModelForm):
     class Meta:
         model = Integer
         fields = '__all__'
 
 
-class FloatForm(ModelForm):
+class IntegerUpdateForm(ModelForm):
+    class Meta:
+        model = Integer
+        exclude = ('protocol', 'slug')
+
+
+class FloatCreateForm(ModelForm):
     class Meta:
         model = Float
         fields = '__all__'
+
+
+class FloatUpdateForm(ModelForm):
+    class Meta:
+        model = Float
+        exclude = ('protocol', 'slug')
 
 
 class ImageForm(ModelForm):

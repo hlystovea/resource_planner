@@ -2,7 +2,8 @@ import pytest
 from django.db.models import TextField, ForeignKey, SlugField
 from django.urls import reverse
 
-from docs.forms import CharForm, TextForm
+from docs.forms import (CharCreateForm, CharUpdateForm,
+                        TextCreateForm, TextUpdateForm)
 from docs.models import Text, Protocol
 from tests.common import search_field
 
@@ -58,8 +59,8 @@ class TestText:
         assert response.status_code == 200
         assert response.context.get('form'), \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], TextForm), \
-            'Проверьте, что поле `form` типа TextForm'
+        assert isinstance(response.context['form'], TextCreateForm), \
+            'Проверьте, что поле `form` типа TextCreateForm'
         assert response.templates[0].name == 'docs/text_element.html', \
             'Проверьте, что используете шаблон text_element.html в ответе'
 
@@ -96,8 +97,8 @@ class TestText:
         assert response.status_code == 200
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], TextForm), \
-            'Проверьте, что передали поле `form` типа TextForm в контекст страницы'
+        assert isinstance(response.context['form'], TextUpdateForm), \
+            'Проверьте, что передали поле `form` типа TextUpdateForm'
         assert response.templates[0].name == 'docs/text_element.html', \
             'Проверьте, что используете шаблон text_element.html в ответе'
 
@@ -138,8 +139,8 @@ class TestText:
         assert response.status_code == 200
         assert response.context.get('form'), \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], CharForm), \
-            'Проверьте, что поле `form` типа CharForm'
+        assert isinstance(response.context['form'], CharCreateForm), \
+            'Проверьте, что поле `form` типа CharCreateForm'
         assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 
@@ -176,8 +177,8 @@ class TestText:
         assert response.status_code == 200
         assert 'form' in response.context, \
             'Проверьте, что передали поле `form` в контекст страницы'
-        assert isinstance(response.context['form'], CharForm), \
-            'Проверьте, что передали поле `form` типа CharForm в контекст страницы'
+        assert isinstance(response.context['form'], CharUpdateForm), \
+            'Проверьте, что передали поле `form` типа CharUpdateForm'
         assert response.templates[0].name == 'docs/base_element.html', \
             'Проверьте, что используете шаблон base_element.html в ответе'
 

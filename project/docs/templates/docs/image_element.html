@@ -5,7 +5,7 @@
         hx-swap="outerHTML"
         hx-trigger="change from:#{{ form.value.id_for_label }}"
     >
-        {% if form.value.errors %}
+        {% if form.value.errors or form.errors %}
             {{ form.value|addclass:"is-invalid" }}
             <div>
                 {{ form.value.errors }}
@@ -13,6 +13,7 @@
         {% else %}
             {{ form.value }}
         {% endif %}
+
         <input type="hidden" name="protocol" value="{% firstof protocol_pk form.protocol.value %}">
         <input type="hidden" name="slug" value="{% firstof slug form.slug.value %}">
     </form>
