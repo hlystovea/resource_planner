@@ -2,7 +2,7 @@
     <table class="table table-sm table-hover">
         <thead class="table">
             <tr>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'manufacturer__name' %}-manufacturer__name{% else %}manufacturer__name{% endif %}"
                         hx-push-url="true"
@@ -21,7 +21,7 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'name' %}-name{% else %}name{% endif %}"
                         hx-push-url="true"
@@ -40,7 +40,7 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'series' %}-series{% else %}series{% endif %}"
                         hx-push-url="true"
@@ -59,7 +59,7 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'type' %}-type{% else %}type{% endif %}"
                         hx-push-url="true"
@@ -78,7 +78,27 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <!-- Новая колонка Артикул -->
+                <th scope="col" style="white-space: nowrap;">
+                    <a class="p-0" href="#"
+                        hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'article_nom' %}-article_nom{% else %}article_nom{% endif %}"
+                        hx-push-url="true"
+                        hx-target="#componentTable"
+                        hx-swap="outerHTML"
+                        hx-include="*"
+                        hx-params="not sort"
+                    >
+                        Артикул
+                        <span class="py-0">
+                            {% if request.GET.sort == 'article_nom' %}
+                            ↓
+                            {% elif request.GET.sort == '-article_nom' %}
+                            ↑
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'in_hardware' %}-in_hardware{% else %}in_hardware{% endif %}"
                         hx-push-url="true"
@@ -97,7 +117,7 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'in_storage' %}-in_storage{% else %}in_storage{% endif %}"
                         hx-push-url="true"
@@ -116,7 +136,7 @@
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" style="white-space: nowrap;">
                     <a class="p-0" href="#"
                         hx-get="{% url 'hardware:component-list' %}?sort={% if request.GET.sort == 'defect_count' %}-defect_count{% else %}defect_count{% endif %}"
                         hx-push-url="true"
@@ -144,6 +164,7 @@
                     <td><a href="{% url 'hardware:component-detail' c.pk %}">{{ c.name|truncatechars:45 }}</a></td>
                     <td>{{ c.series|default:"-" }}</td>
                     <td>{{ c.type|default:"-" }}</td>
+                    <td>{{ c.article_nom|default:"-" }}</td>
                     <td>{% if c.in_hardware %}{{ c.in_hardware }}{% else %}0{% endif %} шт.</td>
                     <td>{% if c.in_storage %}{{ c.in_storage }}{% else %}0{% endif %} шт.</td>
                     <td>{% if c.defect_count %}<a href="{% url 'defects:defect-list' %}?component={{ c.pk }}">{{ c.defect_count }}</a>{% else %}0{% endif %} шт.</td>

@@ -144,6 +144,20 @@
                                 </div>
                             </div>
 
+                            <!-- Артикул изделия -->
+                            <div class="form-group row my-1" aria-required="false">
+                                <label for="{{ form.article_nom.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                                    {{ form.article_nom.label }}
+                                </label>
+                                <div class="col-md-5">
+                                    {{ form.article_nom|addclass:"form-control form-control-sm" }}
+                                    {% if form.article_nom.help_text %}
+                                    <small id="{{ form.article_nom.id_for_label }}-help" class="form-text text-muted">
+                                        {{ form.article_nom.help_text|safe }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
