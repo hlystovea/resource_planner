@@ -9,6 +9,7 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
 from .models import Dept, Service, Position
+from warehouse.models import MaterialStorage
 
 User = get_user_model()
 
@@ -90,11 +91,11 @@ class DeptAdmin(MixinAdmin):
 
     @admin.display(description=_('Материалы'))
     def materials_count(self, obj):
-        materials_count = obj.materials.count()
+        materials_count = MaterialStorage.objects.filter(storage__owner=obj).count()
         url = (
             reverse('admin:warehouse_materialstorage_changelist')
             + '?'
-            + urlencode({'owner__id': f'{obj.id}'})
+            + urlencode({'storage__owner__id': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{} поз.</a>', url, materials_count
